@@ -1,2 +1,35 @@
+														Glossary
+<!------------------------------------------------------------------------------------------------------------------------------------->
+[]: Optional 		[[x]]+: One or more x's 		[[x]]*: Zero or more x's 	
+<!------------------------------------------------------------------------------------------------------------------------------------->
 <Program> 				::=  	[[<Class>]]+
-<Class>					::=		class <TYPE> [inherits <TYPE> ] { <Class> } 
+<Class>					::=		class <TYPE> [inherits <TYPE> ] { <Class_body> } 				<!-- <Class keyword is used for class-inside-class> -->
+<Class_body> 			::= 																	<!-- Body of class to be defined -->
+<Feature> 				::= 	ID([<arguements>])
+<arguements> 			::=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
