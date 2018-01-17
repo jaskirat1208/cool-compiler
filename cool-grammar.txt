@@ -1,0 +1,2 @@
+<Program> 				::=  	[[<Class>]]+
+<Class>					::=		class <TYPE> [inherits <TYPE> ] { <Class> } 
