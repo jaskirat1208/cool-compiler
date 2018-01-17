@@ -1,12 +1,15 @@
 														Glossary
-<!------------------------------------------------------------------------------------------------------------------------------------->
+// <!------------------------------------------------------------------------------------------------------------------------------------->
 []: Optional 		[[x]]+: One or more x's 		[[x]]*: Zero or more x's 	
-<!------------------------------------------------------------------------------------------------------------------------------------->
+// <!------------------------------------------------------------------------------------------------------------------------------------->
 <Program> 				::=  	[[<Class>]]+
-<Class>					::=		class <TYPE> [inherits <TYPE> ] { <Class_body> } 				<!-- <Class keyword is used for class-inside-class> -->
-<Class_body> 			::= 																	<!-- Body of class to be defined -->
-<Feature> 				::= 	ID([<arguements>])
-<arguements> 			::=
+<Class>					::=		class <TYPE> [inherits <TYPE> ] { <Class_body> } 				/*<Class keyword is used for class-inside-class>*/
+<Feature> 				::= 	<ID>([<Arguements>]):<TYPE>{<Function_body>}					/*Body of Function */
+						|		<ID>:<TYPE> [ <- <Assignment_Expression> ]
+<Arguements> 			::= 
+<Class_body> 			::= 																	/*Body of class to be defined: function body + other classes*/
+<Assignment_Expression> ::=
+<Function_body>			::=
 
 
 
