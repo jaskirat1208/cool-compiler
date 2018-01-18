@@ -1,48 +1,36 @@
-														Glossary
+														// Glossary
 // <!------------------------------------------------------------------------------------------------------------------------------------->
 []: Optional 		[[x]]+: One or more x's 		[[x]]*: Zero or more x's 	
 // <!------------------------------------------------------------------------------------------------------------------------------------->
-<Program> 				::=  	[[<Class>]]+
-<Class_modifier>		::=		public | private | protected
-<Class>					::=		[<Class_modifier>] class <TYPE> [inherits <TYPE> ] { [<Class_Constructor>] <Class_body> } 				/*<Class keyword is used for class-inside-class>*/
-<Class_Constructor>		::=		[<Constructor_modifier>] <Constructor_declarator> {<Constructor_Body>}
-<Feature> 				::= 	<Method>														/*Body of Function */
-						|		<ID>:<TYPE> /*[ <- <Assignment_Expression> ]*/ ;
-<Method_modifier>		::=		<Method_Type> [static]
-<Method_Type>			::=		public | private | final | abstract | protected
-<Method>				::=		[<Method_modifier>]<ID>([<Arguements>]):<TYPE>{<Method_body>}
-<Arguements> 			::= 	[[<ID>:<TYPE>]]+
+<Program> 					::=  	[[<Package_statements>]]+ [[<Import_statements>]]+ [[<Type_statements>]]+
 
-<Assignment_Expression> ::=																		/**/
-<Class_body> 			::= 	[[<Feature>]]* 																	/*Body of class to be defined: function body + other classes*/
-<Method_body>			::=		[[<Method_expr>]]*
-<Method_expr>			::= 	<ID>:<TYPE> [ <- <Assignment_Expression> ] ;
-						|		<ID> 	<- [<Assignment_Expression>]
-						|		<Conditionals>													/*If-else-fi or switch case*/
-						|		<Loops>															/*While, do-while, for, forall*/
-						|		<Assignment_Expression>											/*Blank assignment also works: is'nt it ?*/
-						|		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*BEGIN PACKAGE STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
+<Package_statements>		::= package <PACKAGE_NAME>;
+/*END PACKAGE STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
+/*BEGIN IMPORT STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
+<Import_statements>			::= <Import_declaration> 
+							|	<Import_statements> <Import_declaration>
+<Import_declaration>		::= import <IMPORT_TYPE_NAME>;
+							| 	import <PACKAGE_NAME>.*;
+/*END IMPORT STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
+/*BEGIN TYPE DECLARATIONS---------------------------------------------------------------------------------------------------------------------*/
+<Type_statements>			::= <Class_statements>
+							|	<Interface_statements>
+<Class_statements>			::=	<Class_header> <Class_body>  				/*<Class keyword is used for class-inside-class>*/
+<Class_header>				::= [static] [abstract] class <CLASS_TYPE> [inherits <CLASS_TYPE> ] [implements <Interface_list>]
+<Class_body>				::= { [[<Class_body_declarations>]]+ }							/*Blank class body are not allowed*/
+<Class_body_declarations>	::= <Method_declaration>
+							|	<Field_declaration>
+							|	<Constructor_declaration>
+<Method_declaration>		::=	<Method_head> <Method_body>
+<Method_head>				::=	 
+<Method_body>				::=
+<Field_declaration>			::=	
+<Constructor_declaration>	::= <Constructor_head> <Constructor_body>
+<Constructor_head>			::= [static] <CONSTRUCTOR_NAME> : <CLASS_TYPE>(<Arguements>)
+<Constructor_body>			::=	<Block>
+<Interface_list> 			::=	
+/*END   TYPE DECLARATIONS---------------------------------------------------------------------------------------------------------------------*/
 
 
 
