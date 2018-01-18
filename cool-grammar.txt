@@ -3,13 +3,23 @@
 []: Optional 		[[x]]+: One or more x's 		[[x]]*: Zero or more x's 	
 // <!------------------------------------------------------------------------------------------------------------------------------------->
 <Program> 				::=  	[[<Class>]]+
-<Class>					::=		class <TYPE> [inherits <TYPE> ] { <Class_body> } 				/*<Class keyword is used for class-inside-class>*/
-<Feature> 				::= 	<ID>([<Arguements>]):<TYPE>{<Function_body>}					/*Body of Function */
-						|		<ID>:<TYPE> [ <- <Assignment_Expression> ]
-<Arguements> 			::= 
-<Class_body> 			::= 																	/*Body of class to be defined: function body + other classes*/
-<Assignment_Expression> ::=
-<Function_body>			::=
+<Class_modifier>		::=		public | private | protected
+<Class>					::=		[<Class_modifier>] class <TYPE> [inherits <TYPE> ] { <Class_body> } 				/*<Class keyword is used for class-inside-class>*/
+<Feature> 				::= 	<Method>														/*Body of Function */
+						|		<ID>:<TYPE> /*[ <- <Assignment_Expression> ]*/ ;
+<Method_modifier>		::=		<Method_Type> [static]
+<Method_Type>			::=		public | private | final | abstract | protected
+<Method>				::=		[<Method_modifier>]<ID>([<Arguements>]):<TYPE>{<Method_body>}
+<Arguements> 			::= 	[[<ID>:<TYPE>]]+
+
+<Assignment_Expression> ::=																		/**/
+<Class_body> 			::= 	[[<Feature>]]* 																	/*Body of class to be defined: function body + other classes*/
+<Method_body>			::=		<ID>:<TYPE> [ <- <Assignment_Expression> ] ;
+						|		<ID> 	<- [<Assignment_Expression>]
+						|		<Conditionals>													/*If-else-fi or switch case*/
+						|		<Loops>															/*While, do-while, for, forall*/
+						|		<Assignment_Expression>											/*Blank assignment also works: is'nt it ?*/
+						|		
 
 
 
