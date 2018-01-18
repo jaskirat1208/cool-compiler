@@ -4,7 +4,8 @@
 // <!------------------------------------------------------------------------------------------------------------------------------------->
 <Program> 				::=  	[[<Class>]]+
 <Class_modifier>		::=		public | private | protected
-<Class>					::=		[<Class_modifier>] class <TYPE> [inherits <TYPE> ] { <Class_body> } 				/*<Class keyword is used for class-inside-class>*/
+<Class>					::=		[<Class_modifier>] class <TYPE> [inherits <TYPE> ] { [<Class_Constructor>] <Class_body> } 				/*<Class keyword is used for class-inside-class>*/
+<Class_Constructor>		::=		[<Constructor_modifier>] <Constructor_declarator> {<Constructor_Body>}
 <Feature> 				::= 	<Method>														/*Body of Function */
 						|		<ID>:<TYPE> /*[ <- <Assignment_Expression> ]*/ ;
 <Method_modifier>		::=		<Method_Type> [static]
@@ -14,7 +15,8 @@
 
 <Assignment_Expression> ::=																		/**/
 <Class_body> 			::= 	[[<Feature>]]* 																	/*Body of class to be defined: function body + other classes*/
-<Method_body>			::=		<ID>:<TYPE> [ <- <Assignment_Expression> ] ;
+<Method_body>			::=		[[<Method_expr>]]*
+<Method_expr>			::= 	<ID>:<TYPE> [ <- <Assignment_Expression> ] ;
 						|		<ID> 	<- [<Assignment_Expression>]
 						|		<Conditionals>													/*If-else-fi or switch case*/
 						|		<Loops>															/*While, do-while, for, forall*/
