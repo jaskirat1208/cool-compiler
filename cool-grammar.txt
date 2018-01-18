@@ -23,9 +23,9 @@
 							|	<Field_declaration>
 							|	<Constructor_declaration>
 <Method_declaration>		::=	<Method_head> <Method_body>
-<Method_head>				::=	 
-<Method_body>				::=
-<Field_declaration>			::=	
+<Method_head>				::=	 [static] <METHOD_NAME> : <CLASS_TYPE> (<Arguements>)
+<Method_body>				::=	<Block>
+<Field_declaration>			::=	<IDENTIFIER> : <CLASS_TYPE> [ <- <Assignment_Expression> ];   
 <Constructor_declaration>	::= <Constructor_head> <Constructor_body>
 <Constructor_head>			::= [static] <CONSTRUCTOR_NAME> : <CLASS_TYPE>(<Arguements>)
 <Constructor_body>			::=	<Block>
