@@ -10,8 +10,8 @@
 <Digit>                     ::= 0 | 1 | ... | 9
 <ID>                        ::= <Small_letter> [[ <Letter> | Digit | _ ]]*
 <TYPE>                      ::= <Capital_letter> [[ <Letter> | Digit | _ ]]*
-
-
+<INTEGER>					::=	[[<Digit>]]+
+<STRING>					::=	[[<ASCII>]]+
 
 // ########--------------SYNTAX RULES--------------------########
 
@@ -89,15 +89,20 @@
                             |   <Expression> = <Expression>
                             |   <Expression> > <Expression>
                             |   <Expression> >= <Expression>
+                            |   <Expression> && <Expression>
+                            |   <Expression> || <Expression>
+                            |   <Expression> & <Expression>
+                            |   <Expression> | <Expression>
+                            |   <Expression> ^ <Expression>
                             |   not <Expression>
                             |   ( <Expression> )
                             |   SELF
                             |   <ID>
-                            |   INTEGER
-                            |   STRING
-                            |   TRUE
-                            |   FALSE
+                            |   true
+                            |   false
                             |	SELF_TYPE
+                            |   <INTEGER>
+                            |   <STRING>
 <Conditionals>				::= <Case>
                             |   <If_then_else>
 <Loops>						::= <While>
@@ -133,12 +138,8 @@
 <Block_list>                ::= <Block_list> <Expression> ;
                             |   <Expression> ;
 
-<Let_Expression>            ::= let <Formal> in <Expression>
-                            |   <Nested_lets> , <Formal>
+<Let_Expression>            ::= let <Formal>[[,<Formal>]]* in <Expression>
 
 <Return_Expression>         ::= return [<Expression>]
-
-<Nested_lets>               ::= <Formal> IN <Expression>
-                            |   <Nested_lets> , <Formal>
 
 <Empty>                     ::=
