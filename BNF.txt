@@ -1,0 +1,126 @@
+########--------------LEXICAL RULES-------------------########
+
+<letter>                    ::= <capital_letter> | <small_letter>
+<capital_letter>            ::= A | B | ... | Z
+<small_letter>              ::= a | b | ... | z
+<digit>                     ::= 0 | 1 | ... | 9
+<ID>                        ::= <small_letter> [[ <letter> | digit | _ ]]*
+<TYPE>                      ::= <capital_letter> [[ <letter> | digit | _ ]]*
+
+
+
+########--------------SYNTAX RULES--------------------########
+
+<compilation_unit>          ::= [<package_declaration>] [<import_declarations>] [<program>]
+
+<package_declaration>       ::= package <package_name> ;
+
+<package_name>              ::= <package_name>.<ID>
+                            |   <ID>
+
+<import_declarations>       ::= <import_declarations> <import_declaration>
+                            |   <import_declaration>
+
+<import_declaration>        ::= import <package_name>
+                            |   import <package_name>.*
+
+<program>                   ::= <classes>
+
+<classes>                   ::= <classes> <class> ;
+                            |   <class> ;
+
+<class>                     ::= class <TYPE> <inheritance> { <features_list_opt> }
+
+<inheritance>               ::= inherits <TYPE>
+                            |   <empty>
+
+<features_list_opt>         ::= <features_list>
+                            |   <empty>
+
+<features_list>             ::= <features_list> <feature> ;
+                            |   <feature> ;
+
+<feature>                   ::= <ID> ( <formal_params_list_opt> ) : <TYPE> { <expression> }
+                            |   <formal>
+
+<formal_params_list_opt>    ::= <formal_params_list>
+                            |   <empty>
+
+<formal_params_list>        ::= <formal_params_list> , <formal_param>
+                            |   <formal_param>
+
+<formal_param>              ::= <ID> : <TYPE>
+
+<formal>                    ::= <ID> : <TYPE> <- <expression>
+                            |   <ID> : <TYPE>
+
+<expression>                ::= <ID> <- <expression>
+                            |   <expression>.<ID>( <arguments_list_opt> )
+                            |   <expression>@<TYPE>.<ID>( <arguments_list_opt> )
+                            |   <case>
+                            |   <if_then_else>
+                            |   <while>
+                            |   <for>
+                            |   <block_expression>
+                            |   <let_expression>
+                            |   <return_expression>
+                            |   new <TYPE>
+                            |   isvoid <expr>
+                            |   <break_statement>
+                            |   <continue_statement>
+                            |   <expression> + <expression>
+                            |   <expression> - <expression>
+                            |   <expression> * <expression>
+                            |   <expression> / <expression>
+                            |   ~ <expression>
+                            |   <expression> < <expression>
+                            |   <expression> <= <expression>
+                            |   <expression> = <expression>
+                            |   <expression> > <expression>
+                            |   <expression> >= <expression>
+                            |   not <expression>
+                            |   ( <expression> )
+                            |   SELF
+                            |   <ID>
+                            |   INTEGER
+                            |   STRING
+                            |   TRUE
+                            |   FALSE
+
+<arguments_list_opt>        ::= <arguments_list>
+                            |   <empty>
+
+<arguments_list>            ::= <arguments_list_opt> , <expression>
+                            |   <expression>
+
+<case>                      ::= case <expression> of <actions> esac
+
+<actions>                   ::= <action>
+                            |   <action> <actions>
+
+<action>                    ::= <ID> : <TYPE> => <expression>
+
+<if_then_else>              ::= if <expression> then <expression> else <expression> fi
+
+<while>                     ::= while <expression> loop <expression> pool
+
+<for>                       ::= for (<expression> ; <expression> ; <expression>) loop <expression> pool
+
+<break_statement>           ::= break
+
+<continue_statement>        ::= continue 
+
+<block_expression>          ::= { <block_list> }
+
+<block_list>                ::= <block_list> <expression> ;
+                            |   <expression> ;
+
+<let_expression>            ::= let <formal> in <expression>
+                            |   <nested_lets> , <formal>
+
+<return_expression>         ::= return [<expression>]
+
+<nested_lets>               ::= <formal> IN <expression>
+                            |   <nested_lets> , <formal>
+
+<empty>                     ::=

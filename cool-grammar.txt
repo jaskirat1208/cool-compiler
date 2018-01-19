@@ -1,3 +1,7 @@
+// [[]]* : zero or more :D 
+
+
+
 // ########--------------LEXICAL RULES-------------------########
 
 <Letter>                    ::= <Capital_letter> | <Small_letter>
@@ -21,16 +25,27 @@
 <Import_declarations>       ::= <Import_declarations> <Import_declaration>
                             |   <Import_declaration>
 
-<Import_declaration>        ::= import <Package_name>
-                            |   import <Package_name>.*
+<Import_declaration>        ::= import <Package_name>;
+                            |   import <Package_name>.*;
 
-<Program>                   ::= [[<Class>]]*					/*Zero or more Classes*/
-							|	[[<Interface>]]*				/*Zero or more Interfaces*/
+<Program>                   ::= [[ <Class>; | <Interface>; ]]*					/*Zero or more Classes*/
 
-<Class>                     ::= class <TYPE> <Inheritance> { <Features_list_opt> }
+<Class>                     ::= class <TYPE> <Inheritance> <Implement_Interface> { <Features_list_opt> }
+
+<Interface>                 ::= interface <TYPE> <Interface_Inheritance_List> { <Features_list_opt> }
+
+<Interface_Inheritance_List>::= inherits <TYPE> |
+							|	<Interface_Inheritance_List>, <TYPE>
+							| 	<Empty>
 
 <Inheritance>               ::= inherits <TYPE>
                             |   <Empty>
+
+<Implement_Interface>		::= implements <Interfaces_list>
+							|	<Empty>
+
+<Interfaces_list>			::= <Interfaces_list>, <TYPE>
+							|	<TYPE>
 
 <Features_list_opt>         ::= <Features_list>
                             |   <Empty>
@@ -82,17 +97,19 @@
                             |   STRING
                             |   TRUE
                             |   FALSE
-<Conditionals>				::= <case>
+                            |	SELF_TYPE
+<Conditionals>				::= <Case>
                             |   <If_then_else>
-<Loops>						::= <while>
-                            |   <for>
+<Loops>						::= <While>
+                            |   <For>
+                            |	<Do_while>
 <Arguments_list_opt>        ::= <Arguments_list>
                             |   <Empty>
 
 <Arguments_list>            ::= <Arguments_list> , <Expression>
                             |   <Expression>
 
-<case>                      ::= case <Expression> of <Actions> esac
+<Case>                      ::= case <Expression> of <Actions> esac
 
 <Actions>                   ::= <Action>
                             |   <Action> <Actions>
@@ -101,9 +118,11 @@
 
 <If_then_else>              ::= if <Expression> then <Expression> else <Expression> fi
 
-<while>                     ::= while <Expression> loop <Expression> pool
+<While>                     ::= while <Expression> loop <Expression> pool
 
-<for>                       ::= for (<Expression> ; <Expression> ; <Expression>) loop <Expression> pool
+<For>                       ::= for (<Expression> ; <Expression> ; <Expression>) loop <Expression> pool
+
+<Do_while>					::= do loop <Expression> pool while <Expression>
 
 <Break_statement>           ::= break
 
@@ -119,7 +138,7 @@
 
 <Return_Expression>         ::= return [<Expression>]
 
-<Nested_lets>               ::= <formal> IN <Expression>
-                            |   <nested_lets> , <formal>
+<Nested_lets>               ::= <Formal> IN <Expression>
+                            |   <Nested_lets> , <Formal>
 
 <Empty>                     ::=
