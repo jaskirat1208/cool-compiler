@@ -1,38 +1,125 @@
-														// Glossary
-// <!------------------------------------------------------------------------------------------------------------------------------------->
-[]: Optional 		[[x]]+: One or more x's 		[[x]]*: Zero or more x's 	
-// <!------------------------------------------------------------------------------------------------------------------------------------->
-<Program> 					::=  	[[<Package_statements>]]+ [[<Import_statements>]]+ [[<Type_statements>]]+
+// ########--------------LEXICAL RULES-------------------########
 
-/*BEGIN PACKAGE STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
-<Package_statements>		::= package <PACKAGE_NAME>;
-/*END PACKAGE STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
-/*BEGIN IMPORT STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
-<Import_statements>			::= <Import_declaration> 
-							|	<Import_statements> <Import_declaration>
-<Import_declaration>		::= import <IMPORT_TYPE_NAME>;
-							| 	import <PACKAGE_NAME>.*;
-/*END IMPORT STATEMENTS----------------------------------------------------------------------------------------------------------------------*/
-/*BEGIN TYPE DECLARATIONS---------------------------------------------------------------------------------------------------------------------*/
-<Type_statements>			::= <Class_statements>
-							|	<Interface_statements>
-<Class_statements>			::=	<Class_header> <Class_body>  				/*<Class keyword is used for class-inside-class>*/
-<Class_header>				::= [static] [abstract] class <CLASS_TYPE> [inherits <CLASS_TYPE> ] [implements <Interface_list>]
-<Class_body>				::= { [[<Class_body_declarations>]]+ }							/*Blank class body are not allowed*/
-<Class_body_declarations>	::= <Method_declaration>
-							|	<Field_declaration>
-							|	<Constructor_declaration>
-<Method_declaration>		::=	<Method_head> <Method_body>
-<Method_head>				::=	 [static] <METHOD_NAME> : <CLASS_TYPE> (<Arguements>)
-<Method_body>				::=	<Block>
-<Field_declaration>			::=	<IDENTIFIER> : <CLASS_TYPE> [ <- <Assignment_Expression> ];   
-<Constructor_declaration>	::= <Constructor_head> <Constructor_body>
-<Constructor_head>			::= [static] <CONSTRUCTOR_NAME> : <CLASS_TYPE>(<Arguements>)
-<Constructor_body>			::=	<Block>
-<Interface_list> 			::=	
-/*END   TYPE DECLARATIONS---------------------------------------------------------------------------------------------------------------------*/
+<Letter>                    ::= <Capital_letter> | <Small_letter>
+<Capital_letter>            ::= A | B | ... | Z
+<Small_letter>              ::= a | b | ... | z
+<Digit>                     ::= 0 | 1 | ... | 9
+<ID>                        ::= <Small_letter> [[ <Letter> | Digit | _ ]]*
+<TYPE>                      ::= <Capital_letter> [[ <Letter> | Digit | _ ]]*
 
 
 
+// ########--------------SYNTAX RULES--------------------########
 
+<Compilation_unit>          ::= [<Package_declaration>] [<Import_declarations>] [<Program>]
 
+<Package_declaration>       ::= package <Package_name> ;
+
+<Package_name>              ::= <Package_name>.<ID>
+                            |   <ID>
+
+<Import_declarations>       ::= <Import_declarations> <Import_declaration>
+                            |   <Import_declaration>
+
+<Import_declaration>        ::= import <Package_name>
+                            |   import <Package_name>.*
+
+<Program>                   ::= [[<Class>]]*					/*Zero or more Classes*/
+							|	[[<Interface>]]*				/*Zero or more Interfaces*/
+
+<Class>                     ::= class <TYPE> <Inheritance> { <Features_list_opt> }
+
+<Inheritance>               ::= inherits <TYPE>
+                            |   <Empty>
+
+<Features_list_opt>         ::= <Features_list>
+                            |   <Empty>
+
+<Features_list>             ::= <Features_list> <Feature> ;
+                            |   <Feature> ;
+
+<Feature>                   ::= <ID> ( <Formal_params_list_opt> ) : <TYPE> { <Expression> }
+                            |   <Formal>
+
+<Formal_params_list_opt>    ::= <Formal_params_list>
+                            |   <Empty>
+
+<Formal_params_list>        ::= <Formal_params_list> , <Formal_param>
+                            |   <Formal_param>
+
+<Formal_param>              ::= <ID> : <TYPE>
+
+<Formal>                    ::= <ID> : <TYPE> <- <Expression>
+                            |   <ID> : <TYPE>
+
+<Expression>                ::= <ID> <- <Expression>
+                            |   <Expression>.<ID>( <Arguments_list_opt> )
+                            |   <Expression>@<TYPE>.<ID>( <Arguments_list_opt> )
+                            |   <Conditionals>
+                            |   <Loops>
+                            |   <Block_Expression>
+                            |   <Let_Expression>
+                            |   <Return_Expression>
+                            |   new <TYPE>
+                            |   isvoid <Expression>
+                            |   <Break_statement>
+                            |   <Continue_statement>
+                            |   <Expression> + <Expression>
+                            |   <Expression> - <Expression>
+                            |   <Expression> * <Expression>
+                            |   <Expression> / <Expression>
+                            |   ~ <Expression>
+                            |   <Expression> < <Expression>
+                            |   <Expression> <= <Expression>
+                            |   <Expression> = <Expression>
+                            |   <Expression> > <Expression>
+                            |   <Expression> >= <Expression>
+                            |   not <Expression>
+                            |   ( <Expression> )
+                            |   SELF
+                            |   <ID>
+                            |   INTEGER
+                            |   STRING
+                            |   TRUE
+                            |   FALSE
+<Conditionals>				::= <case>
+                            |   <If_then_else>
+<Loops>						::= <while>
+                            |   <for>
+<Arguments_list_opt>        ::= <Arguments_list>
+                            |   <Empty>
+
+<Arguments_list>            ::= <Arguments_list> , <Expression>
+                            |   <Expression>
+
+<case>                      ::= case <Expression> of <Actions> esac
+
+<Actions>                   ::= <Action>
+                            |   <Action> <Actions>
+
+<Action>                    ::= <ID> : <TYPE> => <Expression>
+
+<If_then_else>              ::= if <Expression> then <Expression> else <Expression> fi
+
+<while>                     ::= while <Expression> loop <Expression> pool
+
+<for>                       ::= for (<Expression> ; <Expression> ; <Expression>) loop <Expression> pool
+
+<Break_statement>           ::= break
+
+<Continue_statement>        ::= continue 
+
+<Block_Expression>          ::= { <Block_list> }
+
+<Block_list>                ::= <Block_list> <Expression> ;
+                            |   <Expression> ;
+
+<Let_Expression>            ::= let <Formal> in <Expression>
+                            |   <Nested_lets> , <Formal>
+
+<Return_Expression>         ::= return [<Expression>]
+
+<Nested_lets>               ::= <formal> IN <Expression>
+                            |   <nested_lets> , <formal>
+
+<Empty>                     ::=
