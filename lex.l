@@ -12,7 +12,12 @@ using namespace std;
 				int numParanOpen = 0, numParanClose = 0;
 				int numArrayOpen = 0, numArrayClose = 0;
 				int numKeyword = 0;
-				set<string> s_identifiers ;
+				set<string> s_integer, s_identifiers, s_type;
+				set<string> s_op_asgn, s_op_arithmetic, s_op_relational;
+				set<string> s_block_begin, s_block_end;
+				set<string> s_param_open, s_param_close;
+				set<string> s_array_open, s_array_close;
+				set<string> s_keyword;
 
 DIGIT			[0-9]
 INTEGER			{DIGIT}+
@@ -36,10 +41,12 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 {INTEGER}		{
 					printf("[INTEGER : %s] (%d)\n", yytext, atoi(yytext));
 					++numInteger;
+					s_integer.insert(yytext);
 				}
 {KEYWORD} 		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyword;
+					s_keyword.insert(yytext);
 				}
 {IDENTIFIER}	{
 					printf("[IDENTIFIER: %s]\n", yytext);
@@ -49,14 +56,17 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 {TYPE}			{
 					printf("[TYPE: %s]\n", yytext);
 					++numType;
+					s_type.insert(yytext);
 				}
 {BLOCK_BEGIN}	{
 					printf("BLOCK_BEGIN\n");
 					++numBlockBegin;
+					s_block_begin.insert(yytext);
 				}
 {BLOCK_END}		{
 					printf("BLOCK_END\n");
 					++numBlockEnd;
+					s_block_end.insert(yytext);
 				}
 {COLON}			{
 					printf("COLON\n");
@@ -67,34 +77,42 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 {PARAN_OPEN}	{
 					printf("PARAN_OPEN\n");
 					++numParanOpen;
+					s_param_open.insert(yytext);
 }
 {PARAN_CLOSE}	{
 					printf("PARAN_CLOSE\n");
 					++numParanClose;
+					s_param_close.insert(yytext);
 }
 {ARRAY_OPEN}	{
 					printf("ARRAY_OPEN\n");
 					++numArrayOpen;
+					s_array_open.insert(yytext);
 }
 {ARRAY_CLOSE}	{
 					printf("ARRAY_CLOSE\n");
 					++numArrayClose;
+					s_array_close.insert(yytext);
 }
 {OP_ASGN}		{
 					printf("[OP_ASGN: %s]\n", yytext);
 					++numOpAsgn;
+					s_op_asgn.insert(yytext);
 				}
 {OP_ARITHMETIC_U}	{
 					printf("[OP_ARITHMETIC_U: %s]\n", yytext);
 					++numOpArithmetic;
+					s_op_arithmetic.insert(yytext);
 				}
 {OP_ARITHMETIC_B}	{
 					printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
+					s_op_arithmetic.insert(yytext);
 				}
 {OP_RELATIONAL}	{
 					printf("[OP_RELATIONAL: %s]\n", yytext);
 					++numOpRelational;
+					s_op_relational.insert(yytext);
 				}
 [ \t\n]+		/* eat up white spaces */
 .				printf("This one is Unrecognized character: %s\n", yytext);
