@@ -1,5 +1,9 @@
 %{
+#include <iostream>
 #include <math.h>
+#include <set>
+#include <string>
+using namespace std;
 %}
 
 				int numInteger = 0, numIdentifier = 0, numType = 0;
@@ -8,6 +12,7 @@
 				int numParanOpen = 0, numParanClose = 0;
 				int numArrayOpen = 0, numArrayClose = 0;
 				int numKeyword = 0;
+				set<string> s_identifiers ;
 
 DIGIT			[0-9]
 INTEGER			{DIGIT}+
@@ -39,6 +44,7 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 {IDENTIFIER}	{
 					printf("[IDENTIFIER: %s]\n", yytext);
 					++numIdentifier;
+					s_identifiers.insert(yytext);
 				}
 {TYPE}			{
 					printf("[TYPE: %s]\n", yytext);
@@ -94,9 +100,7 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 .				printf("This one is Unrecognized character: %s\n", yytext);
 
 %%
-main(argc, argv)
-int argc;
-char** argv;
+int main(int argc, char **argv)
 {
 	++argv, --argc;
 	if (argc > 0)
@@ -106,7 +110,7 @@ char** argv;
 	yylex();
 	printf("\n# of INTEGERs: %d\n", numInteger);
 	printf("# of KEYWORD: %d\n", numKeyword);
-	printf("# of IDENTIFIERs: %d\n", numIdentifier);
+	cout<<"# of IDENTIFIER: "<<s_identifiers.size()<<endl;
 	printf("# of TYPEs: %d\n", numType);
 	printf("# of BLOCK_BEGINs: %d\n", numBlockBegin);
 	printf("# of BLOCK_ENDs: %d\n", numBlockEnd);
@@ -117,4 +121,5 @@ char** argv;
 	printf("# of OP_ASGNs: %d\n", numOpAsgn);
 	printf("# of OP_RELATIONALs: %d\n", numOpRelational);
 	printf("# of OP_ARITHMETICs: %d\n", numOpArithmetic);
+	return 0;
 }
