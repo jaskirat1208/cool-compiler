@@ -3,6 +3,7 @@
 #include <math.h>
 #include <set>
 #include <string>
+
 using namespace std;
 %}
 
@@ -18,6 +19,7 @@ using namespace std;
 				set<string> s_param_open, s_param_close;
 				set<string> s_array_open, s_array_close;
 				set<string> s_keyword;
+				set<string>	s_strings;
 
 DIGIT			[0-9]
 INTEGER			{DIGIT}+
@@ -25,6 +27,9 @@ KEYWORD 		(package|import|class|interface|inherits|implements|return|new|break|c
 IDENTIFIER		[a-z][a-zA-Z0-9_]*
 TYPE			[A-Z][a-zA-Z0-9_]*
 OP_ASGN 		"<-"
+STRING			\"(\\.|[^\\"])*\"
+SL_COMMENT		"--"(.)*\n
+ML_COMMENT		"(*"(.|\n)*"*)"
 BLOCK_BEGIN 	"{"
 BLOCK_END 		"}"
 COLON			":"
@@ -58,6 +63,16 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 					++numType;
 					s_type.insert(yytext);
 				}
+{STRING}		{
+					s_strings.insert(yytext);
+					cout<<"[String:"<<yytext<<" ]"<<endl;
+				}
+{SL_COMMENT}	{
+					cout<<"COMMENTING:"<<yytext<<endl;
+				}
+{ML_COMMENT}	{
+					cout<<"M_COMMENTING:"<<yytext<<endl;
+				}			
 {BLOCK_BEGIN}	{
 					printf("BLOCK_BEGIN\n");
 					++numBlockBegin;
