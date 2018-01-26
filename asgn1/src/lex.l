@@ -118,6 +118,15 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 .				printf("This one is Unrecognized character: %s\n", yytext);
 
 %%
+void printset(set<string> myset){
+	set<string>::iterator iter=myset.begin();
+	if(myset.empty())	return;
+	cout<<(*iter)<<" ";
+	for(iter=myset.begin(); iter!=myset.end();++iter){
+		if(iter!=myset.begin())
+			cout<<endl<<"								"<<(*iter);
+	}
+}
 int main(int argc, char **argv)
 {
 	++argv, --argc;
@@ -128,18 +137,44 @@ int main(int argc, char **argv)
 	yylex();
 	cout<<"TOKENS 					"<<"COUNT	"<<"		VALUE"<<endl;
 	cout<<"--------------------------------------------------------------------------"<<endl;
-	cout<<"INTEGERs: 				"<<s_integer.size()<<"			"<<endl;
-	cout<<"KEYWORDs:				"<<s_keyword.size()<<"			1"<<endl;
-	cout<<"IDENTIFIERs: 				"<<s_identifiers.size()<<"			1"<<endl;
-	cout<<"TYPEs: 					"<<s_type.size()<<"			1"<<endl;
-	cout<<"BLOCK_BEGINs: 				"<<s_block_begin.size()<<"			1"<<endl;
-	cout<<"BLOCK_ENDs: 				"<<s_block_end.size()<<"			1"<<endl;
-	cout<<"PARAN_OPENs: 				"<<s_param_open.size()<<"			1"<<endl;
-	cout<<"PARAN_CLOSEs: 				"<<s_param_close.size()<<"			1"<<endl;
-	cout<<"ARRAY_OPENs: 				"<<s_array_open.size()<<"			1"<<endl;
-	cout<<"ARRAY_CLOSEs: 				"<<s_array_close.size()<<"			1"<<endl;
-	cout<<"OP_ASGNs: 				"<<s_op_asgn.size()<<"			1"<<endl;
-	cout<<"OP_RELATIONALs: 			"<<s_op_relational.size()<<"			1"<<endl;
-	cout<<"OP_ARITHMETICs: 			"<<s_op_arithmetic.size()<<"			1"<<endl;
+	cout<<"INTEGERs: 				"<<s_integer.size()<<"			";
+	printset(s_integer);
+	cout<<endl;
+	cout<<"KEYWORDs:				"<<s_keyword.size()<<"			";
+	printset(s_keyword);
+	cout<<endl;
+	cout<<"IDENTIFIERs: 				"<<s_identifiers.size()<<"			";
+	printset(s_identifiers);
+	cout<<endl;
+	cout<<"TYPEs: 					"<<s_type.size()<<"			";
+	printset(s_type);
+	cout<<endl;
+	cout<<"BLOCK_BEGINs: 				"<<s_block_begin.size()<<"			";
+	printset(s_block_begin);
+	cout<<endl;
+	cout<<"BLOCK_ENDs: 				"<<s_block_end.size()<<"			";
+	printset(s_block_end);
+	cout<<endl;
+	cout<<"PARAN_OPENs: 				"<<s_param_open.size()<<"			";
+	printset(s_param_open);
+	cout<<endl;
+	cout<<"PARAN_CLOSEs: 				"<<s_param_close.size()<<"			";
+	printset(s_param_close);
+	cout<<endl;
+	cout<<"ARRAY_OPENs: 				"<<s_array_open.size()<<"			";
+	printset(s_array_open);
+	cout<<endl;
+	cout<<"ARRAY_CLOSEs: 				"<<s_array_close.size()<<"			";
+	printset(s_array_close);
+	cout<<endl;
+	cout<<"OP_ASGNs: 				"<<s_op_asgn.size()<<"			";
+	printset(s_op_asgn);
+	cout<<endl;
+	cout<<"OP_RELATIONALs: 			"<<s_op_relational.size()<<"			";
+	printset(s_op_relational);
+	cout<<endl;
+	cout<<"OP_ARITHMETICs: 			"<<s_op_arithmetic.size()<<"			";
+	printset(s_op_arithmetic);
+	cout<<endl;
 	return 0;
 }
