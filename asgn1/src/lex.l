@@ -8,15 +8,13 @@ using namespace std;
 
 				int numInteger = 0, numIdentifier = 0, numType = 0;
 				int numOpAsgn = 0, numOpArithmetic = 0, numOpRelational = 0;
+				int numColon = 0, numStmtTerminator = 0;
 				int numBlockBegin = 0, numBlockEnd = 0;
 				int numParanOpen = 0, numParanClose = 0;
 				int numArrayOpen = 0, numArrayClose = 0;
 				int numKeyword = 0;
 				set<string> s_integer, s_identifiers, s_type;
-				set<string> s_op_asgn, s_op_arithmetic, s_op_relational;
-				set<string> s_block_begin, s_block_end;
-				set<string> s_param_open, s_param_close;
-				set<string> s_array_open, s_array_close;
+				set<string> s_op_arithmetic, s_op_relational;
 				set<string> s_keyword;
 
 DIGIT			[0-9]
@@ -25,10 +23,10 @@ KEYWORD 		(package|import|class|interface|inherits|implements|return|new|break|c
 IDENTIFIER		[a-z][a-zA-Z0-9_]*
 TYPE			[A-Z][a-zA-Z0-9_]*
 OP_ASGN 		"<-"
-BLOCK_BEGIN 	"{"
-BLOCK_END 		"}"
 COLON			":"
 STMT_TERMINATOR ";"
+BLOCK_BEGIN 	"{"
+BLOCK_END 		"}"
 PARAN_OPEN		"("
 PARAN_CLOSE		")"
 ARRAY_OPEN		"["
@@ -58,46 +56,41 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 					++numType;
 					s_type.insert(yytext);
 				}
+{COLON}			{
+					printf("COLON\n");
+					++numColon;
+				}
+{STMT_TERMINATOR}	{
+					printf("STMT_TERMINATOR\n");
+					++numStmtTerminator;
+				}
 {BLOCK_BEGIN}	{
 					printf("BLOCK_BEGIN\n");
 					++numBlockBegin;
-					s_block_begin.insert(yytext);
 				}
 {BLOCK_END}		{
 					printf("BLOCK_END\n");
 					++numBlockEnd;
-					s_block_end.insert(yytext);
-				}
-{COLON}			{
-					printf("COLON\n");
-				}
-{STMT_TERMINATOR}	{
-					printf("STMT_TERMINATOR\n");
 				}
 {PARAN_OPEN}	{
 					printf("PARAN_OPEN\n");
 					++numParanOpen;
-					s_param_open.insert(yytext);
 }
 {PARAN_CLOSE}	{
 					printf("PARAN_CLOSE\n");
 					++numParanClose;
-					s_param_close.insert(yytext);
 }
 {ARRAY_OPEN}	{
 					printf("ARRAY_OPEN\n");
 					++numArrayOpen;
-					s_array_open.insert(yytext);
 }
 {ARRAY_CLOSE}	{
 					printf("ARRAY_CLOSE\n");
 					++numArrayClose;
-					s_array_close.insert(yytext);
 }
 {OP_ASGN}		{
 					printf("[OP_ASGN: %s]\n", yytext);
 					++numOpAsgn;
-					s_op_asgn.insert(yytext);
 				}
 {OP_ARITHMETIC_U}	{
 					printf("[OP_ARITHMETIC_U: %s]\n", yytext);
@@ -114,6 +107,7 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 					++numOpRelational;
 					s_op_relational.insert(yytext);
 				}
+(\")		printf("sdfjcscvbnvbbvcxcvbvcxcv: %s", yytext);
 [ \t\n]+		/* eat up white spaces */
 .				printf("This one is Unrecognized character: %s\n", yytext);
 
@@ -149,26 +143,32 @@ int main(int argc, char **argv)
 	cout<<"TYPEs: 					"<<s_type.size()<<"			";
 	printset(s_type);
 	cout<<endl;
-	cout<<"BLOCK_BEGINs: 				"<<s_block_begin.size()<<"			";
-	printset(s_block_begin);
+	cout<<"COLONs: 				"<<numColon<<"			";
+	cout<<":";
 	cout<<endl;
-	cout<<"BLOCK_ENDs: 				"<<s_block_end.size()<<"			";
-	printset(s_block_end);
+	cout<<"STMT_TERMINATORs: 			"<<numStmtTerminator<<"			";
+	cout<<";";
 	cout<<endl;
-	cout<<"PARAN_OPENs: 				"<<s_param_open.size()<<"			";
-	printset(s_param_open);
+	cout<<"BLOCK_BEGINs: 				"<<numBlockBegin<<"			";
+	cout<<"{";
 	cout<<endl;
-	cout<<"PARAN_CLOSEs: 				"<<s_param_close.size()<<"			";
-	printset(s_param_close);
+	cout<<"BLOCK_ENDs: 				"<<numBlockEnd<<"			";
+	cout<<"}";
 	cout<<endl;
-	cout<<"ARRAY_OPENs: 				"<<s_array_open.size()<<"			";
-	printset(s_array_open);
+	cout<<"PARAN_OPENs: 				"<<numParanOpen<<"			";
+	cout<<"(";
 	cout<<endl;
-	cout<<"ARRAY_CLOSEs: 				"<<s_array_close.size()<<"			";
-	printset(s_array_close);
+	cout<<"PARAN_CLOSEs: 				"<<numParanClose<<"			";
+	cout<<")";
 	cout<<endl;
-	cout<<"OP_ASGNs: 				"<<s_op_asgn.size()<<"			";
-	printset(s_op_asgn);
+	cout<<"ARRAY_OPENs: 				"<<numArrayOpen<<"			";
+	cout<<"[";
+	cout<<endl;
+	cout<<"ARRAY_CLOSEs: 				"<<numArrayClose<<"			";
+	cout<<"]";
+	cout<<endl;
+	cout<<"OP_ASGNs: 				"<<numOpAsgn<<"			";
+	cout<<"<-";
 	cout<<endl;
 	cout<<"OP_RELATIONALs: 			"<<s_op_relational.size()<<"			";
 	printset(s_op_relational);
