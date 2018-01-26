@@ -1,0 +1,11 @@
+class P {  
+	f(): Int { 1 };
+	g: Int <-f(1);			--Jaskirat is great
+};
+(*dhasjdhaskdh
+asjdklasjdlas
+4asdjkasldjas
+askdjalsd*)
+class C inherits P {
+	f(): String { "1" };
+};"
