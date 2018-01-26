@@ -126,18 +126,20 @@ int main(int argc, char **argv)
 	else
 		yyin = stdin;
 	yylex();
-	printf("\n# of INTEGERs: %d\n", numInteger);
-	printf("# of KEYWORD: %d\n", numKeyword);
-	cout<<"# of IDENTIFIER: "<<s_identifiers.size()<<endl;
-	printf("# of TYPEs: %d\n", numType);
-	printf("# of BLOCK_BEGINs: %d\n", numBlockBegin);
-	printf("# of BLOCK_ENDs: %d\n", numBlockEnd);
-	printf("# of PARAN_OPENs: %d\n", numParanOpen);
-	printf("# of PARAN_CLOSEs: %d\n", numParanClose);
-	printf("# of ARRAY_OPENs: %d\n", numArrayOpen);
-	printf("# of ARRAY_CLOSEs: %d\n", numArrayClose);
-	printf("# of OP_ASGNs: %d\n", numOpAsgn);
-	printf("# of OP_RELATIONALs: %d\n", numOpRelational);
-	printf("# of OP_ARITHMETICs: %d\n", numOpArithmetic);
+	cout<<"TOKENS 					"<<"COUNT	"<<"		VALUE"<<endl;
+	cout<<"--------------------------------------------------------------------------"<<endl;
+	cout<<"INTEGERs: 				"<<s_integer.size()<<"			"<<endl;
+	cout<<"KEYWORDs:				"<<s_keyword.size()<<"			1"<<endl;
+	cout<<"IDENTIFIERs: 				"<<s_identifiers.size()<<"			1"<<endl;
+	cout<<"TYPEs: 					"<<s_type.size()<<"			1"<<endl;
+	cout<<"BLOCK_BEGINs: 				"<<s_block_begin.size()<<"			1"<<endl;
+	cout<<"BLOCK_ENDs: 				"<<s_block_end.size()<<"			1"<<endl;
+	cout<<"PARAN_OPENs: 				"<<s_param_open.size()<<"			1"<<endl;
+	cout<<"PARAN_CLOSEs: 				"<<s_param_close.size()<<"			1"<<endl;
+	cout<<"ARRAY_OPENs: 				"<<s_array_open.size()<<"			1"<<endl;
+	cout<<"ARRAY_CLOSEs: 				"<<s_array_close.size()<<"			1"<<endl;
+	cout<<"OP_ASGNs: 				"<<s_op_asgn.size()<<"			1"<<endl;
+	cout<<"OP_RELATIONALs: 			"<<s_op_relational.size()<<"			1"<<endl;
+	cout<<"OP_ARITHMETICs: 			"<<s_op_arithmetic.size()<<"			1"<<endl;
 	return 0;
 }
