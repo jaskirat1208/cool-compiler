@@ -62,7 +62,6 @@ IDENTIFIER		[a-z][a-zA-Z0-9_]*
 TYPE			[A-Z][a-zA-Z0-9_]*
 OP_ASGN 		"<-"
 OP_IMPLIES 		"=>"
-CHARACTER 		\'(.)\'
 STRING			\"(\\.|[^\\"])*\"
 SL_COMMENT		"--"(.)*
 ML_COMMENT		"(*"(.|\n)*"*)"
@@ -122,10 +121,6 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 {KEY_BREAK}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyBreak;
-				}
-{CHARACTER}		{
-					s_char.insert(yytext);
-					cout<<"CHARACTER: "<<yytext<<endl;
 				}
 {KEY_CONTINUE}	{
 					printf("[KEYWORD: %s]\n", yytext);
@@ -278,8 +273,7 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 					++numOpRelational;
 					s_op_relational.insert(yytext);
 				}
-(\")		printf("sdfjcscvbnvbbvcxcvbvcxcv: %s", yytext);
-[ \t\n]+		/* eat up white spaces */
+[ \t]+			/* eat up white spaces */
 .				{
 					printf("This one is Unrecognized character: %s--------------------------------------------------------------------------Line %d\n", yytext,line_ctr);
 					s_unrecog.insert(yytext);
@@ -304,151 +298,233 @@ int main(int argc, char **argv)
 	yylex();
 	cout<<"TOKENS 					"<<"COUNT	"<<"		VALUE"<<endl;
 	cout<<"--------------------------------------------------------------------------"<<endl;
-	cout<<"INTEGER: 				"<<s_integer.size()<<"			";
-	printset(s_integer);
-	cout<<endl;
 	
 	// keywords start
-	cout<<"KEY_PACKAGE:				"<<numKeyPackage<<"			";
-	cout<<"package";
-	cout<<endl;
-	cout<<"KEY_IMPORT:				"<<numKeyImport<<"			";
-	cout<<"import";
-	cout<<endl;
-	cout<<"KEY_CLASS:				"<<numKeyClass<<"			";
-	cout<<"class";
-	cout<<endl;
-	cout<<"KEY_INTERFACE:				"<<numKeyInterface<<"			";
-	cout<<"interface";
-	cout<<endl;
-	cout<<"KEY_INHERITS:				"<<numKeyInherits<<"			";
-	cout<<"inherits";
-	cout<<endl;
-	cout<<"KEY_IMPLEMENTS:				"<<numKeyImplements<<"			";
-	cout<<"implements";
-	cout<<endl;
-	cout<<"KEY_RETURN:				"<<numKeyReturn<<"			";
-	cout<<"return";
-	cout<<endl;
-	cout<<"KEY_NEW:				"<<numKeyNew<<"			";
-	cout<<"new";
-	cout<<endl;
-	cout<<"KEY_BREAK:				"<<numKeyBreak<<"			";
-	cout<<"break";
-	cout<<endl;
-	cout<<"KEY_CONTINUE:				"<<numKeyContinue<<"			";
-	cout<<"continue";
-	cout<<endl;
-	cout<<"KEY_ISVOID:				"<<numKeyIsvoid<<"			";
-	cout<<"isvoid";
-	cout<<endl;
-	cout<<"KEY_NOT:				"<<numKeyNot<<"			";
-	cout<<"not";
-	cout<<endl;
-	cout<<"KEY_CASE:				"<<numKeyCase<<"			";
-	cout<<"case";
-	cout<<endl;
-	cout<<"KEY_OF:					"<<numKeyOf<<"			";
-	cout<<"of";
-	cout<<endl;
-	cout<<"KEY_ESAC:				"<<numKeyEsac<<"			";
-	cout<<"esac";
-	cout<<endl;
-	cout<<"KEY_WHILE:				"<<numKeyWhile<<"			";
-	cout<<"while";
-	cout<<endl;
-	cout<<"KEY_LOOP:				"<<numKeyLoop<<"			";
-	cout<<"loop";
-	cout<<endl;
-	cout<<"KEY_POOL:				"<<numKeyPool<<"			";
-	cout<<"pool";
-	cout<<endl;
-	cout<<"KEY_DO:					"<<numKeyDo<<"			";
-	cout<<"do";
-	cout<<endl;
-	cout<<"KEY_FOR:				"<<numKeyFor<<"			";
-	cout<<"for";
-	cout<<endl;
-	cout<<"KEY_IF:					"<<numKeyIf<<"			";
-	cout<<"if";
-	cout<<endl;
-	cout<<"KEY_THEN:				"<<numKeyThen<<"			";
-	cout<<"then";
-	cout<<endl;
-	cout<<"KEY_ELSE:				"<<numKeyElse<<"			";
-	cout<<"else";
-	cout<<endl;
-	cout<<"KEY_FI:					"<<numKeyFi<<"			";
-	cout<<"fi";
-	cout<<endl;
-	cout<<"KEY_LET:				"<<numKeyLet<<"			";
-	cout<<"let";
-	cout<<endl;
-	cout<<"KEY_IN:					"<<numKeyIn<<"			";
-	cout<<"in";
-	cout<<endl;
-	cout<<"KEY_TRUE:				"<<numKeyTrue<<"			";
-	cout<<"true";
-	cout<<endl;
-	cout<<"KEY_FALSE:				"<<numKeyFalse<<"			";
-	cout<<"false";
-	cout<<endl;
+	if (numKeyPackage) {
+		cout<<"KEY_PACKAGE:				"<<numKeyPackage<<"			";
+		cout<<"package";
+		cout<<endl;
+	}
+	if (numKeyImport) {
+		cout<<"KEY_IMPORT:				"<<numKeyImport<<"			";
+		cout<<"import";
+		cout<<endl;
+	}
+	if (numKeyClass) {
+		cout<<"KEY_CLASS:				"<<numKeyClass<<"			";
+		cout<<"class";
+		cout<<endl;
+	}
+	if (numKeyInterface) {
+		cout<<"KEY_INTERFACE:				"<<numKeyInterface<<"			";
+		cout<<"interface";
+		cout<<endl;
+	}
+	if (numKeyInherits) {
+		cout<<"KEY_INHERITS:				"<<numKeyInherits<<"			";
+		cout<<"inherits";
+		cout<<endl;
+	}
+	if (numKeyImplements) {
+		cout<<"KEY_IMPLEMENTS:				"<<numKeyImplements<<"			";
+		cout<<"implements";
+		cout<<endl;
+	}
+	if (numKeyReturn) {
+		cout<<"KEY_RETURN:				"<<numKeyReturn<<"			";
+		cout<<"return";
+		cout<<endl;
+	}
+	if (numKeyNew) {
+		cout<<"KEY_NEW:				"<<numKeyNew<<"			";
+		cout<<"new";
+		cout<<endl;
+	}
+	if (numKeyBreak) {
+		cout<<"KEY_BREAK:				"<<numKeyBreak<<"			";
+		cout<<"break";
+		cout<<endl;
+	}
+	if (numKeyContinue) {
+		cout<<"KEY_CONTINUE:				"<<numKeyContinue<<"			";
+		cout<<"continue";
+		cout<<endl;
+	}
+	if (numKeyIsvoid) {
+		cout<<"KEY_ISVOID:				"<<numKeyIsvoid<<"			";
+		cout<<"isvoid";
+		cout<<endl;
+	}
+	if (numKeyNot) {
+		cout<<"KEY_NOT:				"<<numKeyNot<<"			";
+		cout<<"not";
+		cout<<endl;
+	}
+	if (numKeyCase) {
+		cout<<"KEY_CASE:				"<<numKeyCase<<"			";
+		cout<<"case";
+		cout<<endl;
+	}
+	if (numKeyOf) {
+		cout<<"KEY_OF:					"<<numKeyOf<<"			";
+		cout<<"of";
+		cout<<endl;
+	}
+	if (numKeyEsac) {
+		cout<<"KEY_ESAC:				"<<numKeyEsac<<"			";
+		cout<<"esac";
+		cout<<endl;
+	}
+	if (numKeyWhile) {
+		cout<<"KEY_WHILE:				"<<numKeyWhile<<"			";
+		cout<<"while";
+		cout<<endl;
+	}
+	if (numKeyLoop) {
+		cout<<"KEY_LOOP:				"<<numKeyLoop<<"			";
+		cout<<"loop";
+		cout<<endl;
+	}
+	if (numKeyPool) {
+		cout<<"KEY_POOL:				"<<numKeyPool<<"			";
+		cout<<"pool";
+		cout<<endl;
+	}
+	if (numKeyDo) {
+		cout<<"KEY_DO:					"<<numKeyDo<<"			";
+		cout<<"do";
+		cout<<endl;
+	}
+	if (numKeyFor) {
+		cout<<"KEY_FOR:				"<<numKeyFor<<"			";
+		cout<<"for";
+		cout<<endl;
+	}
+	if (numKeyIf) {
+		cout<<"KEY_IF:					"<<numKeyIf<<"			";
+		cout<<"if";
+		cout<<endl;
+	}
+	if (numKeyThen) {
+		cout<<"KEY_THEN:				"<<numKeyThen<<"			";
+		cout<<"then";
+		cout<<endl;
+	}
+	if (numKeyElse) {
+		cout<<"KEY_ELSE:				"<<numKeyElse<<"			";
+		cout<<"else";
+		cout<<endl;
+	}
+	if (numKeyFi) {
+		cout<<"KEY_FI:					"<<numKeyFi<<"			";
+		cout<<"fi";
+		cout<<endl;
+	}
+	if (numKeyLet) {
+		cout<<"KEY_LET:				"<<numKeyLet<<"			";
+		cout<<"let";
+		cout<<endl;
+	}
+	if (numKeyIn) {
+		cout<<"KEY_IN:					"<<numKeyIn<<"			";
+		cout<<"in";
+		cout<<endl;
+	}
+	if (numKeyTrue) {
+		cout<<"KEY_TRUE:				"<<numKeyTrue<<"			";
+		cout<<"true";
+		cout<<endl;
+	}
+	if (numKeyFalse) {
+		cout<<"KEY_FALSE:				"<<numKeyFalse<<"			";
+		cout<<"false";
+		cout<<endl;
+	}
 	// keywords end
 
-	cout<<"IDENTIFIER: 				"<<s_identifiers.size()<<"			";
-	printset(s_identifiers);
-	cout<<endl;
-	cout<<"TYPE: 					"<<s_type.size()<<"			";
-	printset(s_type);
-	cout<<endl;
-	cout<<"OP_ASGN: 				"<<numOpAsgn<<"			";
-	cout<<"<-";
-	cout<<endl;
-	cout<<"OP_IMPLIES:				"<<numOpImplies<<"			";
-	cout<<"=>";
-	cout<<endl;
-	cout<<"STRING:					"<<s_strings.size()<<"			";
-	printset(s_strings);
-	cout<<endl;
-	cout<<"CHARACTERS:				"<<s_char.size()<<"			";
-	printset(s_char);
-	cout<<endl;
-	cout<<"COLON:					"<<numColon<<"			";
-	cout<<":";
-	cout<<endl;
-	cout<<"STMT_TERMINATOR: 			"<<numStmtTerminator<<"			";
-	cout<<";";
-	cout<<endl;
-	cout<<"BLOCK_BEGIN: 				"<<numBlockBegin<<"			";
-	cout<<"{";
-	cout<<endl;
-	cout<<"BLOCK_END: 				"<<numBlockEnd<<"			";
-	cout<<"}";
-	cout<<endl;
-	cout<<"PARAN_OPEN: 				"<<numParanOpen<<"			";
-	cout<<"(";
-	cout<<endl;
-	cout<<"PARAN_CLOSE: 				"<<numParanClose<<"			";
-	cout<<")";
-	cout<<endl;
-	cout<<"ARRAY_OPEN:	 			"<<numArrayOpen<<"			";
-	cout<<"[";
-	cout<<endl;
-	cout<<"ARRAY_CLOSE: 				"<<numArrayClose<<"			";
-	cout<<"]";
-	cout<<endl;
-	cout<<"OP_ARITHMETIC:				"<<s_op_arithmetic.size()<<"			";
-	printset(s_op_arithmetic);
-	cout<<endl;
-	cout<<"OP_RELATIONAL:				"<<s_op_relational.size()<<"			";
-	printset(s_op_relational);
-	cout<<endl;
-	cout<<"--------------------------------------------------------------------------"<<endl;
-	cout<<"UNRECOGNIZED CHARACTERS: "<<endl;
-	if(s_unrecog.size()==0){
-		cout<<"NONE"<<endl;
+	if (s_identifiers.size()) {
+		cout<<"IDENTIFIER: 				"<<s_identifiers.size()<<"			";
+		printset(s_identifiers);
+		cout<<endl;
 	}
-	else{
+	if (s_type.size()) {
+		cout<<"TYPE: 					"<<s_type.size()<<"			";
+		printset(s_type);
+		cout<<endl;
+	}
+	if (numOpAsgn) {
+		cout<<"OP_ASGN: 				"<<numOpAsgn<<"			";
+		cout<<"<-";
+		cout<<endl;
+	}
+	if (numOpImplies) {
+		cout<<"OP_IMPLIES:				"<<numOpImplies<<"			";
+		cout<<"=>";
+		cout<<endl;
+	}
+	if (s_integer.size()) {
+		cout<<"INTEGER: 				"<<s_integer.size()<<"			";
+		printset(s_integer);
+		cout<<endl;
+	}
+	if (s_strings.size()) {
+		cout<<"STRING:					"<<s_strings.size()<<"			";
+		printset(s_strings);
+		cout<<endl;
+	}
+	if (numColon) {
+		cout<<"COLON:					"<<numColon<<"			";
+		cout<<":";
+		cout<<endl;
+	}
+	if (numStmtTerminator) {
+		cout<<"STMT_TERMINATOR: 			"<<numStmtTerminator<<"			";
+		cout<<";";
+		cout<<endl;
+	}
+	if (numBlockBegin) {
+		cout<<"BLOCK_BEGIN: 				"<<numBlockBegin<<"			";
+		cout<<"{";
+		cout<<endl;
+	}
+	if (numBlockEnd) {
+		cout<<"BLOCK_END: 				"<<numBlockEnd<<"			";
+		cout<<"}";
+		cout<<endl;
+	}
+	if (numParanOpen) {
+		cout<<"PARAN_OPEN: 				"<<numParanOpen<<"			";
+		cout<<"(";
+		cout<<endl;
+	}
+	if (numParanClose) {
+		cout<<"PARAN_CLOSE: 				"<<numParanClose<<"			";
+		cout<<")";
+		cout<<endl;
+	}
+	if (numArrayOpen) {
+		cout<<"ARRAY_OPEN:	 			"<<numArrayOpen<<"			";
+		cout<<"[";
+		cout<<endl;
+	}
+	if (numArrayClose) {
+		cout<<"ARRAY_CLOSE: 				"<<numArrayClose<<"			";
+		cout<<"]";
+		cout<<endl;
+	}
+	if (s_op_arithmetic.size()) {
+		cout<<"OP_ARITHMETIC:				"<<s_op_arithmetic.size()<<"			";
+		printset(s_op_arithmetic);
+		cout<<endl;
+	}
+	if (s_op_relational.size()) {
+		cout<<"OP_RELATIONAL:				"<<s_op_relational.size()<<"			";
+		printset(s_op_relational);
+		cout<<endl;
+	}
+	cout<<"--------------------------------------------------------------------------"<<endl;
+	if(s_unrecog.size()){
+		cout<<"UNRECOGNIZED CHARACTERS: "<<endl;
 		printset(s_unrecog);
 	}
 	return 0;
