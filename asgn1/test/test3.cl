@@ -1,5 +1,7 @@
 package group19TestCases;
 
+import something.*;
+
 class Main {
 	func (a : Int) : Int {
 		{
@@ -10,5 +12,5 @@ class Main {
 			fi ;
 			a ;
 		}
-	}	
+	};
 };

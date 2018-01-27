@@ -2,8 +2,11 @@ package group19TestCases;
 interface Vehicle {
 	noOfWheels() : Int;
 };
+interface Roadways {
+	func(): String;
+};
 
-class Scooter implements Vehicle {
+class Scooter implements Vehicle,Roadways {
 	noOfWheels() : Int { 2 };
 };
 class Car implements Vehicle {
