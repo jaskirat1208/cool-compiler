@@ -21,11 +21,14 @@ using namespace std;
 				int numBlockBegin = 0, numBlockEnd = 0;
 				int numParanOpen = 0, numParanClose = 0;
 				int numArrayOpen = 0, numArrayClose = 0;
+				int line_ctr=0;
 				set<string> s_integer, s_identifiers, s_type;
 				set<string> s_op_arithmetic, s_op_relational;
 				set<string>	s_strings;
-
+				set<string> s_unrecog;
+				set<string> s_char;
 DIGIT			[0-9]
+NEWLINE			\n
 INTEGER			{DIGIT}+
 KEY_PACKAGE		(?i:package)
 KEY_IMPORT		(?i:import)
@@ -59,6 +62,7 @@ IDENTIFIER		[a-z][a-zA-Z0-9_]*
 TYPE			[A-Z][a-zA-Z0-9_]*
 OP_ASGN 		"<-"
 OP_IMPLIES 		"=>"
+CHARACTER 		\'(.)\'
 STRING			\"(\\.|[^\\"])*\"
 SL_COMMENT		"--"(.)*
 ML_COMMENT		"(*"(.|\n)*"*)"
@@ -75,6 +79,9 @@ OP_ARITHMETIC_B	[+-/*]
 OP_RELATIONAL	(<|<=|=|>=|>)
 
 %%
+{NEWLINE}		{
+					line_ctr++;
+				}
 {INTEGER}		{
 					printf("[INTEGER : %s] (%d)\n", yytext, atoi(yytext));
 					++numInteger;
@@ -115,6 +122,10 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 {KEY_BREAK}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyBreak;
+				}
+{CHARACTER}		{
+					s_char.insert(yytext);
+					cout<<"CHARACTER: "<<yytext<<endl;
 				}
 {KEY_CONTINUE}	{
 					printf("[KEYWORD: %s]\n", yytext);
@@ -269,8 +280,10 @@ OP_RELATIONAL	(<|<=|=|>=|>)
 				}
 (\")		printf("sdfjcscvbnvbbvcxcvbvcxcv: %s", yytext);
 [ \t\n]+		/* eat up white spaces */
-.				printf("This one is Unrecognized character: %s\n", yytext);
-
+.				{
+					printf("This one is Unrecognized character: %s--------------------------------------------------------------------------Line %d\n", yytext,line_ctr);
+					s_unrecog.insert(yytext);
+				}
 %%
 void printset(set<string> myset){
 	set<string>::iterator iter=myset.begin();
@@ -397,6 +410,9 @@ int main(int argc, char **argv)
 	cout<<"STRING:					"<<s_strings.size()<<"			";
 	printset(s_strings);
 	cout<<endl;
+	cout<<"CHARACTERS:				"<<s_char.size()<<"			";
+	printset(s_char);
+	cout<<endl;
 	cout<<"COLON:					"<<numColon<<"			";
 	cout<<":";
 	cout<<endl;
@@ -427,5 +443,13 @@ int main(int argc, char **argv)
 	cout<<"OP_RELATIONAL:				"<<s_op_relational.size()<<"			";
 	printset(s_op_relational);
 	cout<<endl;
+	cout<<"--------------------------------------------------------------------------"<<endl;
+	cout<<"UNRECOGNIZED CHARACTERS: "<<endl;
+	if(s_unrecog.size()==0){
+		cout<<"NONE"<<endl;
+	}
+	else{
+		printset(s_unrecog);
+	}
 	return 0;
 }

@@ -7,5 +7,6 @@ asjdklasjdlas
 4asdjkasldjas
 askdjalsd*)
 class C inherits P {
-	f(): String { "1" };
+	f1(): String { "JASkirat Singh is
+	"  a good boy" };
 };"
