@@ -25,7 +25,7 @@ class SymbolTableEntry {
 };
 
 // taken from textbook page-112 section 2.7
-class Env{
+/*class Env{
 	public:
 		// string is used for storing lexeme
 		// each lexeme has certain data associated which goes in its value
@@ -55,7 +55,7 @@ class Env{
 				return entry;
 			}
 		}
-};
+};*/
 
 
 //all instructions
@@ -175,5 +175,9 @@ int main(){
 		cout << (*itr) << " ";
 	}
 	cout << "\n";
+	cout << "noOfInstructions = " << noOfInstructions << "\n";
+
+	map<string, SymbolTableEntry> symbolTable;
+	
 	return 0;
 }
