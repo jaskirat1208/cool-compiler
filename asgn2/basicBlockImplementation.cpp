@@ -20,48 +20,15 @@ class Instruction3AC {
 
 class SymbolTableEntry {
 	public:
-		int *position;
-		string type;		
+		string type;
+		string address;		
 };
-
-// taken from textbook page-112 section 2.7
-/*class Env{
-	public:
-		// string is used for storing lexeme
-		// each lexeme has certain data associated which goes in its value
-		map<string, SymbolTableEntry> symbolTable;
-		Env *prev;
-
-		Env(Env *prevTable){
-			prev = prevTable;
-		}
-
-		void insertLexeme(string lexeme, SymbolTableEntry values){
-			symbolTable.insert(std::pair<string, SymbolTableEntry>(lexeme, values));
-		}
-
-		SymbolTableEntry findLexeme(string lexeme){
-			SymbolTableEntry entry;
-
-			map<string, SymbolTableEntry>::iterator itr = symbolTable.find(lexeme);
-			if(itr==symbolTable.end()){
-				// not found here
-				while(prev!=NULL){
-					// trace back
-				}
-			} else {
-				// found 
-				entry = itr->second;
-				return entry;
-			}
-		}
-};*/
-
 
 //all instructions
 Instruction3AC instructions[100];
 int noOfInstructions = 0;
-
+map<string, SymbolTableEntry> symbolTable;
+	
 void loadData(){
 	ifstream infile("irSet.txt");
 	string line;
@@ -76,30 +43,59 @@ void loadData(){
 		getline(linestream,lineNo,',');	
 		getline(linestream,type,',');
 
-		if (type=="="){
+		if (type=="="){ 
 			type = "assignment";
 			op = "=";
 			getline(linestream,dest,',');
 			getline(linestream,in1,',');
+
+			SymbolTableEntry entry;
+			entry.type = "int";
+			symbolTable.insert(make_pair(dest, entry));
+			symbolTable.insert(make_pair(in1, entry));
 		} else if (type=="+" || type=="-" || type=="*" || type=="/"){
 			op = type;
 			type = "arithmetic";
 			getline(linestream,dest,',');
 			getline(linestream,in1,',');
-			getline(linestream,in2,',');			
+			getline(linestream,in2,',');	
+
+			SymbolTableEntry entry;
+			entry.type = "int";
+			symbolTable.insert(make_pair(dest, entry));
+			symbolTable.insert(make_pair(in1, entry));
+			symbolTable.insert(make_pair(in2, entry));		
 		} else if (type=="ifgoto"){
 			type = "conditional";
 			getline(linestream,op,',');
 			getline(linestream,in1,',');
 			getline(linestream,in2,',');
 			getline(linestream,target,',');
+
+			SymbolTableEntry entry;
+			entry.type = "int";
+			symbolTable.insert(make_pair(in1, entry));
+			symbolTable.insert(make_pair(in2, entry));
+			symbolTable.insert(make_pair(in2, entry));
 		} else if (type=="goto"){
 			type = "unconditional";
 			getline(linestream,target,',');
+
+			SymbolTableEntry entry;
+			entry.type = "label";
+			symbolTable.insert(make_pair(target, entry));
 		} else if (type=="call"){
 			getline(linestream,target,',');
+
+			SymbolTableEntry entry;
+			entry.type = "label";
+			symbolTable.insert(make_pair(target, entry));
 		} else if (type=="label"){
 			getline(linestream,dest,',');
+
+			SymbolTableEntry entry;
+			entry.type = "label";
+			symbolTable.insert(make_pair(dest, entry));
 		} else if (type=="print"){
 			getline(linestream,in1,',');
 		} else if (type=="ret"){
@@ -176,8 +172,11 @@ int main(){
 	}
 	cout << "\n";
 	cout << "noOfInstructions = " << noOfInstructions << "\n";
-
-	map<string, SymbolTableEntry> symbolTable;
-	
+	cout << "Symbol Table\n";
+	cout << "-----------------------\n";
+	for (map<string, SymbolTableEntry>::iterator it=symbolTable.begin(); it!=symbolTable.end(); ++it){
+		cout << it->first << " => " << (it->second).type << '\n';
+	}
+	cout << "-----------------------\n";
 	return 0;
 }
