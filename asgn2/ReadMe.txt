@@ -3,6 +3,7 @@ types:
 	arithmetic
 	conditional
 	unconditional
+	call
 	label
 	print
 	ret
