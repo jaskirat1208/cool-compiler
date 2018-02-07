@@ -21,7 +21,9 @@ enum InstrType {
 	ConditionalJump,
 	UnconditionalJump,
 	Procedure,
-	InstrLabel
+	InstrLabel,
+	Print,
+	Return
 };
 
 class SymbolTableEntry {
@@ -197,6 +199,8 @@ void loadData() {
 				dest = symbolTable.lookup(destStr);
 			}
 		} else if (typeStr == "print") {
+			type = Print;
+
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
@@ -206,7 +210,7 @@ void loadData() {
 				in1 = symbolTable.lookup(in1Str);
 			}
 		} else if (typeStr == "ret") {
-
+			type = Return;
 		}
 
 		stringstream ss(lineNo);
