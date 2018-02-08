@@ -22,8 +22,8 @@ enum InstrType {
 	UnconditionalJump,
 	Procedure,
 	InstrLabel,
-	Return,
-	Print
+	Print,
+	Return
 };
 
 class SymbolTableEntry {
