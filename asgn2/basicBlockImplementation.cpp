@@ -21,7 +21,9 @@ enum InstrType {
 	ConditionalJump,
 	UnconditionalJump,
 	Procedure,
-	InstrLabel
+	InstrLabel,
+	Return,
+	Print
 };
 
 class SymbolTableEntry {
@@ -58,7 +60,15 @@ class Instruction3AC {
 		int target;
 };
 
+// class BasicBlock {
+// 	Instruction3AC* instructions;
+// 	int numInstructions;
+// }
+
+// BasicBlock *basicBlocks;
+
 //all instructions
+// Instruction3AC* instructions = (Instruction3AC*)calloc(100, sizeof(Instruction3AC));
 Instruction3AC instructions[100];
 int noOfInstructions = 0;
 SymbolTable symbolTable;
@@ -134,7 +144,7 @@ void loadData() {
 			}
 		} else if (typeStr == "ifgoto") {
 			type = ConditionalJump;
-			
+
 			getline(linestream, op, ',');
 
 			getline(linestream, in1Str, ',');
@@ -197,6 +207,8 @@ void loadData() {
 				dest = symbolTable.lookup(destStr);
 			}
 		} else if (typeStr == "print") {
+			type = Print;
+			
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
@@ -206,7 +218,7 @@ void loadData() {
 				in1 = symbolTable.lookup(in1Str);
 			}
 		} else if (typeStr == "ret") {
-
+			type = Return;
 		}
 
 		stringstream ss(lineNo);
@@ -222,65 +234,72 @@ void loadData() {
 
 		noOfInstructions++;
 
-		cout << "lineNo = " << lineNo << " type = " << typeStr << " op = " << op << "\n";
-		cout << "dest = " << destStr << " in1 = " << in1Str << " in2 = " << in2Str << "\n";
+		cout << "lineNo = " << lineNo << " type = " << typeStr << " op = " << op << endl << endl;
+		cout << "dest = " << destStr << " in1 = " << in1Str << " in2 = " << in2Str << endl;
 	}
 }
 
-// int getTargetLabelLocation(string targetLabel) {
-// 	int i;
-// 	for(i = 0; i < noOfInstructions; i++) {
-// 		if(instructions[i].type == Label) {
-// 			if(instructions[i].dest == targetLabel) {
-// 				return instructions[i].lineNo;
-// 			}
-// 		}	
-// 	}
-// 	return -1;
-// }
+int getTargetLabelLocation(SymbolTableEntry* label) {
+	int i;
+	for(i = 0; i < noOfInstructions; i++) {
+		if(instructions[i].type == InstrLabel) {
+			if(instructions[i].dest == label) {
+				return instructions[i].lineNo;
+			}
+		}
+	}
+	return -1;
+}
 
 int main() {
 	loadData();
-	// int n = noOfInstructions;
-	// int i;
-	// // algo for leaders from textbook pageNo-549 section 8.4.1 Basic Blocks
-	// set<int> leaders;
-	// leaders.insert(1);// first instruction always a leader
+	int n = noOfInstructions;
+	int i;
+	// algo for leaders from textbook pageNo-549 section 8.4.1 Basic Blocks
+	set<int> leaders;
+	leaders.insert(1);// first instruction always a leader
 
-	// // assuming lines have numbers 1-indexed
+	// assuming lines have numbers 1-indexed
 
-	// for(i = 1; i < n; i++) {
-	// 	if(instructions[i].instrType == "unconditional") {
-	// 		cout << "lineNo = " << i+1 << "\n";
-	// 		int t1 = getTargetLabelLocation(instructions[i].target);
-	// 		leaders.insert(t1);
-	// 		leaders.insert(i+2);
-	// 		cout << "made leaders = " << t1 << ", " << i+2 << "\n";
-	// 	}
-	// 	if(instructions[i].instrType=="conditional") {
-	// 		stringstream ss(instructions[i].target);
-	// 	    int num = 0;
-	// 	    ss >> num;
-	// 	    cout << "lineNo = " << i+1 << "\n";
-	// 		leaders.insert(num);
-	// 		leaders.insert(i+2);
-	// 		cout << "made leaders = " << num << ", " << i+2 << "\n";
-	// 	}
-	// 	if(instructions[i].instrType=="call") {
-	// 		cout << "lineNo = " << i+1 << "\n";
-	// 		int t1 = getTargetLabelLocation(instructions[i].target);
-	// 		leaders.insert(t1);
-	// 		cout << "made leader = " << t1 << "\n";
-	// 	}
-	// }
+	for(i = 1; i < n; i++) {
+		if(instructions[i].type == UnconditionalJump || instructions[i].type == ConditionalJump) {
+			cout << "lineNo = " << i+1 << "\n";
+			int t1 = getTargetLabelLocation(instructions[i].dest);
+			if (t1 != -1) {
+				leaders.insert(t1);
+			}
+			if (i+2 <= n) {
+				leaders.insert(i+2);
+			}
+			cout << "made leaders = " << t1 << ", " << i+2 << "\n";
+		}
+		// if(instructions[i].type == ConditionalJump) {
+		// 	stringstream ss(instructions[i].target);
+		//     int num = 0;
+		//     ss >> num;
+		//     cout << "lineNo = " << i+1 << "\n";
+		// 	leaders.insert(num);
+		// 	leaders.insert(i+2);
+		// 	cout << "made leaders = " << num << ", " << i+2 << "\n";
+		// }
+		if(instructions[i].type == Procedure) {
+			cout << "lineNo = " << i+1 << "\n";
+			int t1 = getTargetLabelLocation(instructions[i].dest);
+			if (t1 != -1) {
+				leaders.insert(t1);
+			}
+			leaders.insert(i+1);
+			cout << "made leader = " << t1 << ", " << i+1 << "\n";
+		}
+	}
 
-	// set<int>::iterator itr = leaders.begin();
-	// cout << "All leaders are:\n";
-	// for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
-	// 	cout << (*itr) << " ";
-	// }
-	// cout << "\n";
-	// cout << "noOfInstructions = " << noOfInstructions << "\n";
+	set<int>::iterator itr = leaders.begin();
+	cout << "All leaders are:\n";
+	for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
+		cout << (*itr) << " ";
+	}
+	cout << "\n";
+	cout << "noOfInstructions = " << noOfInstructions << "\n";
 	// cout << "Symbol Table\n";
 	// cout << "-----------------------\n";
 	// for (unordered_map<string, SymbolTableEntry>::iterator it=symbolTable.begin(); it!=symbolTable.end(); ++it){
