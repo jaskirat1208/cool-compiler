@@ -208,7 +208,7 @@ void loadData() {
 			}
 		} else if (typeStr == "print") {
 			type = Print;
-			
+
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
@@ -250,7 +250,27 @@ int getTargetLabelLocation(SymbolTableEntry* label) {
 	}
 	return -1;
 }
+//1 register should be kept free so that both memory instruction constraint can be resolved.
+int regs[16];		//16 registers: %rax	%rbx	%rcx	%rdx	%rsi	%rdi	%rbp	%rsp	%r8	%r9	%r10	%r11	%r12	%r13	%r14	%r15
+void allocate_register(Instruction3AC instr){
 
+	if(instr.type == Copy || instr.type == AssignUnaryOp){
+		//run the heuristic: if input is constant : allocate an empty register
+		//else: if the input y is not used again, allocate the register of y for the input
+		//else: if y is used again, allocate an empty register
+		//else: if no empty register, swap the register whose corresponding variable has farthest next use
+		//else: allocate a memory unit for x
+
+	}
+	else if(instr.type == AssignBinaryOp ){
+		//run the heuristic: if input1 and input2 is constant, allocate an empty register
+		//else: if input1 is not used again, allocate reg(input1) for reg(x)
+		//else: if input2 is not used again, allocate reg(input2) for reg(x)
+		//else: if inputs are used again, allocate an empty register for x
+		//else: if no empty register, swap the register whose corresponding variable has farthest next use
+		//else: allocate a memory unit for x
+	}
+}
 int main() {
 	loadData();
 	int n = noOfInstructions;
