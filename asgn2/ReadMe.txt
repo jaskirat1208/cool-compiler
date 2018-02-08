@@ -2,7 +2,7 @@ types:
 	assignment
 	arithmetic
 	conditional
-	unconditional
+	unconditional // goto
 	call
 	label
 	print
