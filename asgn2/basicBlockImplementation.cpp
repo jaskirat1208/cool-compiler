@@ -8,7 +8,8 @@ void loadData() {
 	while(getline(infile, line)) {
 		stringstream linestream(line);
 
-		string lineNo = "NIL", typeStr = "NIL", destStr = "NIL", in1Str = "NIL", in2Str = "NIL";
+		string lineNo = "NIL", typeStr = "NIL", destStr = "NIL", in1Str = "NIL",
+						in2Str = "NIL";
 		InstrType type;
 		Operator op;
 		SymbolTableEntry *in1, *in2, *dest;
@@ -114,7 +115,8 @@ void loadData() {
 			} else {
 				in2 = symbolTable.lookup(in2Str);
 			}
-		} else if (typeStr == "+" || typeStr == "-" || typeStr == "*" || typeStr == "/") {
+		} else if (typeStr == "+" || typeStr == "-" || typeStr == "*" ||
+				   typeStr == "/") {
 			type = AssignBinaryOp;
 			op = typeStr;
 
@@ -266,8 +268,8 @@ void loadData() {
 
 		noOfInstructions++;
 
-		cout << "lineNo = " << lineNo << " type = " << typeStr << " op = " << op << endl << endl;
-		cout << "dest = " << destStr << " in1 = " << in1Str << " in2 = " << in2Str << endl;
+		cout << "lineNo : " << lineNo << ", type : " << typeStr << ", op : " << op << endl;
+		cout << "dest : " << destStr << ", in1 : " << in1Str << ", in2 : " << in2Str << endl << endl;
 	}
 }
 
@@ -324,9 +326,6 @@ void findLeaders() {
 
 }
 
-
-//1 register should be kept free so that both memory instruction constraint can be resolved.
-int registerDescriptor[16];		//16 registers: %rax	%rbx	%rcx	%rdx	%rsi	%rdi	%rbp	%rsp	%r8	%r9	%r10	%r11	%r12	%r13	%r14	%r15
 void allocate_register(Instruction3AC instr) {
 
 	if(instr.type == Copy || instr.type == AssignUnaryOp){
@@ -389,12 +388,8 @@ int main() {
 
 	findLeaders();
 
-	set<int>::iterator itr = leaders.begin();
 	cout << "All leaders are:\n";
-	for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
-		cout << (*itr) << " ";
-	}
-	cout << endl;
+	printSet(leaders);
 
 	noOfBasicBlocks = leaders.size();
 

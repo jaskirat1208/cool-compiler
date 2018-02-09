@@ -4,3 +4,11 @@ bool isNum(char a) {
 	}
 	return false;
 }
+
+void printSet(set<int> s) {
+	set<int>::iterator itr = leaders.begin();
+	for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
+		cout << (*itr) << " ";
+	}
+	cout << endl;
+}

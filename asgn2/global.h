@@ -26,6 +26,14 @@ enum InstrType {
 	Return
 };
 
+// enumeration of types of available registers for use in each basic block
+enum Register {
+	RAX, RBX, RCX, RDX,
+	RSI, RDI, RBP, RSP,
+	R8,  R9,  R10, R11,
+	R12, R13, R14, R15
+};
+
 // The following class defines structure of Symbol Table Entry
 class SymbolTableEntry {
 	public:
@@ -42,7 +50,7 @@ class SymbolTable {
 		unordered_map<string, SymbolTableEntry*> table;
 	public :
 		void insert(string s, SymbolTableEntry* t) {
-			table.insert(make_pair(s, t));
+			table[s] = t;
 		}
 
 		SymbolTableEntry* lookup(string s) {
@@ -52,12 +60,51 @@ class SymbolTable {
 			}
 			return NULL;
 		}
+
 		void initIsLiveAndNextUse() {
 			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
 			for (; i != table.end(); ++i) {
 				i->second->isLive = true;
 				i->second->nextUse = -1;
 			}
+		}
+};
+
+// The following class defines the structure of Register Descriptor
+class RegisterDescriptor {
+	private :
+		map<Register, SymbolTableEntry*> table;
+	public :
+		RegisterDescriptor() {
+			// initializing all register mapping to NULL
+			modify(RAX, NULL);
+			modify(RBX, NULL);
+			modify(RCX, NULL);
+			modify(RDX, NULL);
+			modify(RSI, NULL);
+			modify(RDI, NULL);
+			modify(RBP, NULL);
+			modify(RSP, NULL);
+			modify(R8, NULL);
+			modify(R9, NULL);
+			modify(R10, NULL);
+			modify(R11, NULL);
+			modify(R12, NULL);
+			modify(R13, NULL);
+			modify(R14, NULL);
+			modify(R15, NULL);
+		}
+
+		SymbolTableEntry* lookup(Register r) {
+			map<Register, SymbolTableEntry*>::iterator i = table.find(r);
+			if (i != table.end()) {
+				return i->second;
+			}
+			return NULL;
+		}
+
+		void modify(Register r, SymbolTableEntry* t) {
+			table[r] = t;
 		}
 };
 
@@ -102,3 +149,6 @@ SymbolTable symbolTable;
 
 // declaration of leaders
 set<int> leaders;
+
+// definition of register descriptor
+RegisterDescriptor registerDescriptor;
