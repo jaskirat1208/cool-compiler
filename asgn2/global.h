@@ -13,9 +13,10 @@ enum VarType {
 
 // enumeration of instruction type
 enum InstrType {
-	Copy,
-	IndexedCopy,
-	AssignBinaryOp,
+	Copy, // x = y
+	IndexedCopyGet, // x = y[i] .... 1,get,x,y,i
+	IndexedCopyPut, // x[i] = y .... 2,put,x,i,y
+	AssignBinaryOp, // a = b `op` c .... 3,op,a,b,c
 	AssignUnaryOp,
 	ConditionalJump,
 	UnconditionalJump,

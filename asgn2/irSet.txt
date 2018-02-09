@@ -8,3 +8,5 @@
 8,label,foo
 9,print,a
 10,ret
+11,put,v,i,w
+12,get,x,y,i
