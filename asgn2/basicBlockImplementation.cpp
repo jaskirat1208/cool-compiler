@@ -30,6 +30,8 @@ class SymbolTableEntry {
 	public:
 		VarType type;
 		string address;
+		bool isLive;
+		int nextUse;
 };
 
 class SymbolTable {
@@ -47,6 +49,13 @@ class SymbolTable {
 			}
 			return NULL;
 		}
+		void initIsLiveAndNextUse() {
+			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
+			for (; i != table.end(); ++i) {
+				i->second->isLive = true;
+				i->second->nextUse = -1;
+			}
+		}
 };
 
 class Instruction3AC {
@@ -58,14 +67,20 @@ class Instruction3AC {
 		SymbolTableEntry* in2;
 		SymbolTableEntry* dest;
 		int target;
+		bool in1IsLive;
+		bool in2IsLive;
+		bool destIsLive;
+		int in1NextUse;
+		int in2NextUse;
+		int destNextUse;
 };
 
 class BasicBlock {
 	public :
 		Instruction3AC* instructions;
 		int numInstructions;
-		// BasicBlock ifTrueNextBB;
-		// BasicBlock ifFalseNextBB;
+		// BasicBlock* ifTrueNextBB;
+		// BasicBlock* ifFalseNextBB;
 		int labelBB;
 };
 
@@ -79,6 +94,9 @@ int noOfInstructions = 0;
 
 // declaration of symbol table
 SymbolTable symbolTable;
+
+// declaration of leaders
+set<int> leaders;
 
 void loadData() {
 	ifstream infile("irSet.txt");
@@ -252,8 +270,7 @@ void loadData() {
 }
 
 int getTargetLabelLocation(SymbolTableEntry* label) {
-	int i;
-	for(i = 0; i < noOfInstructions; i++) {
+	for(int i = 0; i < noOfInstructions; i++) {
 		if(instructions[i].type == InstrLabel) {
 			if(instructions[i].dest == label) {
 				return instructions[i].lineNo;
@@ -262,6 +279,50 @@ int getTargetLabelLocation(SymbolTableEntry* label) {
 	}
 	return -1;
 }
+
+void findLeaders() {
+	// first instruction is always a leader
+	leaders.insert(1);
+
+	for (int i = 1; i < noOfInstructions; i++) {
+		
+		if(instructions[i].type == UnconditionalJump || instructions[i].type == ConditionalJump) {
+			// cout << "lineNo = " << i+1 << "\n";
+			int t1 = getTargetLabelLocation(instructions[i].dest);
+			if (t1 != -1) {
+				leaders.insert(t1);
+			}
+			if (i+2 <= noOfInstructions) {
+				leaders.insert(i+2);
+			}
+			// cout << "made leaders = " << t1 << ", " << i+2 << "\n";
+		}
+
+		if (instructions[i].type == Procedure) {
+			// cout << "lineNo = " << i+1 << "\n";
+			int t1 = getTargetLabelLocation(instructions[i].dest);
+			if (t1 != -1) {
+				leaders.insert(t1);
+			}
+			if (i+2 <= noOfInstructions) {
+				leaders.insert(i+2);
+			}
+			// cout << "made leader = " << t1 << ", " << i+2 << "\n";
+		}
+
+		if (instructions[i].type == Return) {
+			// cout << "lineNo = " << i+1 << "\n";
+			if (i+2 <= noOfInstructions) {
+				leaders.insert(i+2);
+			}
+			// cout << "made leader = " << ", " << i+2 << "\n";
+		}
+
+	}
+
+}
+
+
 //1 register should be kept free so that both memory instruction constraint can be resolved.
 int regs[16];		//16 registers: %rax	%rbx	%rcx	%rdx	%rsi	%rdi	%rbp	%rsp	%r8	%r9	%r10	%r11	%r12	%r13	%r14	%r15
 void allocate_register(Instruction3AC instr){
@@ -283,67 +344,10 @@ void allocate_register(Instruction3AC instr){
 		//else: allocate a memory unit for x
 	}
 }
-int main() {
-	loadData();
-	int n = noOfInstructions;
-	int i;
-	// algo for leaders from textbook pageNo-549 section 8.4.1 Basic Blocks
-	set<int> leaders;
-	leaders.insert(1);// first instruction always a leader
 
-	// assuming lines have numbers 1-indexed
-
-	for (i = 1; i < n; i++) {
-		if(instructions[i].type == UnconditionalJump || instructions[i].type == ConditionalJump) {
-			cout << "lineNo = " << i+1 << "\n";
-			int t1 = getTargetLabelLocation(instructions[i].dest);
-			if (t1 != -1) {
-				leaders.insert(t1);
-			}
-			if (i+2 <= n) {
-				leaders.insert(i+2);
-			}
-			cout << "made leaders = " << t1 << ", " << i+2 << "\n";
-		}
-		// if(instructions[i].type == ConditionalJump) {
-		// 	stringstream ss(instructions[i].target);
-		//     int num = 0;
-		//     ss >> num;
-		//     cout << "lineNo = " << i+1 << "\n";
-		// 	leaders.insert(num);
-		// 	leaders.insert(i+2);
-		// 	cout << "made leaders = " << num << ", " << i+2 << "\n";
-		// }
-		if (instructions[i].type == Procedure) {
-			cout << "lineNo = " << i+1 << "\n";
-			int t1 = getTargetLabelLocation(instructions[i].dest);
-			if (t1 != -1) {
-				leaders.insert(t1);
-			}
-			leaders.insert(i+1);
-			cout << "made leader = " << t1 << ", " << i+1 << "\n";
-		}
-	}
-
-	set<int>::iterator itr = leaders.begin(), itr1;
-	cout << "All leaders are:\n";
-	for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
-		cout << (*itr) << " ";
-	}
-	cout << "\n";
-	cout << "noOfInstructions = " << noOfInstructions << "\n";
-	// cout << "Symbol Table\n";
-	// cout << "-----------------------\n";
-	// for (unordered_map<string, SymbolTableEntry>::iterator it=symbolTable.begin(); it!=symbolTable.end(); ++it){
-	// 	cout << it->first << " => " << (it->second).type << '\n';
-	// }
-	// cout << "-----------------------\n";
-
-	noOfBasicBlocks = leaders.size();
-	// basicBlocks = (BasicBlock*)calloc(noOfBasicBlocks, sizeof(BasicBlock));
-
-	for (i = 0, itr = leaders.begin(), itr1 = ++leaders.begin(); i < noOfBasicBlocks && itr != leaders.end(); i++, ++itr, ++itr1) {
-		// cout << *itr;
+void assignBasicBlocks() {
+	set<int>::iterator itr = leaders.begin(), itr1 = ++leaders.begin();
+	for (int i = 0; i < noOfBasicBlocks && itr != leaders.end(); i++, ++itr, ++itr1) {
 		basicBlocks[i].instructions = instructions + (*itr) - 1;
 		basicBlocks[i].labelBB = i;
 		if (i < noOfBasicBlocks-1) {
@@ -351,9 +355,50 @@ int main() {
 		} else {
 			basicBlocks[i].numInstructions = noOfInstructions + 1- *itr;
 		}
-		// cout << basicBlocks[i].numInstructions << endl;
-		// cout << basicBlocks[i].instructions[0].type << endl;
 	}
+}
+
+void assignIsLiveAndNextUseEachBB() {
+	for (int i = 0; i < noOfBasicBlocks; i++) {
+		Instruction3AC* currentBB = basicBlocks[i].instructions;
+		int lenCurrentBB = basicBlocks[i].numInstructions;
+		symbolTable.initIsLiveAndNextUse();
+		for (int j = lenCurrentBB-1; j >= 0; j--) {
+			currentBB[j].in1IsLive = currentBB[j].in1->isLive;
+			currentBB[j].in2IsLive = currentBB[j].in1->isLive;
+			currentBB[j].destIsLive = currentBB[j].in1->isLive;
+			currentBB[j].in1NextUse = currentBB[j].in1->nextUse;
+			currentBB[j].in2NextUse = currentBB[j].in1->nextUse;
+			currentBB[j].destNextUse = currentBB[j].in1->nextUse;
+
+			// updations of liveliness and next use of in1, in2 and dest
+			currentBB[j].dest->isLive = false;
+			currentBB[j].dest->nextUse = -1;
+			currentBB[j].in1->isLive = true;
+			currentBB[j].in1->nextUse = j;
+			currentBB[j].in2->isLive = true;
+			currentBB[j].in2->nextUse = j;
+		}
+	}
+}
+
+int main() {
+	loadData();
+
+	findLeaders();
+
+	set<int>::iterator itr = leaders.begin();
+	cout << "All leaders are:\n";
+	for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
+		cout << (*itr) << " ";
+	}
+	cout << endl;
+
+	noOfBasicBlocks = leaders.size();
+
+	assignBasicBlocks();
+
+	assignIsLiveAndNextUseEachBB();
 
 	return 0;
 }
