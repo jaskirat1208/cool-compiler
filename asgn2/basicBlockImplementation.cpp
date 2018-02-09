@@ -1,98 +1,4 @@
-#include <bits/stdc++.h>
-
-using namespace std;
-
-typedef string Operator;
-
-enum VarType {
-	Int,
-	VarLabel
-};
-
-enum InstrType {
-	Copy,
-	IndexedCopy,
-	AssignBinaryOp,
-	AssignUnaryOp,
-	ConditionalJump,
-	UnconditionalJump,
-	Procedure,
-	InstrLabel,
-	Print,
-	Return
-};
-
-class SymbolTableEntry {
-	public:
-		VarType type;
-		string address;
-		bool isLive;
-		int nextUse;
-};
-
-class SymbolTable {
-	private :
-		unordered_map<string, SymbolTableEntry*> table;
-	public :
-		void insert(string s, SymbolTableEntry* t) {
-			table.insert(make_pair(s, t));
-		}
-
-		SymbolTableEntry* lookup(string s) {
-			unordered_map<string, SymbolTableEntry*>::iterator i = table.find(s);
-			if (i != table.end()) {
-				return i->second;
-			}
-			return NULL;
-		}
-		void initIsLiveAndNextUse() {
-			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
-			for (; i != table.end(); ++i) {
-				i->second->isLive = true;
-				i->second->nextUse = -1;
-			}
-		}
-};
-
-class Instruction3AC {
-	public:
-		int lineNo;
-		InstrType type;
-		Operator op;
-		SymbolTableEntry* in1;
-		SymbolTableEntry* in2;
-		SymbolTableEntry* dest;
-		int target;
-		bool in1IsLive;
-		bool in2IsLive;
-		bool destIsLive;
-		int in1NextUse;
-		int in2NextUse;
-		int destNextUse;
-};
-
-class BasicBlock {
-	public :
-		Instruction3AC* instructions;
-		int numInstructions;
-		// BasicBlock* ifTrueNextBB;
-		// BasicBlock* ifFalseNextBB;
-		int labelBB;
-};
-
-// declaration of basic blocks
-BasicBlock basicBlocks[100];
-int noOfBasicBlocks = 0;
-
-// all instructions
-Instruction3AC instructions[100];
-int noOfInstructions = 0;
-
-// declaration of symbol table
-SymbolTable symbolTable;
-
-// declaration of leaders
-set<int> leaders;
+#include "global.h"
 
 void loadData() {
 	ifstream infile("irSet.txt");
@@ -321,7 +227,7 @@ void findLeaders() {
 
 //1 register should be kept free so that both memory instruction constraint can be resolved.
 int regs[16];		//16 registers: %rax	%rbx	%rcx	%rdx	%rsi	%rdi	%rbp	%rsp	%r8	%r9	%r10	%r11	%r12	%r13	%r14	%r15
-void allocate_register(Instruction3AC instr){
+void allocate_register(Instruction3AC instr) {
 
 	if(instr.type == Copy || instr.type == AssignUnaryOp){
 		//run the heuristic: if input is constant : allocate an empty register
