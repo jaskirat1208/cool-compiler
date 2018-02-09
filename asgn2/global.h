@@ -6,8 +6,9 @@ typedef string Operator;
 
 // enumeration of variable type
 enum VarType {
-	Int,
-	VarLabel
+	VarInt,
+	VarLabel,
+	ConstInt
 };
 
 // enumeration of instruction type
@@ -29,6 +30,7 @@ class SymbolTableEntry {
 	public:
 		VarType type;
 		string address;
+		int value; // stores the value if the in1 or in2 are constants
 		bool isLive;
 		int nextUse;
 };

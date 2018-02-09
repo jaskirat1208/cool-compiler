@@ -1,4 +1,5 @@
 #include "global.h"
+#include "helper.cpp"
 
 void loadData() {
 	ifstream infile("irSet.txt");
@@ -25,7 +26,7 @@ void loadData() {
 			getline(linestream, destStr, ',');
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
-				dest->type = Int;
+				dest->type = VarInt;
 				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
@@ -34,7 +35,12 @@ void loadData() {
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
-				in1->type = Int;
+				if (isNum(in1Str[0])) {
+					in1->type = ConstInt;
+					in1->value = stoi(in1Str);
+				} else {
+					in1->type = VarInt;
+				}
 				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
@@ -46,7 +52,7 @@ void loadData() {
 			getline(linestream, destStr, ',');
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
-				dest->type = Int;
+				dest->type = VarInt;
 				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
@@ -55,7 +61,12 @@ void loadData() {
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
-				in1->type = Int;
+				if (isNum(in1Str[0])) {
+					in1->type = ConstInt;
+					in1->value = stoi(in1Str);
+				} else {
+					in1->type = VarInt;
+				}
 				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
@@ -68,7 +79,12 @@ void loadData() {
 			} else {
 				if (symbolTable.lookup(in2Str) == NULL) {
 					symbolTable.insert(in2Str, in2);
-					in2->type = Int;
+					if (isNum(in2Str[0])) {
+						in2->type = ConstInt;
+					in2->value = stoi(in2Str);
+					} else {
+						in2->type = VarInt;
+					}
 					in2->address = in2Str;
 				} else {
 					in2 = symbolTable.lookup(in2Str);
@@ -82,7 +98,12 @@ void loadData() {
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
-				in1->type = Int;
+				if (isNum(in1Str[0])) {
+					in1->type = ConstInt;
+					in1->value = stoi(in1Str);
+				} else {
+					in1->type = VarInt;
+				}
 				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
@@ -91,7 +112,12 @@ void loadData() {
 			getline(linestream, in2Str, ',');
 			if (symbolTable.lookup(in2Str) == NULL) {
 				symbolTable.insert(in2Str, in2);
-				in2->type = Int;
+				if (isNum(in2Str[0])) {
+					in2->type = ConstInt;
+					in2->value = stoi(in2Str);
+				} else {
+					in2->type = VarInt;
+				}
 				in2->address = in2Str;
 			} else {
 				in2 = symbolTable.lookup(in2Str);
@@ -101,7 +127,7 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				// dest->address = destStr;
+				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -112,7 +138,7 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				// dest->address = destStr;
+				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -123,7 +149,7 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				// dest->address = destStr;
+				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -134,7 +160,7 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				// dest->address = destStr;
+				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -144,7 +170,12 @@ void loadData() {
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
-				in1->type = Int;
+				if (isNum(in1Str[0])) {
+					in1->type = ConstInt;
+					in1->value = stoi(in1Str);
+				} else {
+					in1->type = VarInt;
+				}
 				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
@@ -226,7 +257,7 @@ void findLeaders() {
 
 
 //1 register should be kept free so that both memory instruction constraint can be resolved.
-int regs[16];		//16 registers: %rax	%rbx	%rcx	%rdx	%rsi	%rdi	%rbp	%rsp	%r8	%r9	%r10	%r11	%r12	%r13	%r14	%r15
+int registerDescriptor[16];		//16 registers: %rax	%rbx	%rcx	%rdx	%rsi	%rdi	%rbp	%rsp	%r8	%r9	%r10	%r11	%r12	%r13	%r14	%r15
 void allocate_register(Instruction3AC instr) {
 
 	if(instr.type == Copy || instr.type == AssignUnaryOp){
