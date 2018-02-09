@@ -60,17 +60,24 @@ class Instruction3AC {
 		int target;
 };
 
-// class BasicBlock {
-// 	Instruction3AC* instructions;
-// 	int numInstructions;
-// }
+class BasicBlock {
+	public :
+		Instruction3AC* instructions;
+		int numInstructions;
+		// BasicBlock ifTrueNextBB;
+		// BasicBlock ifFalseNextBB;
+		int labelBB;
+};
 
-// BasicBlock *basicBlocks;
+// declaration of basic blocks
+BasicBlock basicBlocks[100];
+int noOfBasicBlocks = 0;
 
-//all instructions
-// Instruction3AC* instructions = (Instruction3AC*)calloc(100, sizeof(Instruction3AC));
+// all instructions
 Instruction3AC instructions[100];
 int noOfInstructions = 0;
+
+// declaration of symbol table
 SymbolTable symbolTable;
 
 void loadData() {
@@ -135,12 +142,17 @@ void loadData() {
 			}
 
 			getline(linestream, in2Str, ',');
-			if (symbolTable.lookup(in2Str) == NULL) {
-				symbolTable.insert(in2Str, in2);
-				in2->type = Int;
-				in2->address = in2Str;
+			// takes care of the unary operations
+			if (in2Str == "") {
+				type = AssignUnaryOp;
 			} else {
-				in2 = symbolTable.lookup(in2Str);
+				if (symbolTable.lookup(in2Str) == NULL) {
+					symbolTable.insert(in2Str, in2);
+					in2->type = Int;
+					in2->address = in2Str;
+				} else {
+					in2 = symbolTable.lookup(in2Str);
+				}
 			}
 		} else if (typeStr == "ifgoto") {
 			type = ConditionalJump;
@@ -281,7 +293,7 @@ int main() {
 
 	// assuming lines have numbers 1-indexed
 
-	for(i = 1; i < n; i++) {
+	for (i = 1; i < n; i++) {
 		if(instructions[i].type == UnconditionalJump || instructions[i].type == ConditionalJump) {
 			cout << "lineNo = " << i+1 << "\n";
 			int t1 = getTargetLabelLocation(instructions[i].dest);
@@ -302,7 +314,7 @@ int main() {
 		// 	leaders.insert(i+2);
 		// 	cout << "made leaders = " << num << ", " << i+2 << "\n";
 		// }
-		if(instructions[i].type == Procedure) {
+		if (instructions[i].type == Procedure) {
 			cout << "lineNo = " << i+1 << "\n";
 			int t1 = getTargetLabelLocation(instructions[i].dest);
 			if (t1 != -1) {
@@ -313,7 +325,7 @@ int main() {
 		}
 	}
 
-	set<int>::iterator itr = leaders.begin();
+	set<int>::iterator itr = leaders.begin(), itr1;
 	cout << "All leaders are:\n";
 	for(itr = leaders.begin(); itr != leaders.end(); ++itr) {
 		cout << (*itr) << " ";
@@ -326,5 +338,22 @@ int main() {
 	// 	cout << it->first << " => " << (it->second).type << '\n';
 	// }
 	// cout << "-----------------------\n";
+
+	noOfBasicBlocks = leaders.size();
+	// basicBlocks = (BasicBlock*)calloc(noOfBasicBlocks, sizeof(BasicBlock));
+
+	for (i = 0, itr = leaders.begin(), itr1 = ++leaders.begin(); i < noOfBasicBlocks && itr != leaders.end(); i++, ++itr, ++itr1) {
+		// cout << *itr;
+		basicBlocks[i].instructions = instructions + (*itr) - 1;
+		basicBlocks[i].labelBB = i;
+		if (i < noOfBasicBlocks-1) {
+			basicBlocks[i].numInstructions = *itr1 - *itr;
+		} else {
+			basicBlocks[i].numInstructions = noOfInstructions + 1- *itr;
+		}
+		// cout << basicBlocks[i].numInstructions << endl;
+		// cout << basicBlocks[i].instructions[0].type << endl;
+	}
+
 	return 0;
 }
