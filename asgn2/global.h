@@ -80,6 +80,17 @@ class SymbolTable {
 				i->second->nextUse = -1;
 			}
 		}
+
+		vector<string> printTable(){
+			vector<string> variableNames;
+			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
+			for (; i != table.end(); ++i) {
+				if (i->second->type == VarInt) {
+					variableNames.push_back(i->first);
+				}
+			}
+			return variableNames;
+		}
 };
 
 // The following class defines the structure of Register Descriptor

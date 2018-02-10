@@ -1,6 +1,3 @@
-// this is intel version (not the AT&T version)
-// differs slightly only in naming conventions like mov->movl
-// refer to this link http://www.imada.sdu.dk/Courses/DM18/Litteratur/IntelnATT.htm for details
 ofstream myfile;
 
 void allocateRegister(Instruction3AC* instr) {
@@ -50,6 +47,10 @@ void translate() {
 	myfile << "extern\tprintf\n";
 	myfile << "SECTION\t.data\n";
 	// here we can add all variables from symbolTable
+	vector<string> variableNames = symbolTable.printTable();
+	for(int i = 0; i < variableNames.size(); i++){
+		myfile << "\t" << variableNames[i] << ":\t.quad 0\n";
+	}
 
 	myfile << "SECTION\t.text\n";
 	myfile << ".globl main\n";

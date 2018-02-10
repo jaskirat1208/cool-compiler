@@ -329,11 +329,11 @@ void assignIsLiveAndNextUseEachBB() {
 		symbolTable.initIsLiveAndNextUse();
 		for (int j = lenCurrentBB-1; j >= 0; j--) {
 			currentBB[j].in1IsLive = currentBB[j].in1->isLive;
-			currentBB[j].in2IsLive = currentBB[j].in1->isLive;
-			currentBB[j].destIsLive = currentBB[j].in1->isLive;
+			currentBB[j].in2IsLive = currentBB[j].in2->isLive;
+			currentBB[j].destIsLive = currentBB[j].dest->isLive;
 			currentBB[j].in1NextUse = currentBB[j].in1->nextUse;
-			currentBB[j].in2NextUse = currentBB[j].in1->nextUse;
-			currentBB[j].destNextUse = currentBB[j].in1->nextUse;
+			currentBB[j].in2NextUse = currentBB[j].in2->nextUse;
+			currentBB[j].destNextUse = currentBB[j].dest->nextUse;
 
 			// updations of liveliness and next use of in1, in2 and dest
 			currentBB[j].dest->isLive = false;
