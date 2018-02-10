@@ -40,7 +40,7 @@ enum Register {
 // register address, memory address, stack address
 class AddressType {
 	public :
-		Register reg;
+		Register reg = NoReg;
 		Memory mem;
 		// something for stack, not yet implemented
 };
@@ -62,6 +62,7 @@ class SymbolTable {
 	public :
 		void insert(string s, SymbolTableEntry* t) {
 			table[s] = t;
+			t->address.mem = s;
 		}
 
 		SymbolTableEntry* lookup(string s) {
@@ -118,6 +119,9 @@ class RegisterDescriptor {
 
 		void modify(Register r, SymbolTableEntry* t) {
 			table[r] = t;
+			if (t != NULL) {
+				t->address.reg = r;
+			}
 		}
 
 		Register findEmptyRegister() {
@@ -128,19 +132,11 @@ class RegisterDescriptor {
 			}
 			return NoReg;
 		}
-		Register selectRegisterFor(SymbolTableEntry* s1){
-			// complete it -> flush register to memory
-			for(i=table.begin();i!=table.end();i++){
-				if(i->second==s1 && i->first!=NoReg){
-					return i->first;
-				}
-			}
-			return NoReg;
-		}
-		Register getFarthestNextUseRegister(){
+
+		Register getFarthestNextUseRegister() {
 			int maxNextUse = -1;
 			Register maxNextUseRegister = NoReg;
-			for(i=table.begin();i!=table.end();i++){
+			for(i = table.begin();i != table.end(); i++){
 				if(i->second->nextUse > maxNextUse){
 					maxNextUse = i->second->nextUse;
 					maxNextUseRegister = i->first;

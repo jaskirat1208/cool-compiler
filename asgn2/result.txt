@@ -1,0 +1,24 @@
+extern	printf
+SECTION	.data
+SECTION	.text
+.globl main
+main:
+format:
+	db "%d", 10, 0
+	mov %RAX, %RAX
+%RAX:
+	mov %RAX, %RAX
+	mov %RAX, %RAX
+	add %RAX, %RAX
+	cmp %RAX, %RAX
+	call %RAX
+	ret
+%RAX:
+	mov format, rdi
+	mov %RAX, rsi
+	xor rax, rax
+	call printf
+	pop rcx
+	pop rax
+	ret
+	ret
