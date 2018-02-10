@@ -8,6 +8,7 @@ typedef string Memory;
 // enumeration of variable type
 enum VarType {
 	VarInt,
+	VarArrInt,
 	VarLabel,
 	ConstInt
 };
@@ -81,11 +82,21 @@ class SymbolTable {
 			}
 		}
 
-		vector<string> printTable(){
+		vector<string> printTableInts(){
 			vector<string> variableNames;
 			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
 			for (; i != table.end(); ++i) {
 				if (i->second->type == VarInt) {
+					variableNames.push_back(i->first);
+				}
+			}
+			return variableNames;
+		}
+		vector<string> printTableArr(){
+			vector<string> variableNames;
+			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
+			for (; i != table.end(); ++i) {
+				if (i->second->type == VarArrInt) {
 					variableNames.push_back(i->first);
 				}
 			}

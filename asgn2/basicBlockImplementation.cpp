@@ -60,7 +60,7 @@ void loadData() {
 			getline(linestream, in1Str, ',');
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
-				in1->type = VarInt;
+				in1->type = VarArrInt;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
@@ -84,7 +84,7 @@ void loadData() {
 			getline(linestream, destStr, ',');
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
-				dest->type = VarInt;
+				dest->type = VarArrInt;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}

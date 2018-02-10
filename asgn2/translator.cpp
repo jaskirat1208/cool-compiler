@@ -47,9 +47,13 @@ void translate() {
 	myfile << "extern\tprintf\n";
 	myfile << "SECTION\t.data\n";
 	// here we can add all variables from symbolTable
-	vector<string> variableNames = symbolTable.printTable();
+	vector<string> variableNames = symbolTable.printTableInts();
 	for(int i = 0; i < variableNames.size(); i++){
 		myfile << "\t" << variableNames[i] << ":\t.quad 0\n";
+	}
+	variableNames = symbolTable.printTableArr();
+	for(int i = 0; i < variableNames.size(); i++){
+		myfile << "\t" << variableNames[i] << "\tDD 100 DUP(0)\n";
 	}
 
 	myfile << "SECTION\t.text\n";
@@ -155,6 +159,11 @@ void translate() {
 				myfile << "\tpop rax\n";
 			} else if (ins.type == Return){
 				myfile << "\tret\n";
+			} else if (ins.type == IndexedCopyGet) {
+				myfile << "\tmovl " << "(" << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.in1->address.reg) << ", 4)" << ", " << reg2str(ins.dest->address.reg) << "\n";
+			} else if (ins.type == IndexedCopyPut) {
+				// x[i] = y .... 2,put,x,i,y
+				myfile << "\tmovl " << reg2str(ins.in2->address.reg) << ", (" << reg2str(ins.dest->address.reg) << ", " << reg2str(ins.in1->address.reg) << ", 4)" << "\n";
 			}
 		}
 	}
