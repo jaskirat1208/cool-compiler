@@ -129,6 +129,7 @@ class RegisterDescriptor {
 			return NoReg;
 		}
 		Register selectRegisterFor(SymbolTableEntry* s1){
+			// complete it -> flush register to memory
 			for(i=table.begin();i!=table.end();i++){
 				if(i->second==s1 && i->first!=NoReg){
 					return i->first;
