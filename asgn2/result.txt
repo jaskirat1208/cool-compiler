@@ -12,15 +12,18 @@ SECTION	.text
 main:
 format:
 	db "%d", 10, 0
+label0:
 	mov %RAX, %RAX
-%RAX:
+label1:
 	mov %RAX, %RAX
 	mov %RAX, %RAX
 	add %RAX, %RAX
 	cmp %RAX, %RAX
+label2:
 	call %RAX
+label3:
 	ret
-%RAX:
+label4:
 	mov format, rdi
 	mov %RAX, rsi
 	xor rax, rax
@@ -28,4 +31,5 @@ format:
 	pop rcx
 	pop rax
 	ret
+label5:
 	ret

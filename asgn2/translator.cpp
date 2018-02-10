@@ -59,60 +59,69 @@ void translate() {
 	// this is for printing integers
 	myfile << "format:\n\tdb \"%d\", 10, 0\n";
 
-	for(int i = 0; i < noOfInstructions; i++) {
-		Instruction3AC ins = instructions[i];
-		allocateRegister(&ins);
+	for (int k = 0; k < noOfBasicBlocks; k++) {
+		Instruction3AC* currentBB = basicBlocks[k].instructions;
+		int lenCurrentBB = basicBlocks[k].numInstructions;
+		int labelBB = basicBlocks[k].labelBB;
 
-		if (ins.type == Copy) {
-			myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-		} else if (ins.type == AssignBinaryOp) {
-			if (ins.op == "+") {
+		myfile << "label" << labelBB << ":\n";
+
+		for(int i = 0; i < lenCurrentBB; i++) {
+			Instruction3AC ins = currentBB[i];
+			allocateRegister(&ins);
+
+			if (ins.type == Copy) {
 				myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-				myfile << "\tadd " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "-") {
-				myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-				myfile << "\tsub " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "*") {
-				myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-				myfile << "\timul " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "/") {
-				// this is trickier here 2 specific registers are always required
-			}
-		} else if (ins.type == ConditionalJump) {
-			myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.in1->address.reg) << "\n";
-			// in1-in2
-			// handles only =, !=, >=, <, <=
-			// dosen't handle >
-			if (ins.op == "eq") {
-				myfile << "\tje " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "neq") {
-				myfile << "\tjne " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "ge") {
-				myfile << "\tjge " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "lt") {
-				myfile << "\tjl " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.op == "lteq") {
-				myfile << "\tjle " << reg2str(ins.dest->address.reg) << "\n";
-			}
-		} else if (ins.type == UnconditionalJump){
-			myfile << "\tjmp " << reg2str(ins.dest->address.reg) << "\n";
-		} else if (ins.type == Procedure){
-			myfile << "\tcall " << reg2str(ins.dest->address.reg) << "\n";
-		} else if (ins.type == InstrLabel){
-			myfile << reg2str(ins.dest->address.reg) << ":\n";
-		} else if (ins.type == Print){
-			// print in x86
-			myfile << "\tmov format, rdi\n";
-			myfile << "\tmov " << reg2str(ins.in1->address.reg) <<", rsi\n";
-			// ensure that rax is free
-			myfile << "\txor rax, rax\n";
-			myfile << "\tcall printf\n";
-			myfile << "\tpop rcx\n";
-			myfile << "\tpop rax\n"; 
-		} else if (ins.type == Return){
-			myfile << "\tret\n";
-		} 
+			} else if (ins.type == AssignBinaryOp) {
+				if (ins.op == "+") {
+					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\tadd " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "-") {
+					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\tsub " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "*") {
+					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\timul " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "/") {
+					// this is trickier here 2 specific registers are always required
+				}
+			} else if (ins.type == ConditionalJump) {
+				myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.in1->address.reg) << "\n";
+				// in1-in2
+				// handles only =, !=, >=, <, <=
+				// dosen't handle >
+				if (ins.op == "eq") {
+					myfile << "\tje " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "neq") {
+					myfile << "\tjne " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "ge") {
+					myfile << "\tjge " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "lt") {
+					myfile << "\tjl " << reg2str(ins.dest->address.reg) << "\n";
+				} else if (ins.op == "lteq") {
+					myfile << "\tjle " << reg2str(ins.dest->address.reg) << "\n";
+				}
+			} else if (ins.type == UnconditionalJump){
+				myfile << "\tjmp " << reg2str(ins.dest->address.reg) << "\n";
+			} else if (ins.type == Procedure){
+				myfile << "\tcall " << reg2str(ins.dest->address.reg) << "\n";
+			} else if (ins.type == InstrLabel){
+				// myfile << "label" << labelBB << ":\n";
+			} else if (ins.type == Print){
+				// print in x86
+				myfile << "\tmov format, rdi\n";
+				myfile << "\tmov " << reg2str(ins.in1->address.reg) <<", rsi\n";
+				// ensure that rax is free
+				myfile << "\txor rax, rax\n";
+				myfile << "\tcall printf\n";
+				myfile << "\tpop rcx\n";
+				myfile << "\tpop rax\n"; 
+			} else if (ins.type == Return){
+				myfile << "\tret\n";
+			} 
+		}
 	}
+
 	myfile << "\tret\n";
 	myfile.close();
 }
