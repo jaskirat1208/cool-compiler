@@ -79,7 +79,15 @@ void translate() {
 				} else if (ins.op == "-") {
 					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tsub " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-				} else if (ins.op == "*") {
+				} else if (ins.op == "*") {					//
+
+				//	x = y * z :
+				//				pushq %eax		: saves %eax onto the stack
+				//				mov (y), %eax
+				//				mov z, reg(x)
+				//				imul reg(x)
+				//				popq %eax		: retrieves %eax from the stack
+
 					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\timul " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 				} else if (ins.op == "/") {
@@ -115,7 +123,7 @@ void translate() {
 				myfile << "\txor rax, rax\n";
 				myfile << "\tcall printf\n";
 				myfile << "\tpop rcx\n";
-				myfile << "\tpop rax\n"; 
+				myfile << "\tpop rax\n";
 			} else if (ins.type == Return){
 				myfile << "\tret\n";
 			}
