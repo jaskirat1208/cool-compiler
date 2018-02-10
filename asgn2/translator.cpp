@@ -118,7 +118,7 @@ void translate() {
 				myfile << "\tpop rax\n"; 
 			} else if (ins.type == Return){
 				myfile << "\tret\n";
-			} 
+			}
 		}
 	}
 
