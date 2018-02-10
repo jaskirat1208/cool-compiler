@@ -80,7 +80,7 @@ void translate() {
 					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tsub " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 				} else if (ins.op == "*") {					//
-
+					myfile << "\t\t\t\t\t\t#MULTIPLICATION BEGINS\n";
 				//	x = y * z :
 				//				pushq %rax		: saves %eax onto the stack
 				//				pushq %rdx		: saves %rdx onto the stack
@@ -91,14 +91,36 @@ void translate() {
 				//				popq %rax		: retrieves %eax from the stack
 					myfile << "\tpushq %rax"<<endl;
 					myfile << "\tpushq %rdx"<<endl;
-					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", %rax\n";
-					myfile << "\tmov " << reg2str(ins.in2->address.reg) << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\tmovq " << reg2str(ins.in1->address.reg) << ", %rax\n";
+					myfile << "\tmovq " << reg2str(ins.in2->address.reg) << reg2str(ins.dest->address.reg)<<"\n";
 					myfile << "\timul " << reg2str(ins.dest->address.reg)<<"\n";
-					myfile << "\tmov " << "%rax, " << reg2str(ins.dest->address.reg)<<"\n";
-					myfile << "\tpopq %rax"<<endl;
+					myfile << "\tmovq " << "%rax, " << reg2str(ins.dest->address.reg)<<"\n";
 					myfile << "\tpopq %rdx"<<endl;
+					myfile << "\tpopq %rax"<<endl;
+					myfile << "\t\t\t\t\t\t#MULTIPLICATION ENDS\n";
 				} else if (ins.op == "/") {
-					// this is trickier here 2 specific registers are always required
+				//	x = y / z :
+				//				pushq %rax		: saves %eax onto the stack
+				//				pushq %rdx		: saves %rdx onto the stack
+				//				movq $0,
+				//				mov (y), %rax
+				//				mov z, reg(x)
+				//				imul reg(x)
+				//				popq %rdx		: retrieves %rdx from the stack
+				//				popq %rax		: retrieves %eax from the stack
+					myfile << "\t\t\t\t\t\t#Division Begins\n";
+					myfile << "\tpushq %rax"<<endl;
+					myfile << "\tpushq %rdx"<<endl;
+					myfile << "\tmovq $0, %rdx\n";
+					myfile << "\tmovq " << reg2str(ins.in1->address.reg) << ", %rax\n";
+					myfile << "\tmovq " << reg2str(ins.in2->address.reg) << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\tidiv " << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\tmovq " << "%rax, " << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\tpopq %rdx"<<endl;
+					myfile << "\tpopq %rax"<<endl;
+					myfile << "\t\t\t\t\t\t#Division Ends\n";
+
+					//// this is trickier here 2 specific registers are always required
 				}
 			} else if (ins.type == ConditionalJump) {
 				myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.in1->address.reg) << "\n";
