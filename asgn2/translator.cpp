@@ -82,14 +82,21 @@ void translate() {
 				} else if (ins.op == "*") {					//
 
 				//	x = y * z :
-				//				pushq %eax		: saves %eax onto the stack
-				//				mov (y), %eax
+				//				pushq %rax		: saves %eax onto the stack
+				//				pushq %rdx		: saves %rdx onto the stack
+				//				mov (y), %rax
 				//				mov z, reg(x)
 				//				imul reg(x)
-				//				popq %eax		: retrieves %eax from the stack
-
-					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-					myfile << "\timul " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				//				popq %rdx		: retrieves %rdx from the stack
+				//				popq %rax		: retrieves %eax from the stack
+					myfile << "\tpushq %rax"<<endl;
+					myfile << "\tpushq %rdx"<<endl;
+					myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", %rax\n";
+					myfile << "\tmov " << reg2str(ins.in2->address.reg) << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\timul " << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\tmov " << "%rax, " << reg2str(ins.dest->address.reg)<<"\n";
+					myfile << "\tpopq %rax"<<endl;
+					myfile << "\tpopq %rdx"<<endl;
 				} else if (ins.op == "/") {
 					// this is trickier here 2 specific registers are always required
 				}
