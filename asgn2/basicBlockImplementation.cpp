@@ -1,5 +1,6 @@
 #include "global.h"
 #include "helper.cpp"
+#include "translator.cpp"
 
 void loadData() {
 	ifstream infile("irSet.txt");
@@ -358,6 +359,8 @@ int main() {
 	assignBasicBlocks();
 
 	assignIsLiveAndNextUseEachBB();
+
+	translate();
 
 	return 0;
 }

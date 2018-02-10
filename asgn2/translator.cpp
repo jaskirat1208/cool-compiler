@@ -1,15 +1,53 @@
-#include <bits/stdc++.h>
-
-using namespace std;
-
 // this is intel version (not the AT&T version)
 // differs slightly only in naming conventions like mov->movl
 // refer to this link http://www.imada.sdu.dk/Courses/DM18/Litteratur/IntelnATT.htm for details
+ofstream myfile;
 
-int main(){
-	ofstream myfile;
+void allocateRegister(Instruction3AC* instr) {
+	// x = y op z
+	Register r;
+	int done = 0;
+
+	if (instr->dest->address.reg != NoReg) {
+		r = instr->dest->address.reg;
+		registerDescriptor.modify(r, instr->dest);
+		return;
+	}
+	if (instr->in1->type != ConstInt && instr->in1NextUse == -1) {
+		r = instr->in1->address.reg;
+		if(r != NoReg) {
+			myfile << "\tmov " << reg2str(r) << ", " << instr->in1->address.mem << "\n";
+			instr->in1->address.reg = NoReg;
+			registerDescriptor.modify(r, instr->dest);
+			done = 1;
+		}
+	}
+	if (instr->in2->type != ConstInt && instr->in2NextUse == -1 && done == 0) {
+		r = instr->in2->address.reg;
+		if(r!= NoReg) {
+			myfile << "\tmov " << reg2str(r) << ", " << instr->in2->address.mem << "\n";
+			instr->in2->address.reg = NoReg;
+			registerDescriptor.modify(r, instr->dest);
+			done = 1;
+		}
+	}
+	if (done == 0) {
+		r = registerDescriptor.findEmptyRegister();
+		if (r == NoReg) {
+			r = registerDescriptor.getFarthestNextUseRegister();
+			myfile << "\tmov " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
+			registerDescriptor.lookup(r)->address.reg = NoReg;
+			registerDescriptor.modify(r, instr->dest);
+		}
+		else {
+			registerDescriptor.modify(r, instr->dest);
+		}
+	}
+}
+
+void translate() {
 	myfile.open("result.txt");
-	myfile << "extern\tprintf"
+	myfile << "extern\tprintf\n";
 	myfile << "SECTION\t.data\n";
 	// here we can add all variables from symbolTable
 
@@ -20,53 +58,51 @@ int main(){
 	// this is for printing integers
 	myfile << "format:\n\tdb \"%d\", 10, 0\n";
 
-	Instruction3AC instructions[100];
-	int i;
-	int noOfInstructions;
-	for(i=0;i<noOfInstructions;i++){
+	for(int i = 0; i < noOfInstructions; i++) {
 		Instruction3AC ins = instructions[i];
+		allocateRegister(&ins);
 
 		if (ins.type == Copy) {
-			myfile << "\tmov " << getReg(ins.in1->address) << ", " << getReg(ins.dest->address) << "\n";
+			myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 		} else if (ins.type == AssignBinaryOp) {
 			if (ins.op == "+") {
-				myfile << "\tmov " << getReg(ins.in1->address) << ", " << getReg(ins.dest->address) << "\n";
-				myfile << "\tadd " << getReg(ins.in2->address) << ", " << getReg(ins.dest->address) << "\n";
+				myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				myfile << "\tadd " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "-") {
-				myfile << "\tmov " << getReg(ins.in1->address) << ", " << getReg(ins.dest->address) << "\n";
-				myfile << "\tsub " << getReg(ins.in2->address) << ", " << getReg(ins.dest->address) << "\n";
+				myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				myfile << "\tsub " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "*") {
-				myfile << "\tmov " << getReg(ins.in1->address) << ", " << getReg(ins.dest->address) << "\n";
-				myfile << "\timul " << getReg(ins.in2->address) << ", " << getReg(ins.dest->address) << "\n";
+				myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+				myfile << "\timul " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "/") {
 				// this is trickier here 2 specific registers are always required
 			}
 		} else if (ins.type == ConditionalJump) {
-			myfile << "\tcmp " << getReg(ins.in2->address) << ", " << getReg(ins.in1->address) << "\n";
+			myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.in1->address.reg) << "\n";
 			// in1-in2
 			// handles only =, !=, >=, <, <=
 			// dosen't handle >
 			if (ins.op == "eq") {
-				myfile << "\tje " << getReg(ins.dest->address) << "\n";
+				myfile << "\tje " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "neq") {
-				myfile << "\tjne " << getReg(ins.dest->address) << "\n";
+				myfile << "\tjne " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "ge") {
-				myfile << "\tjge " << getReg(ins.dest->address) << "\n";
+				myfile << "\tjge " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "lt") {
-				myfile << "\tjl " << getReg(ins.dest->address) << "\n";
+				myfile << "\tjl " << reg2str(ins.dest->address.reg) << "\n";
 			} else if (ins.op == "lteq") {
-				myfile << "\tjle " << getReg(ins.dest->address) << "\n";
+				myfile << "\tjle " << reg2str(ins.dest->address.reg) << "\n";
 			}
 		} else if (ins.type == UnconditionalJump){
-			myfile << "\tjmp " << getReg(ins.dest->address) << "\n";
+			myfile << "\tjmp " << reg2str(ins.dest->address.reg) << "\n";
 		} else if (ins.type == Procedure){
-			myfile << "\tcall " << getReg(ins.dest->address) << "\n";
+			myfile << "\tcall " << reg2str(ins.dest->address.reg) << "\n";
 		} else if (ins.type == InstrLabel){
-			myfile << getReg(ins.dest->address) << ":\n";
+			myfile << reg2str(ins.dest->address.reg) << ":\n";
 		} else if (ins.type == Print){
 			// print in x86
 			myfile << "\tmov format, rdi\n";
-			myfile << "\tmov " << getReg(ins.in1->address) <<", rsi\n";
+			myfile << "\tmov " << reg2str(ins.in1->address.reg) <<", rsi\n";
 			// ensure that rax is free
 			myfile << "\txor rax, rax\n";
 			myfile << "\tcall printf\n";
@@ -78,5 +114,4 @@ int main(){
 	}
 	myfile << "\tret\n";
 	myfile.close();
-	return 0;
 }
