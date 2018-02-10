@@ -137,7 +137,15 @@ class RegisterDescriptor {
 			return NoReg;
 		}
 		Register getFarthestNextUseRegister(){
-			return NoReg;
+			int maxNextUse = -1;
+			Register maxNextUseRegister = NoReg;
+			for(i=table.begin();i!=table.end();i++){
+				if(i->second->nextUse > maxNextUse){
+					maxNextUse = i->second->nextUse;
+					maxNextUseRegister = i->first;
+				}
+			}
+			return maxNextUseRegister;
 		}
 };
 

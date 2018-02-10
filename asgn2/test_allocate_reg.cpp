@@ -1,15 +1,14 @@
 #include <iostream>
-#include "global.h"
-
+#include "allocateReg.cpp"
 
 using namespace std;
 
 int main(){
-	RegisterDescriptor registerDescriptor = RegisterDescriptor();
-	Register r = registerDescriptor.findEmptyRegister(); 		//finds an empty register
+	RegisterDescriptor registerDescriptor1 = RegisterDescriptor();
+	Register r = registerDescriptor1.findEmptyRegister(); 		//finds an empty register
 	SymbolTableEntry s1;
-	registerDescriptor.modify(r,&s1);
-	cout<<registerDescriptor.findEmptyRegister();
+	registerDescriptor1.modify(r,&s1);
+	cout<<registerDescriptor1.findEmptyRegister();
 	return 0;
 
 }

@@ -271,7 +271,7 @@ void findLeaders() {
 	leaders.insert(1);
 
 	for (int i = 1; i < noOfInstructions; i++) {
-		
+
 		if(instructions[i].type == UnconditionalJump || instructions[i].type == ConditionalJump) {
 			// cout << "lineNo = " << i+1 << "\n";
 			int t1 = getTargetLabelLocation(instructions[i].dest);
@@ -306,26 +306,6 @@ void findLeaders() {
 
 	}
 
-}
-
-void allocate_register(Instruction3AC instr) {
-
-	if(instr.type == Copy || instr.type == AssignUnaryOp){
-		//run the heuristic: if input is constant : allocate an empty register
-		//else: if the input y is not used again, allocate the register of y for the input
-		//else: if y is used again, allocate an empty register
-		//else: if no empty register, swap the register whose corresponding variable has farthest next use
-		//else: allocate a memory unit for x
-
-	}
-	else if(instr.type == AssignBinaryOp ){
-		//run the heuristic: if input1 and input2 is constant, allocate an empty register
-		//else: if input1 is not used again, allocate reg(input1) for reg(x)
-		//else: if input2 is not used again, allocate reg(input2) for reg(x)
-		//else: if inputs are used again, allocate an empty register for x
-		//else: if no empty register, swap the register whose corresponding variable has farthest next use
-		//else: allocate a memory unit for x
-	}
 }
 
 void assignBasicBlocks() {
