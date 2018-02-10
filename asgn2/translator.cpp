@@ -62,7 +62,7 @@ void translate() {
 	for(int i = 0; i < noOfInstructions; i++) {
 		Instruction3AC ins = instructions[i];
 		allocateRegister(&ins);
-
+		printRegisterDescriptorTable();
 		if (ins.type == Copy) {
 			myfile << "\tmov " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
 		} else if (ins.type == AssignBinaryOp) {
@@ -108,10 +108,10 @@ void translate() {
 			myfile << "\txor rax, rax\n";
 			myfile << "\tcall printf\n";
 			myfile << "\tpop rcx\n";
-			myfile << "\tpop rax\n"; 
+			myfile << "\tpop rax\n";
 		} else if (ins.type == Return){
 			myfile << "\tret\n";
-		} 
+		}
 	}
 	myfile << "\tret\n";
 	myfile.close();

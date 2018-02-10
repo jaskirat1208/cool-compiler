@@ -1,12 +1,12 @@
 extern	printf
 SECTION	.data
-	v:	.quad 0
-	a:	.quad 0
-	w:	.quad 0
 	b:	.quad 0
 	x:	.quad 0
+	v:	.quad 0
 	y:	.quad 0
+	a:	.quad 0
 	i:	.quad 0
+	w:	.quad 0
 SECTION	.text
 .globl main
 main:
