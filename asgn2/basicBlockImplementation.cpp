@@ -28,7 +28,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarInt;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -42,7 +41,6 @@ void loadData() {
 				} else {
 					in1->type = VarInt;
 				}
-				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
@@ -54,7 +52,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarInt;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -63,7 +60,6 @@ void loadData() {
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
 				in1->type = VarInt;
-				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
@@ -77,7 +73,6 @@ void loadData() {
 				} else {
 					in2->type = VarInt;
 				}
-				in2->address = in2Str;
 			} else {
 				in2 = symbolTable.lookup(in2Str);
 			}
@@ -89,7 +84,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarInt;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -102,7 +96,6 @@ void loadData() {
 				} else {
 					in1->type = VarInt;
 				}
-				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
@@ -111,7 +104,6 @@ void loadData() {
 			if (symbolTable.lookup(in2Str) == NULL) {
 				symbolTable.insert(in2Str, in2);
 				in2->type = VarInt;
-				in2->address = in2Str;
 			} else {
 				in2 = symbolTable.lookup(in2Str);
 			}
@@ -124,7 +116,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarInt;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -138,7 +129,6 @@ void loadData() {
 				} else {
 					in1->type = VarInt;
 				}
-				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
@@ -156,7 +146,6 @@ void loadData() {
 					} else {
 						in2->type = VarInt;
 					}
-					in2->address = in2Str;
 				} else {
 					in2 = symbolTable.lookup(in2Str);
 				}
@@ -175,7 +164,6 @@ void loadData() {
 				} else {
 					in1->type = VarInt;
 				}
-				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
@@ -189,7 +177,6 @@ void loadData() {
 				} else {
 					in2->type = VarInt;
 				}
-				in2->address = in2Str;
 			} else {
 				in2 = symbolTable.lookup(in2Str);
 			}
@@ -198,7 +185,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -209,7 +195,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -220,7 +205,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -231,7 +215,6 @@ void loadData() {
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
-				dest->address = destStr;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
@@ -247,7 +230,6 @@ void loadData() {
 				} else {
 					in1->type = VarInt;
 				}
-				in1->address = in1Str;
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}

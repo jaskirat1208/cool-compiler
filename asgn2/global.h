@@ -3,6 +3,7 @@
 using namespace std;
 
 typedef string Operator;
+typedef string Memory;
 
 // enumeration of variable type
 enum VarType {
@@ -31,14 +32,24 @@ enum Register {
 	RAX, RBX, RCX, RDX,
 	RSI, RDI, RBP, RSP,
 	R8,  R9,  R10, R11,
-	R12, R13, R14, R15
+	R12, R13, R14, R15,
+	NoReg
+};
+
+// The following class defines the structure of AddressType which includes
+// register address, memory address, stack address
+class AddressType {
+	public :
+		Register reg;
+		Memory mem;
+		// something for stack, not yet implemented
 };
 
 // The following class defines structure of Symbol Table Entry
 class SymbolTableEntry {
 	public:
 		VarType type;
-		string address;
+		AddressType address;
 		int value; // stores the value if the in1 or in2 are constants
 		bool isLive;
 		int nextUse;
@@ -74,6 +85,7 @@ class SymbolTable {
 class RegisterDescriptor {
 	private :
 		map<Register, SymbolTableEntry*> table;
+		map<Register, SymbolTableEntry*>::iterator i;
 	public :
 		RegisterDescriptor() {
 			// initializing all register mapping to NULL
@@ -93,10 +105,11 @@ class RegisterDescriptor {
 			modify(R13, NULL);
 			modify(R14, NULL);
 			modify(R15, NULL);
+			modify(NoReg, NULL);
 		}
 
 		SymbolTableEntry* lookup(Register r) {
-			map<Register, SymbolTableEntry*>::iterator i = table.find(r);
+			i = table.find(r);
 			if (i != table.end()) {
 				return i->second;
 			}
@@ -105,6 +118,15 @@ class RegisterDescriptor {
 
 		void modify(Register r, SymbolTableEntry* t) {
 			table[r] = t;
+		}
+
+		Register findEmptyRegister() {
+			for (i = table.begin(); i != table.end(); ++i) {
+				if (i->second == NULL && i->first != NoReg) {
+					return i->first;
+				}
+			}
+			return NoReg;
 		}
 };
 
