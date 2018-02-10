@@ -1,61 +1,42 @@
-void initializeRegisters(){
-	for (int i = 0; i < 16; ++i)
-	{
-		registerDescriptor[i]==NULL;
-	}
-}
-int checkEmptyRegister(){
-	for (int i = 0; i < 16; ++i)
-	{
-		if (registerDescriptor[i]==NULL)
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-int getFarthestNextUse(){
-	int max_next_use=-1;
-	int max_next_use_index=-1;
-	for (int i = 0; i < 16; ++i)
-	{
-		if(registerDescriptor[i]->nextUse > max_next_use){
-			max_next_use = registerDescriptor[i]->nextUse;
-			max_next_use_index = i;
-		}
-	}
-	return max_next_use_index;
-}
+#include "global.h"
+
 void allocate_register(Instruction3AC* instr) {
-	int find_empty_reg;
 	// x = y op z
-	if (/*y is a constant*/1)
+	if (instr->in1->type==ConstInt)			//y is a constant
 	{
-		/* code */
-	}
-	else if (/*z is a constant*/1)
-	{
-		/* code */
+		cout<<"Case 1 occuring. Register allocated: ";
+		Register r = registerDescriptor.findEmptyRegister();
+		if(r==NoReg){
+			cout<<"No vacant Register found. Selecting with farthest next use heuristic.";
+		}
+		else{
+			registerDescriptor.modify(r,instr->dest);
+			cout<<r<<endl;
+		}
+		/* Return an empty register */
 	}
 	else if (instr->in1NextUse==-1)		//if y is not used anymore
 	{
+		Register r = registerDescriptor.selectRegisterFor(instr->in1);
+		if(r!=NoReg){
+			registerDescriptor.modify(r,instr->dest);
+		}
+		else{
+			cout<<"Register for y not found"<<endl;
+			//TODO: do the same for z
+		}
+
 		// int regForY=-1;
 		//x's register = y's register
-		for (int i = 0; i < 16; ++i)
-		{
-			if (registerDescriptor[i]==instr->in1)		//Register for y found
-			{
-				registerDescriptor[i]=instr->dest;		//Register for x assigned that of y
-			}
-		} 
 	}
-	else if ((find_empty_reg = checkEmptyRegister())!=-1)	//TODO::check_empty_register to be declared
+	else if (registerDescriptor.findEmptyRegister()!=NoReg)	//TODO::check_empty_register to be declared
 	{
-		registerDescriptor[find_empty_register] = instr->dest; 
+		Register r = registerDescriptor.findEmptyRegister();
+		registerDescriptor.modify(r,instr->dest);
 	}
-	else if (find_empty_reg == -1)
+	else if (registerDescriptor.findEmptyRegister()==NoReg)
 	{
-		int i = getFarthestNextUse();
+		Register r = registerDescriptor.getFarthestNextUseRegister();
 	}
 	//run the heuristic: if input is constant : allocate an empty register
 	//else: if the input y is not used again, allocate the register of y for the input

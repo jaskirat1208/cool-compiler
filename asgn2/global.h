@@ -128,6 +128,17 @@ class RegisterDescriptor {
 			}
 			return NoReg;
 		}
+		Register selectRegisterFor(SymbolTableEntry* s1){
+			for(i=table.begin();i!=table.end();i++){
+				if(i->second==s1 && i->first!=NoReg){
+					return i->first;
+				}
+			}
+			return NoReg;
+		}
+		Register getFarthestNextUseRegister(){
+			return NoReg;
+		}
 };
 
 // The following class defines structure of TAC(Three Address Instruction)
