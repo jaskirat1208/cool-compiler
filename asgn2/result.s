@@ -6,7 +6,7 @@
 .globl main
 main:
 label0:
-	movq $82, %RAX
+	movq $5, %RAX
 	movq %RAX, a
 
 	movq $21, %RBX
@@ -19,7 +19,7 @@ label0:
 	movq b, %RCX
 	movq $0, %RDX
 	idivq %RCX
-	movq %RAX, %RCX
+	movq %RDX, %RCX
 	movq %RCX, a
 	popq %RDX
 	popq %RAX

@@ -105,7 +105,7 @@ void loadData() {
 		// 		in2 = symbolTable.lookup(in2Str);
 		// 	}
 		} else if (typeStr == "+" || typeStr == "-" || typeStr == "*" ||
-				   typeStr == "/") {
+				   typeStr == "/" || typeStr == "%") {
 			type = AssignBinaryOp;
 			op = typeStr;
 
