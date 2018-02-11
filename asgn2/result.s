@@ -1,28 +1,39 @@
 .data
+	d:	.quad 0
 	b:	.quad 0
 	a:	.quad 0
+	c:	.quad 0
 	str:	.string "%d\n"
 .text
 .globl main
 main:
 label0:
-	movq $2, %R8
-
-	movq $7, %R9
-
-	movq %R8, %R8
-	addq %R9, %R8
-
-	mov %R8, a
-	cmp $50, 
-	jle label1
+	movq $2, %RAX
+	movq %RAX, a
 
 label1:
+	movq $7, %RBX
+	movq %RBX, b
+
+	movq $10, %RCX
+	movq %RCX, c
+
+	movq $9, %RDX
+	movq %RDX, d
+
+	movq a, %RAX
+	addq b, %RAX
+	movq %RAX, a
+
+	movq a, %RCX
+	addq d, %RCX
+	movq %RCX, c
+
 	pushq %RDI
 	pushq %RSI
 	pushq %RAX
 	movq $str, %RDI
-	movq , %RSI
+	movq a, %RSI
 	movq $0, %RAX
 	pushq %R10
 	pushq %R11
@@ -37,7 +48,31 @@ label1:
 	pushq %RSI
 	pushq %RAX
 	movq $str, %RDI
-	movq %R9, %RSI
+	movq c, %RSI
+	movq $0, %RAX
+	pushq %R10
+	pushq %R11
+	call printf
+	popq %R11
+	popq %R10
+	popq %RAX
+	popq %RSI
+	popq %RDI
+
+	cmp $50, %RAX
+	jle label1
+
+label2:
+	call label4
+
+label3:
+	ret
+label4:
+	pushq %RDI
+	pushq %RSI
+	pushq %RAX
+	movq $str, %RDI
+	movq a, %RSI
 	movq $0, %RAX
 	pushq %R10
 	pushq %R11

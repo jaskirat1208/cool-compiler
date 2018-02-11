@@ -237,10 +237,10 @@ void loadData() {
 			op = typeStr;
 		}
 
-		stringstream ss(lineNo);
-	    int num = 0;
-	    ss >> num;
-		instructions[noOfInstructions].lineNo = num;
+		// stringstream ss(lineNo);
+	 //    int num = 0;
+	 //    ss >> num;
+		instructions[noOfInstructions].lineNo = noOfInstructions+1;
 		instructions[noOfInstructions].type = type;
 		instructions[noOfInstructions].op = op;
 		instructions[noOfInstructions].in1 = in1;

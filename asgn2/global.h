@@ -30,9 +30,8 @@ enum InstrType {
 
 // enumeration of types of available registers for use in each basic block
 enum Register {
-	R8, R9, R12, R13, R14, R15,
-	RBX, RCX, R10, R11,
-	RAX, RDX, RSI, RDI, RBP, RSP,
+	// R8, R9, R12, R13, R14, R15, R10, R11, RBP, RSP,
+	RAX, RBX, RCX, RDX, RSI, RDI,
 	NoReg
 };
 
@@ -118,16 +117,16 @@ class RegisterDescriptor {
 			modify(RDX, NULL);
 			modify(RSI, NULL);
 			modify(RDI, NULL);
-			modify(RBP, NULL);
-			modify(RSP, NULL);
-			modify(R8, NULL);
-			modify(R9, NULL);
-			modify(R10, NULL);
-			modify(R11, NULL);
-			modify(R12, NULL);
-			modify(R13, NULL);
-			modify(R14, NULL);
-			modify(R15, NULL);
+			// modify(RBP, NULL);
+			// modify(RSP, NULL);
+			// modify(R8, NULL);
+			// modify(R9, NULL);
+			// modify(R10, NULL);
+			// modify(R11, NULL);
+			// modify(R12, NULL);
+			// modify(R13, NULL);
+			// modify(R14, NULL);
+			// modify(R15, NULL);
 			modify(NoReg, NULL);
 		}
 
