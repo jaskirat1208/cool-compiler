@@ -194,6 +194,7 @@ class BasicBlock {
 		// BasicBlock* ifTrueNextBB;
 		// BasicBlock* ifFalseNextBB;
 		int labelBB;
+		int targetLabelBB;
 };
 
 // instance of BasicBlock class

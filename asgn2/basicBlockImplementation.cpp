@@ -3,6 +3,7 @@
 #include "generateCode.cpp"
 #include "loadData.cpp"
 #include "basicBlocks.cpp"
+#include "allocateRegister.cpp"
 
 int main() {
 	loadData();

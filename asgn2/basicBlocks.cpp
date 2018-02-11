@@ -48,6 +48,19 @@ void findLeaders() {
 
 }
 
+// The following functions finds the basic block number to which the given line
+// belongs.
+int findBlock(int lineNo) {
+	int totalInstructions = 0;
+	for (int i = 0; i < noOfBasicBlocks; i++) {
+		totalInstructions += basicBlocks[i].numInstructions;
+		if (lineNo <= totalInstructions) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 // The following method assigns the instructions to the corresponding basic
 // blocks using the knowledge of leaders in the program.
 void assignBasicBlocks() {
@@ -58,7 +71,19 @@ void assignBasicBlocks() {
 		if (i < noOfBasicBlocks-1) {
 			basicBlocks[i].numInstructions = *itr1 - *itr;
 		} else {
-			basicBlocks[i].numInstructions = noOfInstructions + 1- *itr;
+			basicBlocks[i].numInstructions = noOfInstructions + 1 - *itr;
+		}
+	}
+	for (int i = 0; i < noOfBasicBlocks; i++) {
+		Instruction3AC* currentBB = basicBlocks[i].instructions;
+		int lenCurrentBB = basicBlocks[i].numInstructions;
+		Instruction3AC lastInstruction = currentBB[lenCurrentBB-1];
+		if (lastInstruction.type == Procedure ||
+			lastInstruction.type == ConditionalJump ||
+			lastInstruction.type == UnconditionalJump) {
+			int targetLineNo = getTargetLabelLocation(lastInstruction.dest);
+			int targetBlockNo = findBlock(targetLineNo);
+			basicBlocks[i].targetLabelBB = targetBlockNo;
 		}
 	}
 }
