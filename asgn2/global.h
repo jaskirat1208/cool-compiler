@@ -213,3 +213,6 @@ set<int> leaders;
 
 // definition of register descriptor
 RegisterDescriptor registerDescriptor;
+
+// file to write generated code
+ofstream myfile;

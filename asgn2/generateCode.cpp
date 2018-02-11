@@ -1,5 +1,3 @@
-ofstream myfile;
-
 void generateCode() {
 	myfile.open("result.s");
 	myfile << ".data\n";
@@ -119,28 +117,57 @@ void generateCode() {
 					myfile << "\n";
 				}
 			} else if (ins.type == ConditionalJump) {
-				myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.in1->address.reg) << "\n";
-				// in1-in2
-				// handles only =, !=, >=, <, <=
-				// dosen't handle >
-				if (ins.op == "eq") {
-					myfile << "\tje " << reg2str(ins.dest->address.reg) << "\n";
-				} else if (ins.op == "neq") {
-					myfile << "\tjne " << reg2str(ins.dest->address.reg) << "\n";
-				} else if (ins.op == "ge") {
-					myfile << "\tjge " << reg2str(ins.dest->address.reg) << "\n";
-				} else if (ins.op == "lt") {
-					myfile << "\tjl " << reg2str(ins.dest->address.reg) << "\n";
-				} else if (ins.op == "lteq") {
-					myfile << "\tjle " << reg2str(ins.dest->address.reg) << "\n";
+				if (ins.op == "gt") {
+					if (ins.in1->type == VarInt) {
+						if (ins.in2->type == VarInt) {
+							myfile << "\tcmp " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.in2->address.reg) << "\n";
+						} else {
+							myfile << "\tcmp " << reg2str(ins.in1->address.reg) << ", " << "$" << ins.in2->value << "\n";
+						}
+					} else {
+						if (ins.in2->type == VarInt) {
+							myfile << "\tcmp " << "$" << ins.in1->value << ", " << reg2str(ins.in2->address.reg) << "\n";
+						} else {
+							myfile << "\tcmp " << "$" << ins.in1->value << ", " << "$" << ins.in2->value << "\n";
+						}
+					}
+					myfile << "\tjl " << "label" << basicBlocks[k].targetLabelBB << "\n";
+				} else {
+					if (ins.in2->type == VarInt) {
+						if (ins.in1->type == VarInt) {
+							myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.in1->address.reg) << "\n";
+						} else {
+							myfile << "\tcmp " << reg2str(ins.in2->address.reg) << ", " << "$" << ins.in1->value << "\n";
+						}
+					} else {
+						if (ins.in1->type == VarInt) {
+							myfile << "\tcmp " << "$" << ins.in2->value << ", " << reg2str(ins.in1->address.reg) << "\n";
+						} else {
+							myfile << "\tcmp " << "$" << ins.in2->value << ", " << "$" << ins.in1->value << "\n";
+						}
+					}
+					if (ins.op == "eq") {
+						myfile << "\tje " << "label" << basicBlocks[k].targetLabelBB << "\n";
+					} else if (ins.op == "neq") {
+						myfile << "\tjne " << "label" << basicBlocks[k].targetLabelBB << "\n";
+					} else if (ins.op == "geq") {
+						myfile << "\tjge " << "label" << basicBlocks[k].targetLabelBB << "\n";
+					} else if (ins.op == "lt") {
+						myfile << "\tjl " << "label" << basicBlocks[k].targetLabelBB << "\n";
+					} else if (ins.op == "leq") {
+						myfile << "\tjle " << "label" << basicBlocks[k].targetLabelBB << "\n";
+					}
 				}
-			} else if (ins.type == UnconditionalJump){
-				myfile << "\tjmp " << reg2str(ins.dest->address.reg) << "\n";
+				myfile << "\n";
+			} else if (ins.type == UnconditionalJump) {
+				myfile << "\tjmp " << "label" << basicBlocks[k].targetLabelBB << "\n";
+				myfile << "\n";
 			} else if (ins.type == Procedure){
-				myfile << "\tcall " << reg2str(ins.dest->address.reg) << "\n";
-			} else if (ins.type == InstrLabel){
-				// myfile << "label" << labelBB << ":\n";
-			} else if (ins.type == Print){
+				myfile << "\tcall " << "label" << basicBlocks[k].targetLabelBB << "\n";
+				myfile << "\n";
+			} else if (ins.type == InstrLabel) {
+				// we are putting labels at the start of each basic blocks
+			} else if (ins.type == Print) {
 				myfile << "\tpushq %RDI\n";
 				myfile << "\tpushq %RSI\n";
 				myfile << "\tpushq %RAX\n";
@@ -161,7 +188,7 @@ void generateCode() {
 				myfile << "\tpopq %RSI\n";
 				myfile << "\tpopq %RDI\n";
 				myfile << "\n";
-			} else if (ins.type == Return){
+			} else if (ins.type == Return) {
 				myfile << "\tret\n";
 			// } else if (ins.type == IndexedCopyGet) {
 			// 	myfile << "\tmovl " << "(" << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.in1->address.reg) << ", 4)" << ", " << reg2str(ins.dest->address.reg) << "\n";

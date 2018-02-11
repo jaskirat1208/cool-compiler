@@ -84,6 +84,8 @@ void assignBasicBlocks() {
 			int targetLineNo = getTargetLabelLocation(lastInstruction.dest);
 			int targetBlockNo = findBlock(targetLineNo);
 			basicBlocks[i].targetLabelBB = targetBlockNo;
+		} else {
+			basicBlocks[i].targetLabelBB = -1;
 		}
 	}
 }
