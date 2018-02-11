@@ -1,10 +1,8 @@
 1,=,a,2
-2,label,hey
-3,=,b,7
-4,+,a,a,b
-5,ifgoto,leq,a,50,hey
-6,call,foo
-7,ret
-8,label,foo
-9,print,a
-10,ret
+2,=,b,7
+3,+,a,a,b
+4,ifgoto,leq,a,50,foo
+5,label,foo
+6,print,a
+7,print,b
+8,ret

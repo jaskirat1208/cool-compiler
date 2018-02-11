@@ -27,6 +27,7 @@ void generateCode() {
 		for(int i = 0; i < lenCurrentBB; i++) {
 			Instruction3AC ins = currentBB[i];
 			allocateRegister(&ins);
+			printRegisterDescriptorTable();
 
 			if (ins.type == Copy) {
 				if (ins.in1->type == VarInt) {
