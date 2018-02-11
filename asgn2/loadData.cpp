@@ -216,6 +216,17 @@ void loadData() {
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
+		} else if (typeStr == "scan") {
+			type = Scan;
+			op = typeStr;
+
+			getline(linestream, destStr, ',');
+			if (symbolTable.lookup(destStr) == NULL) {
+				symbolTable.insert(destStr, dest);
+				dest->type = VarInt;
+			} else {
+				dest = symbolTable.lookup(destStr);
+			}
 		} else if (typeStr == "print") {
 			type = Print;
 			op = typeStr;

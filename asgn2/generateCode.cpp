@@ -12,7 +12,7 @@ void generateCode() {
 	// }
 
 	myfile << "\tstr:\t.string \"%d\\n\"\n";
-
+	myfile << "\tscan_str:\t.string \"%d\"\n";
 	myfile << ".text\n";
 	myfile << ".globl main\n";
 	myfile << "main:\n";
@@ -243,31 +243,33 @@ void generateCode() {
 				myfile << "\n";
 			} else if (ins.type == InstrLabel) {
 				// we are putting labels at the start of each basic blocks
+			} else if (ins.type == Scan) {
+				allocateRegister(&ins);
+
+				myfile << "\tpushq %RBP\n";
+				myfile << "\tpushq %RDI\n";
+				myfile << "\tpushq %RSI\n";
+
+				myfile << "\tmovq $scan_str, %RDI\n";
+				myfile << "\tmovq $" << ins.dest->address.mem << ", %RSI\n";
+				myfile << "\tcall scanf\n";
+
+				myfile << "\tpopq %RSI\n";
+				myfile << "\tpopq %RDI\n";
+				myfile << "\tpopq %RBP\n";
+				
+				myfile << "\n";
 			} else if (ins.type == Print) {
-				// if (registerDescriptor.lookup(RAX) != NULL) {
-				// 	myfile << "\tmovq %RAX, " << registerDescriptor.lookup(RAX)->address.mem << "\n";
-				// }
-				// if (registerDescriptor.lookup(RBX) != NULL) {
-				// 	myfile << "\tmovq %RBX, " << registerDescriptor.lookup(RBX)->address.mem << "\n";
-				// }
-				// if (registerDescriptor.lookup(RCX) != NULL) {
-				// 	myfile << "\tmovq %RCX, " << registerDescriptor.lookup(RCX)->address.mem << "\n";
-				// }
-				// if (registerDescriptor.lookup(RDX) != NULL) {
-				// 	myfile << "\tmovq %RDX, " << registerDescriptor.lookup(RDX)->address.mem << "\n";
-				// }
-				// if (registerDescriptor.lookup(RSI) != NULL) {
-				// 	myfile << "\tmovq %RSI, " << registerDescriptor.lookup(RSI)->address.mem << "\n";
-				// }
-				// if (registerDescriptor.lookup(RDI) != NULL) {
-				// 	myfile << "\tmovq %RDI, " << registerDescriptor.lookup(RDI)->address.mem << "\n";
-				// }
 				myfile << "\tpushq %RDI\n";
 				myfile << "\tpushq %RSI\n";
 				myfile << "\tpushq %RAX\n";
 
 				myfile << "\tmovq $str, %RDI\n";
-				myfile << "\tmovq " << ins.in1->address.mem << ", %RSI\n";
+				if (ins.in1->type == ConstInt) {
+					myfile << "\tmovq " << "$" << ins.in1->value << ", %RSI\n";
+				} else {
+					myfile << "\tmovq " << ins.in1->address.mem << ", %RSI\n";
+				}
 				myfile << "\tmovq $0, %RAX\n";
 
 				myfile << "\tpushq %R10\n";

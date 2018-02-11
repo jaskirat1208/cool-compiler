@@ -24,6 +24,7 @@ enum InstrType {
 	UnconditionalJump,
 	Procedure,
 	InstrLabel,
+	Scan,
 	Print,
 	Return
 };
