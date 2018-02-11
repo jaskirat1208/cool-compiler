@@ -8,7 +8,7 @@ typedef string Memory;
 // enumeration of variable type
 enum VarType {
 	VarInt,
-	VarArrInt,
+	// VarArrInt,
 	VarLabel,
 	ConstInt
 };
@@ -16,8 +16,8 @@ enum VarType {
 // enumeration of instruction type
 enum InstrType {
 	Copy, // x = y
-	IndexedCopyGet, // x = y[i] .... 1,get,x,y,i
-	IndexedCopyPut, // x[i] = y .... 2,put,x,i,y
+	// IndexedCopyGet, // x = y[i] .... 1,get,x,y,i
+	// IndexedCopyPut, // x[i] = y .... 2,put,x,i,y
 	AssignBinaryOp, // a = b `op` c .... 3,op,a,b,c
 	AssignUnaryOp,
 	ConditionalJump,
@@ -30,10 +30,9 @@ enum InstrType {
 
 // enumeration of types of available registers for use in each basic block
 enum Register {
-	RAX, RBX, RCX, RDX,
-	RSI, RDI, RBP, RSP,
-	R8,  R9,  R10, R11,
-	R12, R13, R14, R15,
+	R8, R9, R12, R13, R14, R15,
+	RBX, RCX, R10, R11,
+	RAX, RDX, RSI, RDI, RBP, RSP,
 	NoReg
 };
 
@@ -41,7 +40,7 @@ enum Register {
 // register address, memory address, stack address
 class AddressType {
 	public :
-		Register reg = NoReg;
+		Register reg;
 		Memory mem;
 		// something for stack, not yet implemented
 };
@@ -64,6 +63,7 @@ class SymbolTable {
 		void insert(string s, SymbolTableEntry* t) {
 			table[s] = t;
 			t->address.mem = s;
+			t->address.reg = NoReg;
 		}
 
 		SymbolTableEntry* lookup(string s) {
@@ -92,16 +92,16 @@ class SymbolTable {
 			}
 			return variableNames;
 		}
-		vector<string> printTableArr(){
-			vector<string> variableNames;
-			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
-			for (; i != table.end(); ++i) {
-				if (i->second->type == VarArrInt) {
-					variableNames.push_back(i->first);
-				}
-			}
-			return variableNames;
-		}
+		// vector<string> printTableArr(){
+		// 	vector<string> variableNames;
+		// 	unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
+		// 	for (; i != table.end(); ++i) {
+		// 		if (i->second->type == VarArrInt) {
+		// 			variableNames.push_back(i->first);
+		// 		}
+		// 	}
+		// 	return variableNames;
+		// }
 };
 
 // The following class defines the structure of Register Descriptor

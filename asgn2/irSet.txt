@@ -1,12 +1,6 @@
 1,=,a,2
-2,label,hey
+2,=,c,8
 3,=,b,7
 4,+,a,a,b
-5,ifgoto,leq,a,50,hey
-6,call,foo
-7,ret
-8,label,foo
-9,print,a
-10,ret
-11,put,v,i,w
-12,get,x,y,i
+5,print,a
+6,print,b
