@@ -9,7 +9,7 @@ void allocateRegister(Instruction3AC* instr) {
 		} else {
 			entry = instr->in1;
 		}
-		
+
 		if (entry->address.reg != NoReg) {
 			r = entry->address.reg;
 			registerDescriptor.modify(r, entry);
@@ -18,7 +18,7 @@ void allocateRegister(Instruction3AC* instr) {
 
 		r = registerDescriptor.findEmptyRegister();
 		if (r == NoReg) {
-			r = registerDescriptor.getFarthestNextUseRegister();
+			r = registerDescriptor.getFarthestNextUseRegister(false);
 			myfile << "\tmovq " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
 			registerDescriptor.lookup(r)->address.reg = NoReg;
 			registerDescriptor.modify(r, entry);
@@ -58,7 +58,7 @@ void allocateRegister(Instruction3AC* instr) {
 	}
 	r = registerDescriptor.findEmptyRegister();
 	if (r == NoReg) {
-		r = registerDescriptor.getFarthestNextUseRegister();
+		r = registerDescriptor.getFarthestNextUseRegister(false);
 		myfile << "\tmovq " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
 		registerDescriptor.lookup(r)->address.reg = NoReg;
 		registerDescriptor.modify(r, entry);

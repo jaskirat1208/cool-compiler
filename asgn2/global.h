@@ -154,17 +154,21 @@ class RegisterDescriptor {
 			return NoReg;
 		}
 
-		Register getFarthestNextUseRegister() {
+		Register getFarthestNextUseRegister(bool flag) {
 			int maxNextUse = -1;
 			Register maxNextUseRegister = NoReg;
 			for(i = table.begin();i != table.end(); i++){
-				if(i->second->nextUse > maxNextUse){
+				if(i->second->nextUse > maxNextUse) {
+					if (flag && i->first == RAX) {
+						continue;
+					}
 					maxNextUse = i->second->nextUse;
 					maxNextUseRegister = i->first;
 				}
 			}
 			return maxNextUseRegister;
 		}
+
 };
 
 // The following class defines structure of TAC(Three Address Instruction)

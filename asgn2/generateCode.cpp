@@ -81,61 +81,74 @@ void generateCode() {
 					}
 					myfile << "\tmovq " << reg2str(ins.dest->address.reg) << ", " << ins.dest->address.mem << "\n";
 					myfile << "\n";
-					// if (ins.in1->type == VarInt) {
-					// 	if (ins.in2->type == VarInt) {
-					// 		myfile << "\tmovq " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 		myfile << "\tsubq " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 	} else {
-					// 		myfile << "\tmovq " << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 		myfile << "\tsubq " << "$" << ins.in2->value << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 	}
-					// } else {
-					// 	if (ins.in2->type == VarInt) {
-					// 		myfile << "\tmovq " << "$" << ins.in1->value << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 		myfile << "\tsubq " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 	} else {
-					// 		myfile << "\tmovq " << "$" << ins.in1->value << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 		myfile << "\tsubq " << "$" << ins.in2->value << ", " << reg2str(ins.dest->address.reg) << "\n";
-					// 	}
-					// }
-					// myfile << "\n";
 				} else if (ins.op == "*") {
+					if (ins.dest->address.reg == RAX) {
+						Register r = registerDescriptor.findEmptyRegister();
+						if (r == NoReg) {
+							r = registerDescriptor.getFarthestNextUseRegister(true);
+							myfile << "\tmovq " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
+							registerDescriptor.lookup(r)->address.reg = NoReg;
+							registerDescriptor.modify(r, ins.dest);
+						}
+						else {
+							registerDescriptor.modify(r, ins.dest);
+						}
+						myfile << "\tmovq " << "%RAX, " << reg2str(ins.dest->address.reg) << "\n";
+					}
 					myfile << "\tpushq %RAX" << "\n";
 					myfile << "\tpushq %RDX" << "\n";
 
 					if (ins.in1->type == VarInt) {
-						myfile << "\tmovq " << reg2str(ins.in1->address.reg) << ", %RAX\n";
+						myfile << "\tmovq " << ins.in1->address.mem << ", %RAX\n";
 					} else {
 						myfile << "\tmovq " << "$" << ins.in1->value << ", %RAX\n";
 					}
 					if (ins.in2->type == VarInt) {
-						myfile << "\tmovq " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+						myfile << "\tmovq " << ins.in2->address.mem << ", " << reg2str(ins.dest->address.reg) << "\n";
 					} else {
 						myfile << "\tmovq " << "$" << ins.in2->value << ", " << reg2str(ins.dest->address.reg) << "\n";
 					}
+
 					myfile << "\timulq " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tmovq " << "%RAX, " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\tmovq " << reg2str(ins.dest->address.reg) << ", " << ins.dest->address.mem << "\n";
 
 					myfile << "\tpopq %RDX" << "\n";
 					myfile << "\tpopq %RAX" << "\n";
 					myfile << "\n";
 				} else if (ins.op == "/") {
+					if (ins.dest->address.reg == RAX) {
+						Register r = registerDescriptor.findEmptyRegister();
+						if (r == NoReg) {
+							r = registerDescriptor.getFarthestNextUseRegister(true);
+							myfile << "\tmovq " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
+							registerDescriptor.lookup(r)->address.reg = NoReg;
+							registerDescriptor.modify(r, ins.dest);
+						}
+						else {
+							registerDescriptor.modify(r, ins.dest);
+						}
+						myfile << "\tmovq " << "%RAX, " << reg2str(ins.dest->address.reg) << "\n";
+					}
+
 					myfile << "\tpushq %RAX" << "\n";
 					myfile << "\tpushq %RDX" << "\n";
 
-					myfile << "\tmovq $0, %RDX\n";
 					if (ins.in1->type == VarInt) {
-						myfile << "\tmovq " << reg2str(ins.in1->address.reg) << ", %RAX\n";
+						myfile << "\tmovq " << ins.in1->address.mem << ", %RAX\n";
 					} else {
 						myfile << "\tmovq " << "$" << ins.in1->value << ", %RAX\n";
 					}
-					if (ins.in1->type == VarInt) {
-						myfile << "\tmovq " << reg2str(ins.in2->address.reg) << ", " << reg2str(ins.dest->address.reg) << "\n";
+					if (ins.in2->type == VarInt) {
+						myfile << "\tmovq " << ins.in2->address.mem << ", " << reg2str(ins.dest->address.reg) << "\n";
 					} else {
 						myfile << "\tmovq " << "$" << ins.in2->value << ", " << reg2str(ins.dest->address.reg) << "\n";
 					}
-					myfile << "\tidiv " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\tmovq $0, %RDX\n";
+					// myfile << "\tcdqo\n";
+					myfile << "\tidivq " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tmovq " << "%RAX, " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\tmovq " << reg2str(ins.dest->address.reg) << ", " << ins.dest->address.mem << "\n";
 
 					myfile << "\tpopq %RDX" << "\n";
 					myfile << "\tpopq %RAX" << "\n";
