@@ -2,26 +2,32 @@ void flushRegisters() {
 	if (registerDescriptor.lookup(RAX) != NULL) {
 		myfile << "\tmovq %RAX, " << registerDescriptor.lookup(RAX)->address.mem << "\n";
 		registerDescriptor.lookup(RAX)->address.reg = NoReg;
+		registerDescriptor.modify(RAX, NULL);
 	}
 	if (registerDescriptor.lookup(RBX) != NULL) {
 		myfile << "\tmovq %RBX, " << registerDescriptor.lookup(RBX)->address.mem << "\n";
 		registerDescriptor.lookup(RBX)->address.reg = NoReg;
+		registerDescriptor.modify(RBX, NULL);
 	}
 	if (registerDescriptor.lookup(RCX) != NULL) {
 		myfile << "\tmovq %RCX, " << registerDescriptor.lookup(RCX)->address.mem << "\n";
 		registerDescriptor.lookup(RCX)->address.reg = NoReg;
-	}
-	if (registerDescriptor.lookup(RDX) != NULL) {
-		myfile << "\tmovq %RDX, " << registerDescriptor.lookup(RDX)->address.mem << "\n";
-		registerDescriptor.lookup(RDX)->address.reg = NoReg;
+		registerDescriptor.modify(RCX, NULL);
 	}
 	if (registerDescriptor.lookup(RSI) != NULL) {
 		myfile << "\tmovq %RSI, " << registerDescriptor.lookup(RSI)->address.mem << "\n";
 		registerDescriptor.lookup(RSI)->address.reg = NoReg;
+		registerDescriptor.modify(RSI, NULL);
 	}
 	if (registerDescriptor.lookup(RDI) != NULL) {
 		myfile << "\tmovq %RDI, " << registerDescriptor.lookup(RDI)->address.mem << "\n";
 		registerDescriptor.lookup(RDI)->address.reg = NoReg;
+		registerDescriptor.modify(RDI, NULL);
+	}
+	if (registerDescriptor.lookup(RDX) != NULL) {
+		myfile << "\tmovq %RDX, " << registerDescriptor.lookup(RDX)->address.mem << "\n";
+		registerDescriptor.lookup(RDX)->address.reg = NoReg;
+		registerDescriptor.modify(RDX, NULL);
 	}
 	myfile << "\n";
 }
@@ -29,17 +35,7 @@ void flushRegisters() {
 void allocateRegister(Instruction3AC* instr) {
 	Register r;
 
-	// r = registerDescriptor.findEmptyRegister();
-
-
 	SymbolTableEntry* entry = instr->dest;
-
-	// if (r != NoReg) {
-	// 	r = registerDescriptor.getFarthestNextUseRegister(false);
-	// 	myfile << "\tmovq " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
-	// 	registerDescriptor.lookup(r)->address.reg = NoReg;
-	// 	registerDescriptor.modify(r, entry);
-	// }
 
 	// allocating register to in1 or in2 depending on op for conditional
 	// statements.
@@ -71,10 +67,10 @@ void allocateRegister(Instruction3AC* instr) {
 	}
 
 	// x = y op z
-	cout << instr->lineNo << endl;
+	// cout << instr->lineNo << endl;
 	if (entry->address.reg != NoReg) {
 		r = entry->address.reg;
-		cout << "f1" << instr->lineNo << endl;
+		// cout << "f1" << instr->lineNo << endl;
 		registerDescriptor.modify(r, entry);
 		return;
 	}
@@ -83,7 +79,7 @@ void allocateRegister(Instruction3AC* instr) {
 		if(r != NoReg) {
 			myfile << "\tmovq " << reg2str(r) << ", " << instr->in1->address.mem << "\n";
 			instr->in1->address.reg = NoReg;
-			cout << "f2" << instr->lineNo << endl;
+			// cout << "f2" << instr->lineNo << endl;
 			registerDescriptor.modify(r, entry);
 			return;
 		}
@@ -105,11 +101,11 @@ void allocateRegister(Instruction3AC* instr) {
 		r = registerDescriptor.getFarthestNextUseRegister(false);
 		myfile << "\tmovq " << reg2str(r) << ", " << registerDescriptor.lookup(r)->address.mem << "\n";
 		registerDescriptor.lookup(r)->address.reg = NoReg;
-		cout << "f4" << instr->lineNo << endl;
+		// cout << "f4" << instr->lineNo << endl;
 		registerDescriptor.modify(r, entry);
 	}
 	else {
-		cout << "f5" << instr->lineNo << endl;
+		// cout << "f5" << instr->lineNo << endl;
 		registerDescriptor.modify(r, entry);
 	}
 }

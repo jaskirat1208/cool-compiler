@@ -18,11 +18,19 @@ string reg2str(Register r) {
 		case RAX : return "%RAX";
 		case RBX : return "%RBX";
 		case RCX : return "%RCX";
-		case RDX : return "%RDX";
 		case RSI : return "%RSI";
 		case RDI : return "%RDI";
+		case RDX : return "%RDX";
 	}
 	return "";
+}
+
+void printAssemblyCode() {
+	ifstream infile("asmOut/result.s");
+	string line;
+	while(getline(infile, line)) {
+		cout << line << "\n";
+	}
 }
 
 void printRegisterDescriptorTable(){
@@ -36,14 +44,14 @@ void printRegisterDescriptorTable(){
 	if (registerDescriptor.lookup(RCX) != NULL) {
 		cout << "RCX: " << registerDescriptor.lookup(RCX)->address.mem << endl;
 	}
-	if (registerDescriptor.lookup(RDX) != NULL) {
-		cout << "RDX: " << registerDescriptor.lookup(RDX)->address.mem << endl;
-	}
 	if (registerDescriptor.lookup(RSI) != NULL) {
 		cout << "RSI: " << registerDescriptor.lookup(RSI)->address.mem << endl;
 	}
 	if (registerDescriptor.lookup(RDI) != NULL) {
 		cout << "RDI: " << registerDescriptor.lookup(RDI)->address.mem << endl;
+	}
+	if (registerDescriptor.lookup(RDX) != NULL) {
+		cout << "RDX: " << registerDescriptor.lookup(RDX)->address.mem << endl;
 	}
 	cout << "-----------------------------------------" << endl;
 }

@@ -4,7 +4,6 @@
 #include "generateCode.cpp"
 #include "loadData.cpp"
 #include "basicBlocks.cpp"
-#include "printAsmCode.cpp"
 
 int main(int argc, char** argv) {
 

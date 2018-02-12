@@ -1,4 +1,4 @@
-bin/codegen: src/mainDriver.cpp src/global.h src/helper.cpp src/allocateRegister.cpp src/generateCode.cpp src/loadData.cpp src/basicBlocks.cpp src/printAsmCode.cpp
+bin/codegen: src/mainDriver.cpp src/global.h src/helper.cpp src/allocateRegister.cpp src/generateCode.cpp src/loadData.cpp src/basicBlocks.cpp
 	g++ -o bin/codegen src/mainDriver.cpp
 
 .PHONY: clean

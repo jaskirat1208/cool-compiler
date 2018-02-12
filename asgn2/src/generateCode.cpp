@@ -23,7 +23,7 @@ void generateCode() {
 		for(int i = 0; i < lenCurrentBB; i++) {
 			Instruction3AC ins = currentBB[i];
 			
-			printRegisterDescriptorTable();
+			// printRegisterDescriptorTable();
 
 			if (ins.type == Copy) {
 				allocateRegister(&ins);
@@ -123,6 +123,7 @@ void generateCode() {
 						else {
 							registerDescriptor.modify(r, ins.dest);
 						}
+						registerDescriptor.modify(RAX, NULL);
 						myfile << "\tmovq " << "%RAX, " << reg2str(ins.dest->address.reg) << "\n";
 					}
 
@@ -215,6 +216,7 @@ void generateCode() {
 							myfile << "\tcmp " << "$" << ins.in2->value << ", " << "$" << ins.in1->value << "\n";
 						}
 					}
+					flushRegisters();
 					if (ins.op == "eq") {
 						myfile << "\tje " << "label" << basicBlocks[k].targetLabelBB << "\n";
 					} else if (ins.op == "neq") {
@@ -228,10 +230,13 @@ void generateCode() {
 					}
 				}
 				myfile << "\n";
+
 			} else if (ins.type == UnconditionalJump) {
+				flushRegisters();
 				myfile << "\tjmp " << "label" << basicBlocks[k].targetLabelBB << "\n";
 				myfile << "\n";
-			} else if (ins.type == Procedure){
+			} else if (ins.type == Procedure) {
+				flushRegisters();
 				myfile << "\tcall " << "label" << basicBlocks[k].targetLabelBB << "\n";
 				myfile << "\n";
 			} else if (ins.type == InstrLabel) {
@@ -280,10 +285,11 @@ void generateCode() {
 				myfile << "\tpopq %RDI\n";
 				myfile << "\n";
 			} else if (ins.type == Return) {
+				flushRegisters();
 				myfile << "\tret\n";
 			}
 		}
-		flushRegisters();
+		// flushRegisters();
 	}
 
 	myfile << "\tret\n";

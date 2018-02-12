@@ -7,8 +7,7 @@
 7,ret
 8,label,foo
 9,print,a
-10,=,c,9
-10,*,a,c,b
+10,/,a,a,b
 11,print,a
 12,print,b
 13,ret
