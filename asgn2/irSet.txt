@@ -1,9 +1,0 @@
-1,=,a,5
-3,=,b,21
-4,*,a,a,b
-1,print,a
-2,print,b
-6,scan,c
-4,print,a
-5,+,c,a,c
-5345,print,c

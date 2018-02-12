@@ -1,27 +1,73 @@
 .data
 	c:	.quad 0
-	b:	.quad 0
 	a:	.quad 0
+	b:	.quad 0
 	str:	.string "%d\n"
 	scan_str:	.string "%d"
 .text
 .globl main
 main:
 label0:
-	movq $5, %RAX
+	movq $1, %RAX
 	movq %RAX, a
 
-	movq $21, %RBX
+	movq %RAX, a
+
+label1:
+	movq $9, %RBX
 	movq %RBX, b
 
-	movq %RAX, %RCX
+	movq a, %RCX
+	addq b, %RCX
+	movq %RCX, a
+
+	cmp $50, %RCX
+	jle label1
+
+	movq %RAX, a
+	movq %RBX, b
+	movq %RCX, a
+
+label2:
+	call label4
+
+	movq %RAX, a
+	movq %RBX, b
+	movq %RCX, a
+
+label3:
+	ret
+	movq %RAX, a
+	movq %RBX, b
+	movq %RCX, a
+
+label4:
+	pushq %RDI
+	pushq %RSI
+	pushq %RAX
+	movq $str, %RDI
+	movq a, %RSI
+	movq $0, %RAX
+	pushq %R10
+	pushq %R11
+	call printf
+	popq %R11
+	popq %R10
+	popq %RAX
+	popq %RSI
+	popq %RDI
+
+	movq $9, %RDX
+	movq %RDX, c
+
+	movq %RDX, c
 	pushq %RAX
 	pushq %RDX
-	movq a, %RAX
-	movq b, %RCX
-	imulq %RCX
-	movq %RAX, %RCX
-	movq %RCX, a
+	movq c, %RAX
+	movq b, %RDX
+	imulq %RDX
+	movq %RAX, %RDX
+	movq %RDX, a
 	popq %RDX
 	popq %RAX
 
@@ -55,48 +101,10 @@ label0:
 	popq %RSI
 	popq %RDI
 
-	pushq %RBP
-	pushq %RDI
-	pushq %RSI
-	movq $scan_str, %RDI
-	movq $c, %RSI
-	call scanf
-	popq %RSI
-	popq %RDI
-	popq %RBP
-
-	pushq %RDI
-	pushq %RSI
-	pushq %RAX
-	movq $str, %RDI
-	movq a, %RSI
-	movq $0, %RAX
-	pushq %R10
-	pushq %R11
-	call printf
-	popq %R11
-	popq %R10
-	popq %RAX
-	popq %RSI
-	popq %RDI
-
-	movq a, %RDX
-	addq c, %RDX
-	movq %RDX, c
-
-	pushq %RDI
-	pushq %RSI
-	pushq %RAX
-	movq $str, %RDI
-	movq c, %RSI
-	movq $0, %RAX
-	pushq %R10
-	pushq %R11
-	call printf
-	popq %R11
-	popq %R10
-	popq %RAX
-	popq %RSI
-	popq %RDI
+	ret
+	movq %RAX, a
+	movq %RBX, b
+	movq %RCX, a
+	movq %RDX, a
 
 	ret

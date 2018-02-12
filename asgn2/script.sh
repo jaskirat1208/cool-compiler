@@ -1,8 +1,5 @@
-touch a.out
-g++ basicBlockImplementation.cpp
+make
+bin/codegen $1
+g++ asmOut/result.s -no-pie
 ./a.out
 rm a.out
-touch result
-gcc -o result result.s -no-pie
-./result
-rm result

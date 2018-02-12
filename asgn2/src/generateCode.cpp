@@ -1,15 +1,11 @@
 void generateCode() {
-	myfile.open("result.s");
+	myfile.open("asmOut/result.s");
 	myfile << ".data\n";
 
 	vector<string> variableNames = symbolTable.printTableInts();
 	for(int i = 0; i < variableNames.size(); i++){
 		myfile << "\t" << variableNames[i] << ":\t.quad 0\n";
 	}
-	// variableNames = symbolTable.printTableArr();
-	// for(int i = 0; i < variableNames.size(); i++){
-	// 	myfile << "\t" << variableNames[i] << "\tDD 100 DUP(0)\n";
-	// }
 
 	myfile << "\tstr:\t.string \"%d\\n\"\n";
 	myfile << "\tscan_str:\t.string \"%d\"\n";
@@ -26,7 +22,6 @@ void generateCode() {
 
 		for(int i = 0; i < lenCurrentBB; i++) {
 			Instruction3AC ins = currentBB[i];
-			
 			
 			printRegisterDescriptorTable();
 
@@ -145,7 +140,6 @@ void generateCode() {
 						myfile << "\tmovq " << "$" << ins.in2->value << ", " << reg2str(ins.dest->address.reg) << "\n";
 					}
 					myfile << "\tmovq $0, %RDX\n";
-					// myfile << "\tcdqo\n";
 					myfile << "\tidivq " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tmovq " << "%RAX, " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tmovq " << reg2str(ins.dest->address.reg) << ", " << ins.dest->address.mem << "\n";
@@ -182,7 +176,6 @@ void generateCode() {
 						myfile << "\tmovq " << "$" << ins.in2->value << ", " << reg2str(ins.dest->address.reg) << "\n";
 					}
 					myfile << "\tmovq $0, %RDX\n";
-					// myfile << "\tcdqo\n";
 					myfile << "\tidivq " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tmovq " << "%RDX, " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tmovq " << reg2str(ins.dest->address.reg) << ", " << ins.dest->address.mem << "\n";
@@ -257,7 +250,9 @@ void generateCode() {
 				myfile << "\tpopq %RSI\n";
 				myfile << "\tpopq %RDI\n";
 				myfile << "\tpopq %RBP\n";
-				
+
+				myfile << "\tmovq " << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg) << "\n";
+					
 				myfile << "\n";
 			} else if (ins.type == Print) {
 				myfile << "\tpushq %RDI\n";
@@ -286,16 +281,12 @@ void generateCode() {
 				myfile << "\n";
 			} else if (ins.type == Return) {
 				myfile << "\tret\n";
-			// } else if (ins.type == IndexedCopyGet) {
-			// 	myfile << "\tmovl " << "(" << reg2str(ins.in1->address.reg) << ", " << reg2str(ins.in1->address.reg) << ", 4)" << ", " << reg2str(ins.dest->address.reg) << "\n";
-			// } else if (ins.type == IndexedCopyPut) {
-			// 	// x[i] = y .... 2,put,x,i,y
-			// 	myfile << "\tmovl " << reg2str(ins.in2->address.reg) << ", (" << reg2str(ins.dest->address.reg) << ", " << reg2str(ins.in1->address.reg) << ", 4)" << "\n";
-			// 	// cout << reg2str(ins.in2->address.reg) << endl;
 			}
 		}
+		flushRegisters();
 	}
 
 	myfile << "\tret\n";
+
 	myfile.close();
 }

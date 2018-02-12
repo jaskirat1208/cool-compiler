@@ -1,5 +1,5 @@
-void loadData() {
-	ifstream infile("irSet.txt");
+void loadData(char* argv) {
+	ifstream infile(argv);
 	string line;
 
 	while(getline(infile, line)) {
@@ -41,69 +41,6 @@ void loadData() {
 			} else {
 				in1 = symbolTable.lookup(in1Str);
 			}
-		// } else if (typeStr == "get") {
-		// 	type = IndexedCopyGet;
-		// 	op = typeStr;
-
-		// 	getline(linestream, destStr, ',');
-		// 	if (symbolTable.lookup(destStr) == NULL) {
-		// 		symbolTable.insert(destStr, dest);
-		// 		dest->type = VarInt;
-		// 	} else {
-		// 		dest = symbolTable.lookup(destStr);
-		// 	}
-
-		// 	getline(linestream, in1Str, ',');
-		// 	if (symbolTable.lookup(in1Str) == NULL) {
-		// 		symbolTable.insert(in1Str, in1);
-		// 		in1->type = VarArrInt;
-		// 	} else {
-		// 		in1 = symbolTable.lookup(in1Str);
-		// 	}
-
-		// 	getline(linestream, in2Str, ',');
-		// 	if (symbolTable.lookup(in2Str) == NULL) {
-		// 		symbolTable.insert(in2Str, in2);
-		// 		if (isNum(in2Str[0])) {
-		// 			in2->type = ConstInt;
-		// 			in2->value = stoi(in2Str);
-		// 		} else {
-		// 			in2->type = VarInt;
-		// 		}
-		// 	} else {
-		// 		in2 = symbolTable.lookup(in2Str);
-		// 	}
-		// } else if (typeStr == "put") {
-		// 	type = IndexedCopyPut;
-		// 	op = typeStr;
-
-		// 	getline(linestream, destStr, ',');
-		// 	if (symbolTable.lookup(destStr) == NULL) {
-		// 		symbolTable.insert(destStr, dest);
-		// 		dest->type = VarArrInt;
-		// 	} else {
-		// 		dest = symbolTable.lookup(destStr);
-		// 	}
-
-		// 	getline(linestream, in1Str, ',');
-		// 	if (symbolTable.lookup(in1Str) == NULL) {
-		// 		symbolTable.insert(in1Str, in1);
-		// 		if (isNum(in1Str[0])) {
-		// 			in1->type = ConstInt;
-		// 		} else {
-		// 			in1->type = VarInt;
-		// 		}
-		// 	} else {
-		// 		in1 = symbolTable.lookup(in1Str);
-		// 	}
-
-		// 	getline(linestream, in2Str, ',');
-		// 	if (symbolTable.lookup(in2Str) == NULL) {
-		// 		symbolTable.insert(in2Str, in2);
-		// 		in2->type = VarInt;
-		// 	} else {
-		// 		in2 = symbolTable.lookup(in2Str);
-		// 	}
 		} else if (typeStr == "+" || typeStr == "-" || typeStr == "*" ||
 				   typeStr == "/" || typeStr == "%") {
 			type = AssignBinaryOp;
@@ -248,9 +185,6 @@ void loadData() {
 			op = typeStr;
 		}
 
-		// stringstream ss(lineNo);
-	 //    int num = 0;
-	 //    ss >> num;
 		instructions[noOfInstructions].lineNo = noOfInstructions+1;
 		instructions[noOfInstructions].type = type;
 		instructions[noOfInstructions].op = op;
@@ -259,8 +193,5 @@ void loadData() {
 		instructions[noOfInstructions].dest = dest;
 
 		noOfInstructions++;
-
-		cout << "lineNo : " << lineNo << ", type : " << typeStr << ", op : " << op << endl;
-		cout << "dest : " << destStr << ", in1 : " << in1Str << ", in2 : " << in2Str << endl << endl;
 	}
 }

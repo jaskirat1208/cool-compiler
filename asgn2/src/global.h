@@ -8,7 +8,6 @@ typedef string Memory;
 // enumeration of variable type
 enum VarType {
 	VarInt,
-	// VarArrInt,
 	VarLabel,
 	ConstInt
 };
@@ -16,8 +15,6 @@ enum VarType {
 // enumeration of instruction type
 enum InstrType {
 	Copy, // x = y
-	// IndexedCopyGet, // x = y[i] .... 1,get,x,y,i
-	// IndexedCopyPut, // x[i] = y .... 2,put,x,i,y
 	AssignBinaryOp, // a = b `op` c .... 3,op,a,b,c
 	AssignUnaryOp,
 	ConditionalJump,
@@ -31,7 +28,6 @@ enum InstrType {
 
 // enumeration of types of available registers for use in each basic block
 enum Register {
-	// R8, R9, R12, R13, R14, R15, R10, R11, RBP, RSP,
 	RAX, RBX, RCX, RDX, RSI, RDI,
 	NoReg
 };
@@ -42,7 +38,6 @@ class AddressType {
 	public :
 		Register reg;
 		Memory mem;
-		// something for stack, not yet implemented
 };
 
 // The following class defines structure of Symbol Table Entry
@@ -92,16 +87,6 @@ class SymbolTable {
 			}
 			return variableNames;
 		}
-		// vector<string> printTableArr(){
-		// 	vector<string> variableNames;
-		// 	unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
-		// 	for (; i != table.end(); ++i) {
-		// 		if (i->second->type == VarArrInt) {
-		// 			variableNames.push_back(i->first);
-		// 		}
-		// 	}
-		// 	return variableNames;
-		// }
 };
 
 // The following class defines the structure of Register Descriptor
@@ -118,16 +103,6 @@ class RegisterDescriptor {
 			modify(RDX, NULL);
 			modify(RSI, NULL);
 			modify(RDI, NULL);
-			// modify(RBP, NULL);
-			// modify(RSP, NULL);
-			// modify(R8, NULL);
-			// modify(R9, NULL);
-			// modify(R10, NULL);
-			// modify(R11, NULL);
-			// modify(R12, NULL);
-			// modify(R13, NULL);
-			// modify(R14, NULL);
-			// modify(R15, NULL);
 			modify(NoReg, NULL);
 		}
 
@@ -158,13 +133,15 @@ class RegisterDescriptor {
 		Register getFarthestNextUseRegister(bool flag) {
 			int maxNextUse = -1;
 			Register maxNextUseRegister = NoReg;
-			for(i = table.begin();i != table.end(); i++){
-				if(i->second->nextUse > maxNextUse) {
-					if (flag && i->first == RAX) {
-						continue;
+			for(i = table.begin(); i != table.end(); ++i){
+				if (i->first != NoReg) {
+					if(i->second->nextUse >= maxNextUse) {
+						if (flag && i->first == RAX) {
+							continue;
+						}
+						maxNextUse = i->second->nextUse;
+						maxNextUseRegister = i->first;
 					}
-					maxNextUse = i->second->nextUse;
-					maxNextUseRegister = i->first;
 				}
 			}
 			return maxNextUseRegister;
@@ -195,8 +172,6 @@ class BasicBlock {
 	public :
 		Instruction3AC* instructions;
 		int numInstructions;
-		// BasicBlock* ifTrueNextBB;
-		// BasicBlock* ifFalseNextBB;
 		int labelBB;
 		int targetLabelBB;
 };

@@ -4,14 +4,13 @@
 #include "generateCode.cpp"
 #include "loadData.cpp"
 #include "basicBlocks.cpp"
+#include "printAsmCode.cpp"
 
-int main() {
-	loadData();
+int main(int argc, char** argv) {
+
+	loadData(argv[1]);
 
 	findLeaders();
-
-	cout << "All leaders are:\n";
-	printSet(leaders);
 
 	noOfBasicBlocks = leaders.size();
 
@@ -21,7 +20,7 @@ int main() {
 
 	generateCode();
 
-	cout << "--------------------------" << endl;
+	printAssemblyCode();
 
 	return 0;
 }
