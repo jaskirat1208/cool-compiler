@@ -28,7 +28,7 @@ enum InstrType {
 
 // enumeration of types of available registers for use in each basic block
 enum Register {
-	RAX, RBX, RCX, RDX, RSI, RDI,
+	RAX, RBX, RCX,RSI, RDI, RDX, 
 	NoReg
 };
 

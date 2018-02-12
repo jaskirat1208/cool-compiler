@@ -57,17 +57,17 @@ label4:
 	popq %RSI
 	popq %RDI
 
-	movq $9, %RDX
-	movq %RDX, c
+	movq $7, %RSI
+	movq %RSI, c
 
-	movq %RDX, c
 	pushq %RAX
 	pushq %RDX
-	movq c, %RAX
-	movq b, %RDX
-	imulq %RDX
-	movq %RAX, %RDX
-	movq %RDX, a
+	movq b, %RAX
+	movq c, %RDI
+	movq $0, %RDX
+	idivq %RDI
+	movq %RAX, %RDI
+	movq %RDI, a
 	popq %RDX
 	popq %RAX
 
@@ -105,6 +105,7 @@ label4:
 	movq %RAX, a
 	movq %RBX, b
 	movq %RCX, a
-	movq %RDX, a
+	movq %RSI, c
+	movq %RDI, a
 
 	ret
