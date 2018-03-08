@@ -27,7 +27,7 @@ void yyerror(const char* s);
 %%
 
 calculation:
-		   	   | line calculation
+		   	   | line
 ;
 
 line: T_NEWLINE
