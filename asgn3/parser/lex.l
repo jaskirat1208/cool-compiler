@@ -96,10 +96,12 @@ OP_BITWISE		(&|\||^)
 {KEY_PACKAGE}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyPackage;
+					return KEY_PACKAGE;
 				}
 {KEY_IMPORT}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyImport;
+					return KEY_IMPORT;
 				}
 {KEY_CLASS}		{
 					printf("[KEYWORD: %s]\n", yytext);
