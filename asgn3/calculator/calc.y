@@ -10,6 +10,7 @@ void yyerror(const char* s);
 %union {
 	int ival;
 	float fval;
+	char* str;
 }
 
 %token<ival> T_INT
@@ -21,7 +22,7 @@ void yyerror(const char* s);
 
 %type<ival> expression
 %type<fval> mixed_expression
-
+%type<str> line
 %start calculation
 
 %%
