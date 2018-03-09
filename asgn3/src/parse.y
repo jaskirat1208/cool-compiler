@@ -65,9 +65,8 @@ using namespace std;
 %token OP_LOGICAL	
 %token OP_BITWISE
 
-%start Compilation_unit
-%type<strValue> Compilation_unit
-%type<strValue> ​Package_declaration
+%type<strValue> compilation
+%type<strValue> Package_declaration
 %type<strValue> Import_declarations
 %type<strValue> Program
 %type<strValue> Package_name
@@ -76,7 +75,7 @@ using namespace std;
 %type<strValue> Class
 %type<strValue> Interface
 %type<strValue> Inheritance
-%type<strValue> ​Implement_Interface
+%type<strValue> Implement_Interface
 %type<strValue> Features_list_opt
 %type<strValue> Interface_Inheritance_List
 %type<strValue> Interface_features_list_opt
@@ -108,18 +107,19 @@ using namespace std;
 %type<strValue> Let_Expression
 %type<strValue> Expressions
 %type<strValue> Formals
-
+%start compilation
+%%
 /*Grammer Rules*/
 
-Compilation_unit:
-		​Package_declaration ​Import_declarations Program		{ printf("parsing started\n"); }
+compilation:
+		Package_declaration Import_declarations Program		{ printf("parsing started\n"); }
 		;
 Package_declaration:
 		KEY_PACKAGE Package_name STMT_TERMINATOR
 		|
 		;
 Package_name:
-		Package_name.IDENTIFIER
+		Package_name DOT IDENTIFIER
 		| IDENTIFIER
 		;
 Import_declarations:
@@ -140,7 +140,7 @@ Sub_Program:
 		| Interface
 		;
 Class:
-		KEY_CLASS TYPE Inheritance ​Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END 		{ printf("class %s found", $2); }
+		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END 		{ printf("class %s found", $2); }
 		;
 Interface:
 		KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END
@@ -261,7 +261,7 @@ Action:
 		IDENTIFIER COLON TYPE OP_IMPLIES Expression
 		;
 If_then_else:
-		KEY_IF Expression KEY_THEN Expression else Expression KEY_FI
+		KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI
 		;
 While:
 		KEY_WHILE Expression KEY_LOOP Expression KEY_POOL
