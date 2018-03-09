@@ -165,133 +165,133 @@ Sub_Program:
 		;
 Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
-		{ cout << "Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END\n"; }
+		{ parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END\n"); }
 		;
 Interface:
 		KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END
-		{ cout << "Interface -> KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END\n"; }
+		{ parse_tree.push_back("Interface -> KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END\n"); }
 		;
 Interface_Inheritance_List:
 		KEY_INHERITS TYPE
-		{ cout << "Interface_Inheritance_List -> KEY_INHERITS TYPE\n"; }
+		{ parse_tree.push_back("Interface_Inheritance_List -> KEY_INHERITS TYPE\n"); }
 		| Interface_Inheritance_List COMMA TYPE
-		{ cout << "Interface_Inheritance_List -> Interface_Inheritance_List COMMA TYPE\n"; }
+		{ parse_tree.push_back("Interface_Inheritance_List -> Interface_Inheritance_List COMMA TYPE\n"); }
 		|
-		{ cout << "Interface_Inheritance_List -> Empty\n"; }
+		{ parse_tree.push_back("Interface_Inheritance_List -> Empty\n"); }
 		;
 Inheritance:
 		KEY_INHERITS TYPE
-		{ cout << "Inheritance -> KEY_INHERITS TYPE\n"; }
+		{ parse_tree.push_back("Inheritance -> KEY_INHERITS TYPE\n"); }
 		|
-		{ cout << "Inheritance -> Empty\n"; }
+		{ parse_tree.push_back("Inheritance -> Empty\n"); }
 		;
 Implement_Interface:
 		KEY_IMPLEMENTS Interfaces_list
-		{ cout << "Implement_Interface -> KEY_IMPLEMENTS Interfaces_list\n"; }
+		{ parse_tree.push_back("Implement_Interface -> KEY_IMPLEMENTS Interfaces_list\n"); }
 		|
-		{ cout << "Implement_Interface -> Empty\n"; }
+		{ parse_tree.push_back("Implement_Interface -> Empty\n"); }
 		;
 Interfaces_list:
 		Interfaces_list COMMA TYPE
-		{ cout << "Interfaces_list -> Interfaces_list COMMA TYPE\n"; }
+		{ parse_tree.push_back("Interfaces_list -> Interfaces_list COMMA TYPE\n"); }
 		| TYPE
-		{ cout << "Interfaces_list -> TYPE\n"; }
+		{ parse_tree.push_back("Interfaces_list -> TYPE\n"); }
 		;
 Features_list_opt:
 		Features_list
-		{ cout << "Features_list_opt -> Features_list\n"; }
+		{ parse_tree.push_back("Features_list_opt -> Features_list\n"); }
 		|
-		{ cout << "Features_list_opt -> Empty\n"; }
+		{ parse_tree.push_back("Features_list_opt -> Empty\n"); }
 		;
 Features_list:
 		Features_list Feature STMT_TERMINATOR
-		{ cout << "Features_list -> Features_list Feature STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Features_list -> Features_list Feature STMT_TERMINATOR\n"); }
 		| Feature STMT_TERMINATOR
-		{ cout << "Features_list -> Feature STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Features_list -> Feature STMT_TERMINATOR\n"); }
 		;
 Feature:
 		IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END
-		{ cout << "Feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END\n"; }
+		{ parse_tree.push_back("Feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END\n"); }
 		| Formal
-		{ cout << "Feature -> Formal\n"; }
+		{ parse_tree.push_back("Feature -> Formal\n"); }
 		;
 Interface_features_list_opt:
 		Interface_features_list
-		{ cout << "Interface_features_list_opt -> Interfaces_list\n"; }
+		{ parse_tree.push_back("Interface_features_list_opt -> Interfaces_list\n"); }
 		|
-		{ cout << "Interface_features_list_opt -> Empty\n"; }
+		{ parse_tree.push_back("Interface_features_list_opt -> Empty\n"); }
 		;
 Interface_features_list:
 		Interface_features_list Interface_feature STMT_TERMINATOR
-		{ cout << "Interface_features_list -> Interface_features_list Interface_feature STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Interface_features_list -> Interface_features_list Interface_feature STMT_TERMINATOR\n"); }
 		| Interface_feature STMT_TERMINATOR
-		{ cout << "Interface_features_list -> Interface_feature STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Interface_features_list -> Interface_feature STMT_TERMINATOR\n"); }
 		;
 Interface_feature:
 		IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE
-		{ cout << "Interface_feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE\n"; }
+		{ parse_tree.push_back("Interface_feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE\n"); }
 		;
 Formal_params_list_opt:
 		Formal_params_list
-		{ cout << "Formal_params_list_opt -> Formal_params_list\n"; }
+		{ parse_tree.push_back("Formal_params_list_opt -> Formal_params_list\n"); }
 		|
-		{ cout << "Formal_params_list_opt -> Empty\n"; }
+		{ parse_tree.push_back("Formal_params_list_opt -> Empty\n"); }
 		;
 Formal_params_list:
 		Formal_params_list COMMA Formal_param
-		{ cout << "Formal_params_list -> Formal_params_list COMMA\n"; }
+		{ parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA\n"); }
 		| Formal_param
-		{ cout << "Formal_params_list -> Formal_param\n"; }
+		{ parse_tree.push_back("Formal_params_list -> Formal_param\n"); }
 		;
 Formal_param:
 		IDENTIFIER COLON TYPE
-		{ cout << "Formal_param -> IDENTIFIER COLON TYPE\n"; }
+		{ parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE\n"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE
-		{ cout << "Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE\n"; }
+		{ parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE\n"); }
 		;
 Formal:
 		IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
-		{ cout << "Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression\n"; }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression\n"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression
-		{ cout << "Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression\n"; }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression\n"); }
 		| IDENTIFIER COLON TYPE OP_ASGN Expression
-		{ cout << "Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression\n"; }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression\n"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE
-		{ cout << "Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE\n"; }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE\n"); }
 		| IDENTIFIER COLON TYPE
-		{ cout << "Formal -> IDENTIFIER COLON TYPE\n"; }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE\n"); }
 		;
 Expression:
 		IDENTIFIER OP_ASGN Expression
-		{ cout << "Expression -> IDENTIFIER OP_ASGN Expression\n"; }
+		{ parse_tree.push_back("Expression -> IDENTIFIER OP_ASGN Expression\n"); }
 		| IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ cout << "Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"; }
+		{ parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"); }
 		| Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ cout << "Expression -> Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"; }
+		{ parse_tree.push_back("Expression -> Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"); }
 		| Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ cout << "Expression -> Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"; }
+		{ parse_tree.push_back("Expression -> Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"); }
 		| Conditionals
-		{ cout << "Expression -> Conditionals\n"; }
+		{ parse_tree.push_back("Expression -> Conditionals\n"); }
 		| Loops
-		{ cout << "Expression -> Loops\n"; }
+		{ parse_tree.push_back("Expression -> Loops\n"); }
 		| Block_Expression
-		{ cout << "Expression -> Block_Expression\n"; }
+		{ parse_tree.push_back("Expression -> Block_Expression\n"); }
 		| Let_Expression
-		{ cout << "Expression -> Let_Expression\n"; }
+		{ parse_tree.push_back("Expression -> Let_Expression\n"); }
 		| KEY_NEW TYPE
-		{ cout << "Expression -> KEY_NEW TYPE\n"; }
+		{ parse_tree.push_back("Expression -> KEY_NEW TYPE\n"); }
 		| KEY_ISVOID Expression
-		{ cout << "Expression -> KEY_ISVOID Expression\n"; }
+		{ parse_tree.push_back("Expression -> KEY_ISVOID Expression\n"); }
 		| Return_statement
-		{ cout << "Expression -> Return_statement\n"; }
+		{ parse_tree.push_back("Expression -> Return_statement\n"); }
 		| Break_statement
-		{ cout << "Expression -> Break_statement\n"; }
+		{ parse_tree.push_back("Expression -> Break_statement\n"); }
 		| Continue_statement
-		{ cout << "Expression -> Continue_statement\n"; }
+		{ parse_tree.push_back("Expression -> Continue_statement\n"); }
 		| Expression OP_ARITHMETIC_B Expression
-		{ cout << "Expression -> Expression OP_ARITHMETIC_B Expression\n"; }
+		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B Expression\n"); }
 		| OP_ARITHMETIC_U Expression
-		{ cout << "Expression -> OP_ARITHMETIC_U Expression\n"; }
+		{ parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression\n"); }
 		| Expression OP_RELATIONAL Expression
 		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL Expression\n"); }
 		| Expression OP_LOGICAL Expression
