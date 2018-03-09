@@ -427,7 +427,7 @@ int main(int argc, char **argv)
 
     cout<<"Printing the parse tree"<<endl;
     for(int i=0;i<parse_tree.size();i++){
-        cout<<parse_tree[i]<<endl;
+        cout<<parse_tree[i];
     }
 	return 0;
 }
