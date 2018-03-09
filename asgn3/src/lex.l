@@ -94,180 +94,180 @@ OP_BITWISE		(&|\||^)
 					line_ctr++;
 				}
 {INTEGER}		{
-					printf("[INTEGER : %s] (%d)\n", yytext, atoi(yytext));
+					// printf("[INTEGER : %s] (%d)\n", yytext, atoi(yytext));
 					++numInteger;
 					s_integer.insert(yytext);
 					yylval.intValue = atoi(yytext);
 					return INTEGER;
 				}
 {KEY_PACKAGE}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyPackage;
 					return KEY_PACKAGE;
 				}
 {KEY_IMPORT}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyImport;
 					return KEY_IMPORT;
 				}
 {KEY_CLASS}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyClass;
 					return KEY_CLASS;
 				}
 {KEY_INTERFACE}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyInterface;
 					return KEY_INTERFACE;
 				}
 {KEY_INHERITS}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyInherits;
 					return KEY_INHERITS;
 				}
 {KEY_IMPLEMENTS}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyImplements;
 					return KEY_IMPLEMENTS;
 				}
 {KEY_RETURN}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyReturn;
 					return KEY_RETURN;
 				}
 {KEY_NEW}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyNew;
 					return KEY_NEW;
 				}
 {KEY_BREAK}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyBreak;
 					return KEY_BREAK;
 				}
 {KEY_CONTINUE}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyContinue;
 					return KEY_CONTINUE;
 				}
 {KEY_ISVOID}	{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyIsvoid;
 					return KEY_ISVOID;
 				}
 {KEY_NOT}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyNot;
 					return KEY_NOT;
 				}
 {KEY_CASE}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyCase;
 					return KEY_CASE;
 				}
 {KEY_OF}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyOf;
 					return KEY_OF;
 				}
 {KEY_ESAC}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyEsac;
 					return KEY_ESAC;
 				}
 {KEY_WHILE}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyWhile;
 					return KEY_WHILE;
 				}
 {KEY_LOOP}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyLoop;
 					return KEY_LOOP;
 				}
 {KEY_POOL}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyPool;
 					return KEY_POOL;
 				}
 {KEY_DO}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyDo;
 					return KEY_DO;
 				}
 {KEY_FOR}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyFor;
 					return KEY_FOR;
 				}
 {KEY_IF}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyIf;
 					return KEY_IF;
 				}
 {KEY_THEN}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyThen;
 					return KEY_THEN;
 				}
 {KEY_ELSE}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyElse;
 					return KEY_ELSE;
 				}
 {KEY_FI}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyFi;
 					return KEY_FI;
 				}
 {KEY_LET}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyLet;
 					return KEY_LET;
 				}
 {KEY_IN}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyIn;
 					return KEY_IN;
 				}
 {KEY_TRUE}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyTrue;
 					return KEY_TRUE;
 				}
 {KEY_FALSE}		{
-					printf("[KEYWORD: %s]\n", yytext);
+					// printf("[KEYWORD: %s]\n", yytext);
 					++numKeyFalse;
 					return KEY_FALSE;
 				}
 {IDENTIFIER}	{
-					printf("[IDENTIFIER: %s]\n", yytext);
+					// printf("[IDENTIFIER: %s]\n", yytext);
 					++numIdentifier;
 					s_identifiers.insert(yytext);
-					yylval.strValue = yytext;
+					yylval.str = yytext;
 					return IDENTIFIER;	
 				}
 {TYPE}			{
-					printf("[TYPE: %s]\n", yytext);
+					// printf("[TYPE: %s]\n", yytext);
 					++numType;
 					s_type.insert(yytext);
-					yylval.strValue = yytext;
+					yylval.str = yytext;
 					return TYPE;
 				}
 {OP_ASGN}		{
-					printf("OP_ASGN\n");
+					// printf("OP_ASGN\n");
 					++numOpAsgn;
 					return OP_ASGN;
 				}
 {OP_IMPLIES}	{
-					printf("OP_IMPLIES\n");
+					// printf("OP_IMPLIES\n");
 					++numOpImplies;
 					return OP_IMPLIES;
 				}
 {STRING}		{
 					cout<<"[String:"<<yytext<<" ]"<<endl;
 					s_strings.insert(yytext);
-					yylval.strValue = yytext;
+					yylval.str = yytext;
 					return STRING;
 				}
 {SL_COMMENT}	{
@@ -277,97 +277,97 @@ OP_BITWISE		(&|\||^)
 					cout<<"M_COMMENTING:"<<yytext<<endl;
 				}			
 {COLON}			{
-					printf("COLON\n");
+					// printf("COLON\n");
 					++numColon;
 					return COLON;
 				}
 {STMT_TERMINATOR}	{
-					printf("STMT_TERMINATOR\n");
+					// printf("STMT_TERMINATOR\n");
 					++numStmtTerminator;
 					return STMT_TERMINATOR;
 				}
 {AT}			{
-					printf("AT\n");
+					// printf("AT\n");
 					++numAt;
 					return AT;
 				}
 {DOT}			{
-					printf("DOT\n");
+					// printf("DOT\n");
 					++numDot;
 					return DOT;
 				}
 {DOTSTAR}			{
-					printf("DOTSTAR\n");
+					// printf("DOTSTAR\n");
 					++numDotStar;
 					return DOTSTAR;
 				}
 {COMMA}			{
-					printf("COMMA\n");
+					// printf("COMMA\n");
 					++numComma;
 					return COMMA;
 				}
 {BLOCK_BEGIN}	{
-					printf("BLOCK_BEGIN\n");
+					// printf("BLOCK_BEGIN\n");
 					++numBlockBegin;
 					return BLOCK_BEGIN;
 				}
 {BLOCK_END}		{
-					printf("BLOCK_END\n");
+					// printf("BLOCK_END\n");
 					++numBlockEnd;
 					return BLOCK_END;
 				}
 {PARAN_OPEN}	{
-					printf("PARAN_OPEN\n");
+					// printf("PARAN_OPEN\n");
 					++numParanOpen;
 					return PARAN_OPEN;
 }
 {PARAN_CLOSE}	{
-					printf("PARAN_CLOSE\n");
+					// printf("PARAN_CLOSE\n");
 					++numParanClose;
 					return PARAN_CLOSE;
 }
 {ARRAY_OPEN}	{
-					printf("ARRAY_OPEN\n");
+					// printf("ARRAY_OPEN\n");
 					++numArrayOpen;
 					return ARRAY_OPEN;
 }
 {ARRAY_CLOSE}	{
-					printf("ARRAY_CLOSE\n");
+					// printf("ARRAY_CLOSE\n");
 					++numArrayClose;
 					return ARRAY_CLOSE;
 }
 {OP_ARITHMETIC_U}	{
-					printf("[OP_ARITHMETIC_U: %s]\n", yytext);
+					// printf("[OP_ARITHMETIC_U: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
 					return OP_ARITHMETIC_U;
 				}
 {OP_ARITHMETIC_B}	{
-					printf("[OP_ARITHMETIC_B: %s]\n", yytext);
+					// printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
 					return OP_ARITHMETIC_B;
 				}
 {OP_RELATIONAL}	{
-					printf("[OP_RELATIONAL: %s]\n", yytext);
+					// printf("[OP_RELATIONAL: %s]\n", yytext);
 					++numOpRelational;
 					s_op_relational.insert(yytext);
 					return OP_RELATIONAL;
 				}
 {OP_LOGICAL}	{
-					printf("[OP_LOGICAL: %s]\n", yytext);
+					// printf("[OP_LOGICAL: %s]\n", yytext);
 					++numOpLogical;
 					s_op_logical.insert(yytext);
 					return OP_LOGICAL;
 				}
 {OP_BITWISE}	{
-					printf("[OP_BITWISE: %s]\n", yytext);
+					// printf("[OP_BITWISE: %s]\n", yytext);
 					++numOpBitwise;
 					s_op_bitwise.insert(yytext);
 					return OP_BITWISE;
 				}
 [ \t]+			/* eat up white spaces */
 .				{
-					printf("This one is Unrecognized character: %s--------------------------------------------------------------------------Line %d\n", yytext,line_ctr);
+					// printf("This one is Unrecognized character: %s--------------------------------------------------------------------------Line %d\n", yytext,line_ctr);
 					s_unrecog.insert(yytext);
 				}
