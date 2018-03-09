@@ -3,12 +3,18 @@
 #include <math.h>
 #include <set>
 #include <string>
+#include <vector>
+
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
 void yyerror(const char* s);
 
 using namespace std;
+
+
+
+vector<string> parse_tree;
 %}
 
 %union {
@@ -117,45 +123,45 @@ using namespace std;
 
 Compilation_unit:
 		Package_declaration Import_declarations Program
-		{ cout << "Compilation_unit -> Package_declaration Import_declarations Program\n"; }
+		{ parse_tree.push_back("Compilation_unit -> Package_declaration Import_declarations Program\n"); }
 		;
 Package_declaration:
 		KEY_PACKAGE Package_name STMT_TERMINATOR
-		{ cout << "Package_declaration -> KEY_PACKAGE Package_name STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Package_declaration -> KEY_PACKAGE Package_name STMT_TERMINATOR\n"); }
 		|
-		{ cout << "Package_declaration -> Empty\n"; }
+		{ parse_tree.push_back( "Package_declaration -> Empty\n"); }
 		;
 Package_name:
 		Package_name DOT IDENTIFIER
-		{ cout << "Package_name -> Package_name DOT IDENTIFIER\n"; }
+		{ parse_tree.push_back("Package_name -> Package_name DOT IDENTIFIER\n"); }
 		| IDENTIFIER
-		{ cout << "Package_name -> IDENTIFIER\n"; }
+		{ parse_tree.push_back("Package_name -> IDENTIFIER\n"); }
 		;
 Import_declarations:
 		Import_declarations Import_declaration
-		{ cout << "Import_declarations -> Import_declarations Import_declaration\n"; }
+		{ parse_tree.push_back("Import_declarations -> Import_declarations Import_declaration\n"); }
 		| Import_declaration
-		{ cout << "Import_declarations -> Import_declaration\n"; }
+		{ parse_tree.push_back("Import_declarations -> Import_declaration\n"); }
 		|
-		{ cout << "Import_declarations -> Empty\n"; }
+		{ parse_tree.push_back( "Import_declarations -> Empty\n"); }
 		;
 Import_declaration:
 		KEY_IMPORT Package_name STMT_TERMINATOR
-		{ cout << "Import_declaration -> KEY_IMPORT Package_name STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Import_declaration -> KEY_IMPORT Package_name STMT_TERMINATOR\n"); }
 		| KEY_IMPORT Package_name DOTSTAR STMT_TERMINATOR
-		{ cout << "Import_declaration -> KEY_IMPORT Package_name DOTSTAR STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Import_declaration -> KEY_IMPORT Package_name DOTSTAR STMT_TERMINATOR\n"); }
 		;
 Program:
 		Program Sub_Program STMT_TERMINATOR
-		{ cout << "Program -> Program Sub_Program STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Program -> Program Sub_Program STMT_TERMINATOR\n"); }
 		|
-		{ cout << "Program -> Empty\n"; }
+		{ parse_tree.push_back("Program -> Empty\n"); }
 		;
 Sub_Program:
 		Class
-		{ cout << "Sub_Program -> Class\n"; }
+		{ parse_tree.push_back("Sub_Program -> Class\n"); }
 		| Interface
-		{ cout << "Sub_Program -> Interface\n"; }
+		{ parse_tree.push_back("Sub_Program -> Interface\n"); }
 		;
 Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
@@ -287,123 +293,123 @@ Expression:
 		| OP_ARITHMETIC_U Expression
 		{ cout << "Expression -> OP_ARITHMETIC_U Expression\n"; }
 		| Expression OP_RELATIONAL Expression
-		{ cout << "Expression -> Expression OP_RELATIONAL Expression\n"; }
+		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL Expression\n"); }
 		| Expression OP_LOGICAL Expression
-		{ cout << "Expression -> Expression OP_LOGICAL Expression\n"; }
+		{ parse_tree.push_back("Expression -> Expression OP_LOGICAL Expression\n"); }
 		| Expression OP_BITWISE Expression
-		{ cout << "Expression -> Expression OP_BITWISE Expression\n"; }
+		{ parse_tree.push_back("Expression -> Expression OP_BITWISE Expression\n"); }
 		| KEY_NOT Expression
-		{ cout << "Expression -> KEY_NOT Expression\n"; }
+		{ parse_tree.push_back("Expression -> KEY_NOT Expression\n"); }
 		| PARAN_OPEN Expression PARAN_CLOSE
-		{ cout << "Expression -> PARAN_OPEN Expression PARAN_CLOSE\n"; }
+		{ parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE\n"); }
 		| IDENTIFIER
-		{ cout << "Expression -> IDENTIFIER\n"; }
+		{ parse_tree.push_back("Expression -> IDENTIFIER\n"); }
 		| IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE
-		{ cout << "Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE\n"; }
+		{ parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE\n"); }
 		| ARRAY_OPEN Expression Expression ARRAY_CLOSE
-		{ cout << "Expression -> ARRAY_OPEN Expression Expression ARRAY_CLOSE\n"; }
+		{ parse_tree.push_back("Expression -> ARRAY_OPEN Expression Expression ARRAY_CLOSE\n"); }
 		| KEY_TRUE
-		{ cout << "Expression -> KEY_TRUE\n"; }
+		{ parse_tree.push_back("Expression -> KEY_TRUE\n"); }
 		| KEY_FALSE
-		{ cout << "Expression -> KEY_FALSE\n"; }
+		{ parse_tree.push_back("Expression -> KEY_FALSE\n"); }
 		| INTEGER
-		{ cout << "Expression -> INTEGER\n"; }
+		{ parse_tree.push_back("Expression -> INTEGER\n"); }
 		| STRING
-		{ cout << "Expression -> STRING\n"; }
+		{ parse_tree.push_back( "Expression -> STRING\n"); }
 		;
 Conditionals:
 		Case
-		{ cout << "Conditionals -> Case\n"; } 
+		{ parse_tree.push_back("Conditionals -> Case\n"); } 
 		| If_then_else
-		{ cout << "Conditionals -> If_then_else\n"; }
+		{ parse_tree.push_back("Conditionals -> If_then_else\n"); }
 		;
 Loops:
 		While
-		{ cout << "Loops -> While\n"; }
+		{ parse_tree.push_back("Loops -> While\n"); }
 		| For
-		{ cout << "Loops -> For\n"; }
+		{ parse_tree.push_back("Loops -> For\n"); }
 		| Do_while
-		{ cout << "Loops -> Do_while\n"; }
+		{ parse_tree.push_back("Loops -> Do_while\n"); }
 		;
 Arguments_list_opt:
 		Arguments_list
-		{ cout << "Arguments_list_opt -> Arguments_list\n"; }
+		{ parse_tree.push_back("Arguments_list_opt -> Arguments_list\n"); }
 		|
-		{ cout << "Arguments_list_opt -> Empty\n"; }
+		{ parse_tree.push_back ("Arguments_list_opt -> Empty\n"); }
 		;
 Arguments_list:
 		Arguments_list COMMA Expression
-		{ cout << "Arguments_list -> Arguments_list COMMA Expression\n"; }
+		{ parse_tree.push_back("Arguments_list -> Arguments_list COMMA Expression\n"); }
 		| Expression
-		{ cout << "Arguments_list -> Expression\n"; }
+		{ parse_tree.push_back("Arguments_list -> Expression\n"); }
 		;
 Case:
 		KEY_CASE Expression KEY_OF Actions KEY_ESAC
-		{ cout << "Case -> KEY_CASE Expression KEY_OF Actions KEY_ESAC\n"; }
+		{ parse_tree.push_back("Case -> KEY_CASE Expression KEY_OF Actions KEY_ESAC\n"); }
 		;
 Actions:
 		Action
-		{ cout << "Actions -> Action\n"; }
+		{ parse_tree.push_back("Actions -> Action\n"); }
 		| Action Actions
-		{ cout << "Actions -> Action Actions\n"; }
+		{ parse_tree.push_back("Actions -> Action Actions\n"); }
 		;
 Action:
 		IDENTIFIER COLON TYPE OP_IMPLIES Expression
-		{ cout << "Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression\n"; }
+		{ parse_tree.push_back("Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression\n"); }
 		;
 If_then_else:
 		KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI
-		{ cout << "If_then_else -> KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI\n"; }
+		{ parse_tree.push_back("If_then_else -> KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI\n"); }
 		;
 While:
 		KEY_WHILE Expression KEY_LOOP Expression KEY_POOL
-		{ cout << "While -> KEY_WHILE Expression KEY_LOOP Expression KEY_POOL\n"; }
+		{ parse_tree.push_back("While -> KEY_WHILE Expression KEY_LOOP Expression KEY_POOL\n"); }
 		;
 For:
 		KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL
-		{ cout << "For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL\n"; }
+		{ parse_tree.push_back("For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL\n"); }
 		;
 Do_while:
 		KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression
-		{ cout << "Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression\n"; }
+		{ parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression\n"); }
 		;
 Break_statement:
 		KEY_BREAK
-		{ cout << "Break_statement -> KEY_BREAK\n"; }
+		{ parse_tree.push_back("Break_statement -> KEY_BREAK\n"); }
 		;
 Continue_statement:
 		KEY_CONTINUE
-		{ cout << "Continue_statement -> KEY_CONTINUE\n"; }
+		{ parse_tree.push_back("Continue_statement -> KEY_CONTINUE\n"); }
 		;
 Return_statement:
 		KEY_RETURN
-		{ cout << "Return_statement -> KEY_RETURN\n"; }
+		{ parse_tree.push_back("Return_statement -> KEY_RETURN\n"); }
 		;
 Block_Expression:
 		BLOCK_BEGIN Block_list BLOCK_END
-		{ cout << "Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END\n"; }
+		{ parse_tree.push_back("Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END\n"); }
 		;
 Block_list:
 		Block_list Expression STMT_TERMINATOR
-		{ cout << "Block_list -> Block_list Expression STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR\n"); }
 		| Expression STMT_TERMINATOR
-		{ cout << "Block_list -> Expression STMT_TERMINATOR\n"; }
+		{ parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR\n"); }
 		;
 Let_Expression:
 		KEY_LET Formal Formals KEY_IN Expression
-		{ cout << "Let_Expression -> KEY_LET Formal Formals KEY_IN Expression\n"; }
+		{ parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN Expression\n"); }
 		;
 Expressions:
 		Expressions COMMA Expression
-		{ cout << "Expressions -> Expressions COMMA Expression\n"; }
+		{ parse_tree.push_back( "Expressions -> Expressions COMMA Expression\n"); }
 		|
-		{ cout << "Expressions -> Empty\n"; }
+		{ parse_tree.push_back("Expressions -> Empty\n"); }
 		;
 Formals:
 		Formals COMMA Formal
-		{ cout << "Formals -> Formals COMMA Formal\n"; }
+		{ parse_tree.push_back("Formals -> Formals COMMA Formal\n"); }
 		|
-		{ cout << "Formals -> Empty\n"; }
+		{ parse_tree.push_back("Formals -> Empty\n"); }
 		;
 %%
 
@@ -417,6 +423,12 @@ int main(int argc, char **argv)
 	do {
 		yyparse();
 	} while (!feof(yyin));
+
+
+    cout<<"Printing the parse tree"<<endl;
+    for(int i=0;i<parse_tree.size();i++){
+        cout<<parse_tree[i]<<endl;
+    }
 	return 0;
 }
 void yyerror(const char* s) {
