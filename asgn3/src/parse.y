@@ -12,9 +12,8 @@ using namespace std;
 	char* strValue;
 }
 
-%token DIGIT	
 %token NEWLINE	
-%token INTEGER	
+%token <intValue> INTEGER	
 %token KEY_PACKAGE
 %token KEY_IMPORT
 %token KEY_CLASS
@@ -43,11 +42,11 @@ using namespace std;
 %token KEY_IN
 %token KEY_TRUE
 %token KEY_FALSE
-%token<strValue> IDENTIFIER
-%token<strValue> TYPE	
+%token <strValue> IDENTIFIER
+%token <strValue> TYPE	
 %token OP_ASGN 
 %token OP_IMPLIES
-%token<strValue> STRING	
+%token <strValue> STRING	
 %token COLON			
 %token STMT_TERMINATOR 
 %token AT				
@@ -66,7 +65,8 @@ using namespace std;
 %token OP_LOGICAL	
 %token OP_BITWISE
 
-%start<strValue> Compilation_unit
+%start Compilation_unit
+%type<strValue> Compilation_unit
 %type<strValue> ​Package_declaration
 %type<strValue> Import_declarations
 %type<strValue> Program
@@ -112,7 +112,7 @@ using namespace std;
 /*Grammer Rules*/
 
 Compilation_unit:
-		​Package_declaration ​Import_declarations Program
+		​Package_declaration ​Import_declarations Program		{ printf("parsing started\n"); }
 		;
 Package_declaration:
 		KEY_PACKAGE Package_name STMT_TERMINATOR
@@ -140,7 +140,7 @@ Sub_Program:
 		| Interface
 		;
 Class:
-		KEY_CLASS TYPE Inheritance ​Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
+		KEY_CLASS TYPE Inheritance ​Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END 		{ printf("class %s found", $2); }
 		;
 Interface:
 		KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END
@@ -301,6 +301,15 @@ Formals:
 		;
 %%
 
-int main(){
-	
+int main(int argc, char **argv)
+{
+	++argv, --argc;
+	if (argc > 0)
+		yyin = fopen(argv[0], "r");
+	else
+		yyin = stdin;
+	do {
+		yyparse();
+	} while (!feof(yyin));
+	return 0;
 }

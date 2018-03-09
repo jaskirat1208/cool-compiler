@@ -1,8 +1,13 @@
+%option noyywrap
+
 %{
 #include <iostream>
 #include <math.h>
 #include <set>
 #include <string>
+#include "parse.tab.h"
+
+#define YY_DECL int yylex()
 
 using namespace std;
 %}
@@ -92,6 +97,8 @@ OP_BITWISE		(&|\||^)
 					printf("[INTEGER : %s] (%d)\n", yytext, atoi(yytext));
 					++numInteger;
 					s_integer.insert(yytext);
+					yylval.intValue = atoi(yytext);
+					return INTEGER;
 				}
 {KEY_PACKAGE}	{
 					printf("[KEYWORD: %s]\n", yytext);
@@ -106,128 +113,162 @@ OP_BITWISE		(&|\||^)
 {KEY_CLASS}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyClass;
+					return KEY_CLASS;
 				}
 {KEY_INTERFACE}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyInterface;
+					return KEY_INTERFACE;
 				}
 {KEY_INHERITS}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyInherits;
+					return KEY_INHERITS;
 				}
 {KEY_IMPLEMENTS}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyImplements;
+					return KEY_IMPLEMENTS;
 				}
 {KEY_RETURN}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyReturn;
+					return KEY_RETURN;
 				}
 {KEY_NEW}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyNew;
+					return KEY_NEW;
 				}
 {KEY_BREAK}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyBreak;
+					return KEY_BREAK;
 				}
 {KEY_CONTINUE}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyContinue;
+					return KEY_CONTINUE;
 				}
 {KEY_ISVOID}	{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyIsvoid;
+					return KEY_ISVOID;
 				}
 {KEY_NOT}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyNot;
+					return KEY_NOT;
 				}
 {KEY_CASE}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyCase;
+					return KEY_CASE;
 				}
 {KEY_OF}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyOf;
+					return KEY_OF;
 				}
 {KEY_ESAC}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyEsac;
+					return KEY_ESAC;
 				}
 {KEY_WHILE}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyWhile;
+					return KEY_WHILE;
 				}
 {KEY_LOOP}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyLoop;
+					return KEY_LOOP;
 				}
 {KEY_POOL}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyPool;
+					return KEY_POOL;
 				}
 {KEY_DO}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyDo;
+					return KEY_DO;
 				}
 {KEY_FOR}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyFor;
+					return KEY_FOR;
 				}
 {KEY_IF}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyIf;
+					return KEY_IF;
 				}
 {KEY_THEN}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyThen;
+					return KEY_THEN;
 				}
 {KEY_ELSE}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyElse;
+					return KEY_ELSE;
 				}
 {KEY_FI}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyFi;
+					return KEY_FI;
 				}
 {KEY_LET}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyLet;
+					return KEY_LET;
 				}
 {KEY_IN}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyIn;
+					return KEY_IN;
 				}
 {KEY_TRUE}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyTrue;
+					return KEY_TRUE;
 				}
 {KEY_FALSE}		{
 					printf("[KEYWORD: %s]\n", yytext);
 					++numKeyFalse;
+					return KEY_FALSE;
 				}
 {IDENTIFIER}	{
 					printf("[IDENTIFIER: %s]\n", yytext);
 					++numIdentifier;
 					s_identifiers.insert(yytext);
+					yylval.strValue = yytext;
+					return IDENTIFIER;	
 				}
 {TYPE}			{
 					printf("[TYPE: %s]\n", yytext);
 					++numType;
 					s_type.insert(yytext);
+					yylval.strValue = yytext;
+					return TYPE;
 				}
 {OP_ASGN}		{
 					printf("OP_ASGN\n");
 					++numOpAsgn;
+					return OP_ASGN;
 				}
 {OP_IMPLIES}	{
 					printf("OP_IMPLIES\n");
 					++numOpImplies;
+					return OP_IMPLIES;
 				}
 {STRING}		{
 					cout<<"[String:"<<yytext<<" ]"<<endl;
 					s_strings.insert(yytext);
+					yylval.strValue = yytext;
+					return STRING;
 				}
 {SL_COMMENT}	{
 					cout<<"COMMENTING:"<<yytext<<endl;
@@ -238,360 +279,95 @@ OP_BITWISE		(&|\||^)
 {COLON}			{
 					printf("COLON\n");
 					++numColon;
+					return COLON;
 				}
 {STMT_TERMINATOR}	{
 					printf("STMT_TERMINATOR\n");
 					++numStmtTerminator;
+					return STMT_TERMINATOR;
 				}
 {AT}			{
 					printf("AT\n");
 					++numAt;
+					return AT;
 				}
 {DOT}			{
 					printf("DOT\n");
 					++numDot;
+					return DOT;
 				}
 {DOTSTAR}			{
 					printf("DOTSTAR\n");
 					++numDotStar;
+					return DOTSTAR;
 				}
 {COMMA}			{
 					printf("COMMA\n");
 					++numComma;
+					return COMMA;
 				}
 {BLOCK_BEGIN}	{
 					printf("BLOCK_BEGIN\n");
 					++numBlockBegin;
+					return BLOCK_BEGIN;
 				}
 {BLOCK_END}		{
 					printf("BLOCK_END\n");
 					++numBlockEnd;
+					return BLOCK_END;
 				}
 {PARAN_OPEN}	{
 					printf("PARAN_OPEN\n");
 					++numParanOpen;
+					return PARAN_OPEN;
 }
 {PARAN_CLOSE}	{
 					printf("PARAN_CLOSE\n");
 					++numParanClose;
+					return PARAN_CLOSE;
 }
 {ARRAY_OPEN}	{
 					printf("ARRAY_OPEN\n");
 					++numArrayOpen;
+					return ARRAY_OPEN;
 }
 {ARRAY_CLOSE}	{
 					printf("ARRAY_CLOSE\n");
 					++numArrayClose;
+					return ARRAY_CLOSE;
 }
 {OP_ARITHMETIC_U}	{
 					printf("[OP_ARITHMETIC_U: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
+					return OP_ARITHMETIC_U;
 				}
 {OP_ARITHMETIC_B}	{
 					printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
+					return OP_ARITHMETIC_B;
 				}
 {OP_RELATIONAL}	{
 					printf("[OP_RELATIONAL: %s]\n", yytext);
 					++numOpRelational;
 					s_op_relational.insert(yytext);
+					return OP_RELATIONAL;
 				}
 {OP_LOGICAL}	{
 					printf("[OP_LOGICAL: %s]\n", yytext);
 					++numOpLogical;
 					s_op_logical.insert(yytext);
+					return OP_LOGICAL;
 				}
 {OP_BITWISE}	{
 					printf("[OP_BITWISE: %s]\n", yytext);
 					++numOpBitwise;
 					s_op_bitwise.insert(yytext);
+					return OP_BITWISE;
 				}
 [ \t]+			/* eat up white spaces */
 .				{
 					printf("This one is Unrecognized character: %s--------------------------------------------------------------------------Line %d\n", yytext,line_ctr);
 					s_unrecog.insert(yytext);
 				}
-%%
-void printset(set<string> myset){
-	set<string>::iterator iter=myset.begin();
-	if(myset.empty())	return;
-	cout<<(*iter)<<" ";
-	for(iter=myset.begin(); iter!=myset.end();++iter){
-		if(iter!=myset.begin())
-			cout<<endl<<"								"<<(*iter);
-	}
-}
-int main(int argc, char **argv)
-{
-	++argv, --argc;
-	if (argc > 0)
-		yyin = fopen(argv[0], "r");
-	else
-		yyin = stdin;
-	yylex();
-	cout<<"TOKENS 					"<<"COUNT	"<<"		VALUE"<<endl;
-	cout<<"--------------------------------------------------------------------------"<<endl;
-	
-	// keywords start
-	if (numKeyPackage) {
-		cout<<"KEY_PACKAGE				"<<numKeyPackage<<"			";
-		cout<<"package";
-		cout<<endl;
-	}
-	if (numKeyImport) {
-		cout<<"KEY_IMPORT				"<<numKeyImport<<"			";
-		cout<<"import";
-		cout<<endl;
-	}
-	if (numKeyClass) {
-		cout<<"KEY_CLASS				"<<numKeyClass<<"			";
-		cout<<"class";
-		cout<<endl;
-	}
-	if (numKeyInterface) {
-		cout<<"KEY_INTERFACE				"<<numKeyInterface<<"			";
-		cout<<"interface";
-		cout<<endl;
-	}
-	if (numKeyInherits) {
-		cout<<"KEY_INHERITS				"<<numKeyInherits<<"			";
-		cout<<"inherits";
-		cout<<endl;
-	}
-	if (numKeyImplements) {
-		cout<<"KEY_IMPLEMENTS				"<<numKeyImplements<<"			";
-		cout<<"implements";
-		cout<<endl;
-	}
-	if (numKeyReturn) {
-		cout<<"KEY_RETURN				"<<numKeyReturn<<"			";
-		cout<<"return";
-		cout<<endl;
-	}
-	if (numKeyNew) {
-		cout<<"KEY_NEW					"<<numKeyNew<<"			";
-		cout<<"new";
-		cout<<endl;
-	}
-	if (numKeyBreak) {
-		cout<<"KEY_BREAK				"<<numKeyBreak<<"			";
-		cout<<"break";
-		cout<<endl;
-	}
-	if (numKeyContinue) {
-		cout<<"KEY_CONTINUE				"<<numKeyContinue<<"			";
-		cout<<"continue";
-		cout<<endl;
-	}
-	if (numKeyIsvoid) {
-		cout<<"KEY_ISVOID				"<<numKeyIsvoid<<"			";
-		cout<<"isvoid";
-		cout<<endl;
-	}
-	if (numKeyNot) {
-		cout<<"KEY_NOT				"<<numKeyNot<<"			";
-		cout<<"not";
-		cout<<endl;
-	}
-	if (numKeyCase) {
-		cout<<"KEY_CASE				"<<numKeyCase<<"			";
-		cout<<"case";
-		cout<<endl;
-	}
-	if (numKeyOf) {
-		cout<<"KEY_OF					"<<numKeyOf<<"			";
-		cout<<"of";
-		cout<<endl;
-	}
-	if (numKeyEsac) {
-		cout<<"KEY_ESAC				"<<numKeyEsac<<"			";
-		cout<<"esac";
-		cout<<endl;
-	}
-	if (numKeyWhile) {
-		cout<<"KEY_WHILE				"<<numKeyWhile<<"			";
-		cout<<"while";
-		cout<<endl;
-	}
-	if (numKeyLoop) {
-		cout<<"KEY_LOOP				"<<numKeyLoop<<"			";
-		cout<<"loop";
-		cout<<endl;
-	}
-	if (numKeyPool) {
-		cout<<"KEY_POOL				"<<numKeyPool<<"			";
-		cout<<"pool";
-		cout<<endl;
-	}
-	if (numKeyDo) {
-		cout<<"KEY_DO					"<<numKeyDo<<"			";
-		cout<<"do";
-		cout<<endl;
-	}
-	if (numKeyFor) {
-		cout<<"KEY_FOR				"<<numKeyFor<<"			";
-		cout<<"for";
-		cout<<endl;
-	}
-	if (numKeyIf) {
-		cout<<"KEY_IF					"<<numKeyIf<<"			";
-		cout<<"if";
-		cout<<endl;
-	}
-	if (numKeyThen) {
-		cout<<"KEY_THEN				"<<numKeyThen<<"			";
-		cout<<"then";
-		cout<<endl;
-	}
-	if (numKeyElse) {
-		cout<<"KEY_ELSE				"<<numKeyElse<<"			";
-		cout<<"else";
-		cout<<endl;
-	}
-	if (numKeyFi) {
-		cout<<"KEY_FI					"<<numKeyFi<<"			";
-		cout<<"fi";
-		cout<<endl;
-	}
-	if (numKeyLet) {
-		cout<<"KEY_LET					"<<numKeyLet<<"			";
-		cout<<"let";
-		cout<<endl;
-	}
-	if (numKeyIn) {
-		cout<<"KEY_IN					"<<numKeyIn<<"			";
-		cout<<"in";
-		cout<<endl;
-	}
-	if (numKeyTrue) {
-		cout<<"KEY_TRUE				"<<numKeyTrue<<"			";
-		cout<<"true";
-		cout<<endl;
-	}
-	if (numKeyFalse) {
-		cout<<"KEY_FALSE				"<<numKeyFalse<<"			";
-		cout<<"false";
-		cout<<endl;
-	}
-	// keywords end
-
-	if (s_identifiers.size()) {
-		cout<<"IDENTIFIER 				"<<s_identifiers.size()<<"			";
-		printset(s_identifiers);
-		cout<<endl;
-	}
-	if (s_type.size()) {
-		cout<<"TYPE 					"<<s_type.size()<<"			";
-		printset(s_type);
-		cout<<endl;
-	}
-	if (numOpAsgn) {
-		cout<<"OP_ASGN 				"<<numOpAsgn<<"			";
-		cout<<"<-";
-		cout<<endl;
-	}
-	if (numOpImplies) {
-		cout<<"OP_IMPLIES				"<<numOpImplies<<"			";
-		cout<<"=>";
-		cout<<endl;
-	}
-	if (s_integer.size()) {
-		cout<<"INTEGER 				"<<s_integer.size()<<"			";
-		printset(s_integer);
-		cout<<endl;
-	}
-	if (s_strings.size()) {
-		cout<<"STRING					"<<s_strings.size()<<"			";
-		printset(s_strings);
-		cout<<endl;
-	}
-	if (numColon) {
-		cout<<"COLON					"<<numColon<<"			";
-		cout<<"";
-		cout<<endl;
-	}
-	if (numStmtTerminator) {
-		cout<<"STMT_TERMINATOR 			"<<numStmtTerminator<<"			";
-		cout<<";";
-		cout<<endl;
-	}
-	if (numAt) {
-		cout<<"AT 					"<<numAt<<"			";
-		cout<<"@";
-		cout<<endl;
-	}
-	if (numDot) {
-		cout<<"DOT 					"<<numDot<<"			";
-		cout<<".";
-		cout<<endl;
-	}
-	if (numDotStar) {
-		cout<<"DOTSTAR 				"<<numDot<<"			";
-		cout<<".*";
-		cout<<endl;
-	}
-	if (numComma) {
-		cout<<"COMMA 					"<<numDot<<"			";
-		cout<<",";
-		cout<<endl;
-	}
-	if (numBlockBegin) {
-		cout<<"BLOCK_BEGIN 				"<<numBlockBegin<<"			";
-		cout<<"{";
-		cout<<endl;
-	}
-	if (numBlockEnd) {
-		cout<<"BLOCK_END 				"<<numBlockEnd<<"			";
-		cout<<"}";
-		cout<<endl;
-	}
-	if (numParanOpen) {
-		cout<<"PARAN_OPEN 				"<<numParanOpen<<"			";
-		cout<<"(";
-		cout<<endl;
-	}
-	if (numParanClose) {
-		cout<<"PARAN_CLOSE 				"<<numParanClose<<"			";
-		cout<<")";
-		cout<<endl;
-	}
-	if (numArrayOpen) {
-		cout<<"ARRAY_OPEN	 			"<<numArrayOpen<<"			";
-		cout<<"[";
-		cout<<endl;
-	}
-	if (numArrayClose) {
-		cout<<"ARRAY_CLOSE 				"<<numArrayClose<<"			";
-		cout<<"]";
-		cout<<endl;
-	}
-	if (s_op_arithmetic.size()) {
-		cout<<"OP_ARITHMETIC				"<<s_op_arithmetic.size()<<"			";
-		printset(s_op_arithmetic);
-		cout<<endl;
-	}
-	if (s_op_relational.size()) {
-		cout<<"OP_RELATIONAL				"<<s_op_relational.size()<<"			";
-		printset(s_op_relational);
-		cout<<endl;
-	}
-	if (s_op_logical.size()) {
-		cout<<"OP_LOGICAL				"<<s_op_logical.size()<<"			";
-		printset(s_op_logical);
-		cout<<endl;
-	}
-	if (s_op_bitwise.size()) {
-		cout<<"OP_BITWISE				"<<s_op_bitwise.size()<<"			";
-		printset(s_op_bitwise);
-		cout<<endl;
-	}
-	cout<<"--------------------------------------------------------------------------"<<endl;
-	if(s_unrecog.size()){
-		cout<<"UNRECOGNIZED CHARACTERS 		"<<s_unrecog.size()<<"			";
-		printset(s_unrecog);
-		cout << endl;
-	}
-	return 0;
-}
