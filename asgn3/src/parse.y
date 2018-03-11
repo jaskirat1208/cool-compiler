@@ -4,6 +4,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include "print_pretty.cpp"
 
 extern int yylex();
 extern int yyparse();
@@ -425,10 +426,12 @@ int main(int argc, char **argv)
 	} while (!feof(yyin));
 
 
-    cout<<"Printing the parse tree"<<endl;
-    for(int i=0;i<parse_tree.size();i++){
-        cout<<parse_tree[i];
-    }
+    //cout<<"Printing the parse tree"<<endl;
+    //for(int i=parse_tree.size()-1;i>=0;i--){
+      //  cout<<parse_tree[i];
+    //}
+    print_pretty(parse_tree);
+
 	return 0;
 }
 void yyerror(const char* s) {
