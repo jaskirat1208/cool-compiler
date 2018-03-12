@@ -214,7 +214,7 @@ Feature:
 		;
 Interface_features_list_opt:
 		Interface_features_list
-		{ parse_tree.push_back("Interface_features_list_opt -> Interfaces_list"); }
+		{ parse_tree.push_back("Interface_features_list_opt -> Interface_features_list"); }
 		|
 		{ parse_tree.push_back("Interface_features_list_opt -> EMPTY"); }
 		;
@@ -351,8 +351,8 @@ Actions:
 		{ parse_tree.push_back("Actions -> Action Actions"); }
 		;
 Action:
-		IDENTIFIER COLON TYPE OP_IMPLIES Expression
-		{ parse_tree.push_back("Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression"); }
+		IDENTIFIER COLON TYPE OP_IMPLIES Expression STMT_TERMINATOR
+		{ parse_tree.push_back("Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression STMT_TERMINATOR"); }
 		;
 If_then_else:
 		KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI
@@ -379,8 +379,8 @@ Continue_statement:
 		{ parse_tree.push_back("Continue_statement -> KEY_CONTINUE"); }
 		;
 Return_statement:
-		KEY_RETURN
-		{ parse_tree.push_back("Return_statement -> KEY_RETURN"); }
+		KEY_RETURN Expression
+		{ parse_tree.push_back("Return_statement -> KEY_RETURN Expression"); }
 		;
 Block_Expression:
 		BLOCK_BEGIN Block_list BLOCK_END
@@ -422,13 +422,13 @@ int main(int argc, char **argv) {
 
 	reverse(parse_tree.begin() ,parse_tree.end());
 
-    cout << "Printing the parse tree" << endl;
+	cout << "Printing the parse tree" << endl;
 
-    // for(int i=parse_tree.size()-1;i>=0;i--) {
-    //   cout<<parse_tree[i];
-    // }
-    
-    print_pretty(parse_tree);
+	for (int i = 0; i < parse_tree.size(); i++) {
+		cout << parse_tree[i] << endl;
+	}
+
+	// print_pretty(parse_tree);
 
 	return 0;
 }

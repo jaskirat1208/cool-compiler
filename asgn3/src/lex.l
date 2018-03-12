@@ -265,16 +265,16 @@ OP_BITWISE		(&|\||^)
 					return OP_IMPLIES;
 				}
 {STRING}		{
-					cout<<"[String:"<<yytext<<" ]"<<endl;
+					// cout<<"[String:"<<yytext<<" ]"<<endl;
 					s_strings.insert(yytext);
 					yylval.str = yytext;
 					return STRING;
 				}
 {SL_COMMENT}	{
-					cout<<"COMMENTING:"<<yytext<<endl;
+					// cout<<"COMMENTING:"<<yytext<<endl;
 				}
 {ML_COMMENT}	{
-					cout<<"M_COMMENTING:"<<yytext<<endl;
+					// cout<<"M_COMMENTING:"<<yytext<<endl;
 				}			
 {COLON}			{
 					// printf("COLON\n");
