@@ -4,6 +4,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "print_pretty.cpp"
 
 extern int yylex();
@@ -124,293 +125,293 @@ vector<string> parse_tree;
 
 Compilation_unit:
 		Package_declaration Import_declarations Program
-		{ parse_tree.push_back("Compilation_unit -> Package_declaration Import_declarations Program\n"); }
+		{ parse_tree.push_back("Compilation_unit -> Package_declaration Import_declarations Program"); }
 		;
 Package_declaration:
 		KEY_PACKAGE Package_name STMT_TERMINATOR
-		{ parse_tree.push_back("Package_declaration -> KEY_PACKAGE Package_name STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Package_declaration -> KEY_PACKAGE Package_name STMT_TERMINATOR"); }
 		|
-		{ parse_tree.push_back( "Package_declaration -> Empty\n"); }
+		{ parse_tree.push_back( "Package_declaration -> EMPTY"); }
 		;
 Package_name:
 		Package_name DOT IDENTIFIER
-		{ parse_tree.push_back("Package_name -> Package_name DOT IDENTIFIER\n"); }
+		{ parse_tree.push_back("Package_name -> Package_name DOT IDENTIFIER"); }
 		| IDENTIFIER
-		{ parse_tree.push_back("Package_name -> IDENTIFIER\n"); }
+		{ parse_tree.push_back("Package_name -> IDENTIFIER"); }
 		;
 Import_declarations:
 		Import_declarations Import_declaration
-		{ parse_tree.push_back("Import_declarations -> Import_declarations Import_declaration\n"); }
+		{ parse_tree.push_back("Import_declarations -> Import_declarations Import_declaration"); }
 		| Import_declaration
-		{ parse_tree.push_back("Import_declarations -> Import_declaration\n"); }
+		{ parse_tree.push_back("Import_declarations -> Import_declaration"); }
 		|
-		{ parse_tree.push_back( "Import_declarations -> Empty\n"); }
+		{ parse_tree.push_back( "Import_declarations -> EMPTY"); }
 		;
 Import_declaration:
 		KEY_IMPORT Package_name STMT_TERMINATOR
-		{ parse_tree.push_back("Import_declaration -> KEY_IMPORT Package_name STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Import_declaration -> KEY_IMPORT Package_name STMT_TERMINATOR"); }
 		| KEY_IMPORT Package_name DOTSTAR STMT_TERMINATOR
-		{ parse_tree.push_back("Import_declaration -> KEY_IMPORT Package_name DOTSTAR STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Import_declaration -> KEY_IMPORT Package_name DOTSTAR STMT_TERMINATOR"); }
 		;
 Program:
 		Program Sub_Program STMT_TERMINATOR
-		{ parse_tree.push_back("Program -> Program Sub_Program STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Program -> Program Sub_Program STMT_TERMINATOR"); }
 		|
-		{ parse_tree.push_back("Program -> Empty\n"); }
+		{ parse_tree.push_back("Program -> EMPTY"); }
 		;
 Sub_Program:
 		Class
-		{ parse_tree.push_back("Sub_Program -> Class\n"); }
+		{ parse_tree.push_back("Sub_Program -> Class"); }
 		| Interface
-		{ parse_tree.push_back("Sub_Program -> Interface\n"); }
+		{ parse_tree.push_back("Sub_Program -> Interface"); }
 		;
 Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
-		{ parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END\n"); }
+		{ parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END"); }
 		;
 Interface:
 		KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END
-		{ parse_tree.push_back("Interface -> KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END\n"); }
+		{ parse_tree.push_back("Interface -> KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END"); }
 		;
 Interface_Inheritance_List:
 		KEY_INHERITS TYPE
-		{ parse_tree.push_back("Interface_Inheritance_List -> KEY_INHERITS TYPE\n"); }
+		{ parse_tree.push_back("Interface_Inheritance_List -> KEY_INHERITS TYPE"); }
 		| Interface_Inheritance_List COMMA TYPE
-		{ parse_tree.push_back("Interface_Inheritance_List -> Interface_Inheritance_List COMMA TYPE\n"); }
+		{ parse_tree.push_back("Interface_Inheritance_List -> Interface_Inheritance_List COMMA TYPE"); }
 		|
-		{ parse_tree.push_back("Interface_Inheritance_List -> Empty\n"); }
+		{ parse_tree.push_back("Interface_Inheritance_List -> EMPTY"); }
 		;
 Inheritance:
 		KEY_INHERITS TYPE
-		{ parse_tree.push_back("Inheritance -> KEY_INHERITS TYPE\n"); }
+		{ parse_tree.push_back("Inheritance -> KEY_INHERITS TYPE"); }
 		|
-		{ parse_tree.push_back("Inheritance -> Empty\n"); }
+		{ parse_tree.push_back("Inheritance -> EMPTY"); }
 		;
 Implement_Interface:
 		KEY_IMPLEMENTS Interfaces_list
-		{ parse_tree.push_back("Implement_Interface -> KEY_IMPLEMENTS Interfaces_list\n"); }
+		{ parse_tree.push_back("Implement_Interface -> KEY_IMPLEMENTS Interfaces_list"); }
 		|
-		{ parse_tree.push_back("Implement_Interface -> Empty\n"); }
+		{ parse_tree.push_back("Implement_Interface -> EMPTY"); }
 		;
 Interfaces_list:
 		Interfaces_list COMMA TYPE
-		{ parse_tree.push_back("Interfaces_list -> Interfaces_list COMMA TYPE\n"); }
+		{ parse_tree.push_back("Interfaces_list -> Interfaces_list COMMA TYPE"); }
 		| TYPE
-		{ parse_tree.push_back("Interfaces_list -> TYPE\n"); }
+		{ parse_tree.push_back("Interfaces_list -> TYPE"); }
 		;
 Features_list_opt:
 		Features_list
-		{ parse_tree.push_back("Features_list_opt -> Features_list\n"); }
+		{ parse_tree.push_back("Features_list_opt -> Features_list"); }
 		|
-		{ parse_tree.push_back("Features_list_opt -> Empty\n"); }
+		{ parse_tree.push_back("Features_list_opt -> EMPTY"); }
 		;
 Features_list:
 		Features_list Feature STMT_TERMINATOR
-		{ parse_tree.push_back("Features_list -> Features_list Feature STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Features_list -> Features_list Feature STMT_TERMINATOR"); }
 		| Feature STMT_TERMINATOR
-		{ parse_tree.push_back("Features_list -> Feature STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Features_list -> Feature STMT_TERMINATOR"); }
 		;
 Feature:
 		IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END
-		{ parse_tree.push_back("Feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END\n"); }
+		{ parse_tree.push_back("Feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END"); }
 		| Formal
-		{ parse_tree.push_back("Feature -> Formal\n"); }
+		{ parse_tree.push_back("Feature -> Formal"); }
 		;
 Interface_features_list_opt:
 		Interface_features_list
-		{ parse_tree.push_back("Interface_features_list_opt -> Interfaces_list\n"); }
+		{ parse_tree.push_back("Interface_features_list_opt -> Interfaces_list"); }
 		|
-		{ parse_tree.push_back("Interface_features_list_opt -> Empty\n"); }
+		{ parse_tree.push_back("Interface_features_list_opt -> EMPTY"); }
 		;
 Interface_features_list:
 		Interface_features_list Interface_feature STMT_TERMINATOR
-		{ parse_tree.push_back("Interface_features_list -> Interface_features_list Interface_feature STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Interface_features_list -> Interface_features_list Interface_feature STMT_TERMINATOR"); }
 		| Interface_feature STMT_TERMINATOR
-		{ parse_tree.push_back("Interface_features_list -> Interface_feature STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Interface_features_list -> Interface_feature STMT_TERMINATOR"); }
 		;
 Interface_feature:
 		IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE
-		{ parse_tree.push_back("Interface_feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE\n"); }
+		{ parse_tree.push_back("Interface_feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE"); }
 		;
 Formal_params_list_opt:
 		Formal_params_list
-		{ parse_tree.push_back("Formal_params_list_opt -> Formal_params_list\n"); }
+		{ parse_tree.push_back("Formal_params_list_opt -> Formal_params_list"); }
 		|
-		{ parse_tree.push_back("Formal_params_list_opt -> Empty\n"); }
+		{ parse_tree.push_back("Formal_params_list_opt -> EMPTY"); }
 		;
 Formal_params_list:
 		Formal_params_list COMMA Formal_param
-		{ parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA\n"); }
+		{ parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA"); }
 		| Formal_param
-		{ parse_tree.push_back("Formal_params_list -> Formal_param\n"); }
+		{ parse_tree.push_back("Formal_params_list -> Formal_param"); }
 		;
 Formal_param:
 		IDENTIFIER COLON TYPE
-		{ parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE\n"); }
+		{ parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE
-		{ parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE\n"); }
+		{ parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE"); }
 		;
 Formal:
 		IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression\n"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression\n"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression"); }
 		| IDENTIFIER COLON TYPE OP_ASGN Expression
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression\n"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE\n"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE"); }
 		| IDENTIFIER COLON TYPE
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE\n"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE"); }
 		;
 Expression:
 		IDENTIFIER OP_ASGN Expression
-		{ parse_tree.push_back("Expression -> IDENTIFIER OP_ASGN Expression\n"); }
+		{ parse_tree.push_back("Expression -> IDENTIFIER OP_ASGN Expression"); }
 		| IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"); }
+		{ parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
 		| Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ parse_tree.push_back("Expression -> Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"); }
+		{ parse_tree.push_back("Expression -> Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
 		| Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ parse_tree.push_back("Expression -> Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE\n"); }
+		{ parse_tree.push_back("Expression -> Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
 		| Conditionals
-		{ parse_tree.push_back("Expression -> Conditionals\n"); }
+		{ parse_tree.push_back("Expression -> Conditionals"); }
 		| Loops
-		{ parse_tree.push_back("Expression -> Loops\n"); }
+		{ parse_tree.push_back("Expression -> Loops"); }
 		| Block_Expression
-		{ parse_tree.push_back("Expression -> Block_Expression\n"); }
+		{ parse_tree.push_back("Expression -> Block_Expression"); }
 		| Let_Expression
-		{ parse_tree.push_back("Expression -> Let_Expression\n"); }
+		{ parse_tree.push_back("Expression -> Let_Expression"); }
 		| KEY_NEW TYPE
-		{ parse_tree.push_back("Expression -> KEY_NEW TYPE\n"); }
+		{ parse_tree.push_back("Expression -> KEY_NEW TYPE"); }
 		| KEY_ISVOID Expression
-		{ parse_tree.push_back("Expression -> KEY_ISVOID Expression\n"); }
+		{ parse_tree.push_back("Expression -> KEY_ISVOID Expression"); }
 		| Return_statement
-		{ parse_tree.push_back("Expression -> Return_statement\n"); }
+		{ parse_tree.push_back("Expression -> Return_statement"); }
 		| Break_statement
-		{ parse_tree.push_back("Expression -> Break_statement\n"); }
+		{ parse_tree.push_back("Expression -> Break_statement"); }
 		| Continue_statement
-		{ parse_tree.push_back("Expression -> Continue_statement\n"); }
+		{ parse_tree.push_back("Expression -> Continue_statement"); }
 		| Expression OP_ARITHMETIC_B Expression
-		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B Expression\n"); }
+		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B Expression"); }
 		| OP_ARITHMETIC_U Expression
-		{ parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression\n"); }
+		{ parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression"); }
 		| Expression OP_RELATIONAL Expression
-		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL Expression\n"); }
+		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL Expression"); }
 		| Expression OP_LOGICAL Expression
-		{ parse_tree.push_back("Expression -> Expression OP_LOGICAL Expression\n"); }
+		{ parse_tree.push_back("Expression -> Expression OP_LOGICAL Expression"); }
 		| Expression OP_BITWISE Expression
-		{ parse_tree.push_back("Expression -> Expression OP_BITWISE Expression\n"); }
+		{ parse_tree.push_back("Expression -> Expression OP_BITWISE Expression"); }
 		| KEY_NOT Expression
-		{ parse_tree.push_back("Expression -> KEY_NOT Expression\n"); }
+		{ parse_tree.push_back("Expression -> KEY_NOT Expression"); }
 		| PARAN_OPEN Expression PARAN_CLOSE
-		{ parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE\n"); }
+		{ parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE"); }
 		| IDENTIFIER
-		{ parse_tree.push_back("Expression -> IDENTIFIER\n"); }
+		{ parse_tree.push_back("Expression -> IDENTIFIER"); }
 		| IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE
-		{ parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE\n"); }
+		{ parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE"); }
 		| ARRAY_OPEN Expression Expression ARRAY_CLOSE
-		{ parse_tree.push_back("Expression -> ARRAY_OPEN Expression Expression ARRAY_CLOSE\n"); }
+		{ parse_tree.push_back("Expression -> ARRAY_OPEN Expression Expression ARRAY_CLOSE"); }
 		| KEY_TRUE
-		{ parse_tree.push_back("Expression -> KEY_TRUE\n"); }
+		{ parse_tree.push_back("Expression -> KEY_TRUE"); }
 		| KEY_FALSE
-		{ parse_tree.push_back("Expression -> KEY_FALSE\n"); }
+		{ parse_tree.push_back("Expression -> KEY_FALSE"); }
 		| INTEGER
-		{ parse_tree.push_back("Expression -> INTEGER\n"); }
+		{ parse_tree.push_back("Expression -> INTEGER"); }
 		| STRING
-		{ parse_tree.push_back( "Expression -> STRING\n"); }
+		{ parse_tree.push_back( "Expression -> STRING"); }
 		;
 Conditionals:
 		Case
-		{ parse_tree.push_back("Conditionals -> Case\n"); } 
+		{ parse_tree.push_back("Conditionals -> Case"); } 
 		| If_then_else
-		{ parse_tree.push_back("Conditionals -> If_then_else\n"); }
+		{ parse_tree.push_back("Conditionals -> If_then_else"); }
 		;
 Loops:
 		While
-		{ parse_tree.push_back("Loops -> While\n"); }
+		{ parse_tree.push_back("Loops -> While"); }
 		| For
-		{ parse_tree.push_back("Loops -> For\n"); }
+		{ parse_tree.push_back("Loops -> For"); }
 		| Do_while
-		{ parse_tree.push_back("Loops -> Do_while\n"); }
+		{ parse_tree.push_back("Loops -> Do_while"); }
 		;
 Arguments_list_opt:
 		Arguments_list
-		{ parse_tree.push_back("Arguments_list_opt -> Arguments_list\n"); }
+		{ parse_tree.push_back("Arguments_list_opt -> Arguments_list"); }
 		|
-		{ parse_tree.push_back ("Arguments_list_opt -> Empty\n"); }
+		{ parse_tree.push_back ("Arguments_list_opt -> EMPTY"); }
 		;
 Arguments_list:
 		Arguments_list COMMA Expression
-		{ parse_tree.push_back("Arguments_list -> Arguments_list COMMA Expression\n"); }
+		{ parse_tree.push_back("Arguments_list -> Arguments_list COMMA Expression"); }
 		| Expression
-		{ parse_tree.push_back("Arguments_list -> Expression\n"); }
+		{ parse_tree.push_back("Arguments_list -> Expression"); }
 		;
 Case:
 		KEY_CASE Expression KEY_OF Actions KEY_ESAC
-		{ parse_tree.push_back("Case -> KEY_CASE Expression KEY_OF Actions KEY_ESAC\n"); }
+		{ parse_tree.push_back("Case -> KEY_CASE Expression KEY_OF Actions KEY_ESAC"); }
 		;
 Actions:
 		Action
-		{ parse_tree.push_back("Actions -> Action\n"); }
+		{ parse_tree.push_back("Actions -> Action"); }
 		| Action Actions
-		{ parse_tree.push_back("Actions -> Action Actions\n"); }
+		{ parse_tree.push_back("Actions -> Action Actions"); }
 		;
 Action:
 		IDENTIFIER COLON TYPE OP_IMPLIES Expression
-		{ parse_tree.push_back("Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression\n"); }
+		{ parse_tree.push_back("Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression"); }
 		;
 If_then_else:
 		KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI
-		{ parse_tree.push_back("If_then_else -> KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI\n"); }
+		{ parse_tree.push_back("If_then_else -> KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI"); }
 		;
 While:
 		KEY_WHILE Expression KEY_LOOP Expression KEY_POOL
-		{ parse_tree.push_back("While -> KEY_WHILE Expression KEY_LOOP Expression KEY_POOL\n"); }
+		{ parse_tree.push_back("While -> KEY_WHILE Expression KEY_LOOP Expression KEY_POOL"); }
 		;
 For:
 		KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL
-		{ parse_tree.push_back("For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL\n"); }
+		{ parse_tree.push_back("For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL"); }
 		;
 Do_while:
 		KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression
-		{ parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression\n"); }
+		{ parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression"); }
 		;
 Break_statement:
 		KEY_BREAK
-		{ parse_tree.push_back("Break_statement -> KEY_BREAK\n"); }
+		{ parse_tree.push_back("Break_statement -> KEY_BREAK"); }
 		;
 Continue_statement:
 		KEY_CONTINUE
-		{ parse_tree.push_back("Continue_statement -> KEY_CONTINUE\n"); }
+		{ parse_tree.push_back("Continue_statement -> KEY_CONTINUE"); }
 		;
 Return_statement:
 		KEY_RETURN
-		{ parse_tree.push_back("Return_statement -> KEY_RETURN\n"); }
+		{ parse_tree.push_back("Return_statement -> KEY_RETURN"); }
 		;
 Block_Expression:
 		BLOCK_BEGIN Block_list BLOCK_END
-		{ parse_tree.push_back("Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END\n"); }
+		{ parse_tree.push_back("Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END"); }
 		;
 Block_list:
 		Block_list Expression STMT_TERMINATOR
-		{ parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR"); }
 		| Expression STMT_TERMINATOR
-		{ parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR\n"); }
+		{ parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR"); }
 		;
 Let_Expression:
 		KEY_LET Formal Formals KEY_IN Expression
-		{ parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN Expression\n"); }
+		{ parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN Expression"); }
 		;
 Expressions:
 		Expressions COMMA Expression
-		{ parse_tree.push_back( "Expressions -> Expressions COMMA Expression\n"); }
+		{ parse_tree.push_back( "Expressions -> Expressions COMMA Expression"); }
 		|
-		{ parse_tree.push_back("Expressions -> Empty\n"); }
+		{ parse_tree.push_back("Expressions -> EMPTY"); }
 		;
 Formals:
 		Formals COMMA Formal
-		{ parse_tree.push_back("Formals -> Formals COMMA Formal\n"); }
+		{ parse_tree.push_back("Formals -> Formals COMMA Formal"); }
 		|
-		{ parse_tree.push_back("Formals -> Empty\n"); }
+		{ parse_tree.push_back("Formals -> EMPTY"); }
 		;
 %%
 
@@ -425,16 +426,16 @@ int main(int argc, char **argv)
 		yyparse();
 	} while (!feof(yyin));
 
-
-    //cout<<"Printing the parse tree"<<endl;
-    //for(int i=parse_tree.size()-1;i>=0;i--){
-      //  cout<<parse_tree[i];
-    //}
+	reverse(parse_tree.begin() ,parse_tree.end()) ;
+    cout<<"Printing the parse tree"<<endl;
+    // for(int i=parse_tree.size()-1;i>=0;i--){//  cout<<parse_tree[i];
+    //   cout<<parse_tree[i];
+    // }
     print_pretty(parse_tree);
 
 	return 0;
 }
 void yyerror(const char* s) {
-	fprintf(stderr, "Parse error: %s\n", s);
+	fprintf(stderr, "Parse error: %s", s);
 	exit(1);
 }
