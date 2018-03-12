@@ -30,8 +30,10 @@ int getRightMostNonTerminalIndex(vector<string> v) {
 }
 
 void print_pretty(vector<string> v) {
+
+    cout<<"<!DOCTYPE html>\n<html>\n<head>\n\t<title>CODE AND GRAMMAR</title>\n</head>\n<body><ol>";
 	string currString = v[0];
-	cout << currString << endl;
+	cout <<"<li><b>"<< currString<<"</b>" << endl;
 	vector<string> vecString = split(currString, ' ');
 	int index, currIndex = 1;
 	while ((index = getRightMostNonTerminalIndex(vecString)) != -1) {
@@ -53,8 +55,26 @@ void print_pretty(vector<string> v) {
 			}
 		}
 		vecString = split(currString, ' ');
+        string to_print="";
+        string string_before_last_non_terminal="",last_non_terminal="",residual="";
+        int tmp_index = getRightMostNonTerminalIndex(vecString);
+        for(int i=0;i<vecString.size();i++){
+            if(i<tmp_index){
+                string_before_last_non_terminal+=vecString[i]+" ";
+            }
+            else if(i>tmp_index){
+                residual+=vecString[i]+" ";
+            }
+            if(tmp_index!=-1)                   //case when all are terminals :)
+                last_non_terminal=vecString[tmp_index]+" ";
+        }
+        string_before_last_non_terminal = "<font size=\"3\" color=\"red\">"+string_before_last_non_terminal+"</font>";
+        residual = "<font size=\"3\" color=\"yellow\">"+residual+"</font>";
+        last_non_terminal = "<font size=\"3\" color=\"green\">"+ last_non_terminal +"</font>";
+        cout<<"<li>"<<string_before_last_non_terminal<<" "<<last_non_terminal<<" "<<residual<<endl;
 		// cout<<"RULE USED: "<<v[currIndex]<<"-------------------------------------------------------------"<<endl;
-		cout << currString << endl;
+
 		currIndex++;
 	}
+    cout<<"</ol></body>\n</html>";
 }
