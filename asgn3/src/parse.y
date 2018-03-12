@@ -1,10 +1,5 @@
 %{
-#include <iostream>
-#include <math.h>
-#include <set>
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 #include "print_pretty.cpp"
 
 extern int yylex();
@@ -415,8 +410,7 @@ Formals:
 		;
 %%
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	++argv, --argc;
 	if (argc > 0)
 		yyin = fopen(argv[0], "r");
@@ -426,15 +420,19 @@ int main(int argc, char **argv)
 		yyparse();
 	} while (!feof(yyin));
 
-	reverse(parse_tree.begin() ,parse_tree.end()) ;
-    cout<<"Printing the parse tree"<<endl;
-    // for(int i=parse_tree.size()-1;i>=0;i--){//  cout<<parse_tree[i];
+	reverse(parse_tree.begin() ,parse_tree.end());
+
+    cout << "Printing the parse tree" << endl;
+
+    // for(int i=parse_tree.size()-1;i>=0;i--) {
     //   cout<<parse_tree[i];
     // }
+    
     print_pretty(parse_tree);
 
 	return 0;
 }
+
 void yyerror(const char* s) {
 	fprintf(stderr, "Parse error: %s", s);
 	exit(1);
