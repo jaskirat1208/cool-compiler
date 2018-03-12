@@ -19,16 +19,19 @@ vector<string> split(const string& s, char delimiter) {
 
 int isTerminal(string str) {
 	//In this part, we have chosen a convention that all terminals are in caps
-	if (str[1] < 'Z'  &&  str[1] > 'A')
-		return 1;
+	if (str[1] <= 'Z'  &&  str[1] >= 'A')
+    {
+        return 1;
+    }
 	return 0;
 }
 
 int getRightMostNonTerminalIndex(vector<string> v) {
 	for (int i = v.size()-1; i >= 2; i--) {
-		if (isTerminal(v[i])) {
+        if (isTerminal(v[i])) {
 			continue;
 		} else {
+            cout<<v[i]<<" "<<endl;
 			return i;
 		}
 	}
@@ -106,6 +109,7 @@ void print_pretty(vector<string> v) {
 				}
 			}
 		}
+        //cout<<currString<<endl;
 		vecString = split(currString, ' ');
         string_before_last_non_terminal="",last_non_terminal="",residual="";
         int tmp_index = getRightMostNonTerminalIndex(vecString);
@@ -137,3 +141,4 @@ void print_pretty(vector<string> v) {
    
 
 }
+
