@@ -1,9 +1,6 @@
 #include <bits/stdc++.h>
 
 #define PATH_TO_FILE "parser.html"
-#define COLOR_1 "red"
-#define COLOR_2 "green"
-#define COLOR_3 "yellow"
 
 using namespace std;
 
@@ -20,37 +17,30 @@ vector<string> split(const string& s, char delimiter) {
 int isTerminal(string str) {
 	//In this part, we have chosen a convention that all terminals are in caps
 	if (str[1] <= 'Z'  &&  str[1] >= 'A')
-    {
-        return 1;
-    }
+		return 1;
 	return 0;
 }
 
 int getRightMostNonTerminalIndex(vector<string> v) {
 	for (int i = v.size()-1; i >= 2; i--) {
-        if (isTerminal(v[i])) {
+		if (isTerminal(v[i])) {
 			continue;
 		} else {
-            cout<<v[i]<<" "<<endl;
 			return i;
 		}
 	}
 	return -1;
 }
 
-void print_code(std::vector<string> v){
-
-}
 void print_pretty(vector<string> v) {
-	ofstream html_file;
+	ofstream htmlFile;
     string tmp = R"(<div class="box">
 	<h2 align="center"> Printing the parse tree </h2>
-	<p>At vero eos et accusamus et iusto odio dignissimos ducimus:</p>
 	<ol>)";
 	
-	html_file.open(PATH_TO_FILE);
+	htmlFile.open(PATH_TO_FILE);
     string currString = v[0];
-    html_file<<R"(<!DOCTYPE html>
+    htmlFile << R"(<!DOCTYPE html>
 <html>
 <head>
 	<title></title>
@@ -80,25 +70,23 @@ void print_pretty(vector<string> v) {
 </head>
 <body>
 )";
-    html_file<<tmp;
-	// html_file <<"<li class = \"bg\"><b>"<< currString<<"</b></li>" << endl;
+    htmlFile << tmp;
 	vector<string> vecString = split(currString, ' ');
-	string string_before_last_non_terminal="",last_non_terminal="",residual="";
-	for (int i = 0; i < vecString.size()-1; ++i)
-	{
-		string_before_last_non_terminal+=vecString[i] + " ";
+	string stringBeforeLastNonTerminal = "", lastNonTerminal = "", residual = "";
+	for (int i = 2; i < vecString.size()-1; ++i) {
+		stringBeforeLastNonTerminal += vecString[i] + " ";
 	}
-	html_file<<"<li class = \"bg\"><font size=\"3\" color=\"red\"> "<<string_before_last_non_terminal<<"  </font>  <font size=\"3\" color=\"green\"> "<<vecString[vecString.size()-1]<<"</font></li>\n";
+	htmlFile << "<li class = \"bg\"><font size = \"3\"> " << vecString[0] << " " << vecString[1] << "</font> " << "<font size = \"3\" color = \"#aa2020\"> " << stringBeforeLastNonTerminal << "  </font>  <font size = \"4\" color = \"#20aa47\"> " << vecString[vecString.size()-1] << "</font></li>\n";
 	int index, currIndex = 1;
-	int id=0;								//only for formatting sake
+	int id = 0;    // only for formatting sake
 	while ((index = getRightMostNonTerminalIndex(vecString)) != -1) {
 		currString = "";
-		for (int i = 0; i < vecString.size(); i++){
+		for (int i = 0; i < vecString.size(); i++) {
 			if (i == index) {
 				vector<string> vecProduction = split(v[currIndex], ' ');
 				for (int j = 2; j < vecProduction.size(); j++) {
 					if (vecProduction[j] != "EMPTY") {
-						currString += vecProduction[j];
+                        currString += vecProduction[j];
 						currString += " ";
 					}
 				}
@@ -109,36 +97,30 @@ void print_pretty(vector<string> v) {
 				}
 			}
 		}
-        //cout<<currString<<endl;
 		vecString = split(currString, ' ');
-        string_before_last_non_terminal="",last_non_terminal="",residual="";
+        stringBeforeLastNonTerminal = "", lastNonTerminal = "", residual = "";
         int tmp_index = getRightMostNonTerminalIndex(vecString);
-        for(int i=2;i<vecString.size();i++){
-            if(i<tmp_index){
-                string_before_last_non_terminal+=vecString[i]+" ";
+        for (int i = 2; i < vecString.size(); i++) {
+            if (i < tmp_index) {
+                stringBeforeLastNonTerminal += vecString[i] + " ";
+            } else if (i > tmp_index) {
+                residual += vecString[i] + " ";
             }
-            else if(i>tmp_index){
-                residual+=vecString[i]+" ";
+            if (tmp_index != -1) {
+                lastNonTerminal = vecString[tmp_index] + " ";
             }
-            if(tmp_index!=-1)
-                last_non_terminal=vecString[tmp_index]+" ";
         }
-        string_before_last_non_terminal = "<font size=\"3\" color=\"red\"> "+vecString[0]+" "+vecString[1]+" "+string_before_last_non_terminal+"</font>";
-        residual = "<font size=\"3\" color=\"yellow\">"+residual+"</font>";
-        last_non_terminal = "<font size=\"3\" color=\"green\">"+ last_non_terminal +"</font>";
-        if (id%2==1)
-        {
-       		html_file<<"<li class = \"bg\">"<<string_before_last_non_terminal<<" "<<last_non_terminal<<" "<<residual<<"</li>\n";
+        stringBeforeLastNonTerminal = "<font size = \"3\"> " + vecString[0] + " " + vecString[1] + "</font>" + " " + "<font size = \"3\" color = \"#aa2020\"> " + stringBeforeLastNonTerminal + "</font>";
+        residual = "<font size = \"3\" color = \"#4286f4\">" + residual + "</font>";
+        lastNonTerminal = "<font size = \"4\" color = \"#20aa47\">" + lastNonTerminal + "</font>";
+        if (id % 2 == 1) {
+       		htmlFile << "<li class = \"bg\">" << stringBeforeLastNonTerminal << " " << lastNonTerminal << " " << residual << "</li>\n";
+        } else {
+        	htmlFile << "<li class = \"no-bg\">" << stringBeforeLastNonTerminal << " " << lastNonTerminal << " " << residual << "</li>\n";
         }
-        else{
-        	html_file<<"<li class = \"no-bg\">"<<string_before_last_non_terminal<<" "<<last_non_terminal<<" "<<residual<<"</li>\n";
-        }
-        // cout<<"RULE USED: "<<v[currIndex]<<"-------------------------------------------------------------"<<endl;
+        // cout << "RULE USED: " << v[currIndex] << "-------------------------------------------------------------" << endl;
         id++;
 		currIndex++;
 	}
-    html_file<<"</ol></div>";
-   
-
+    htmlFile << "</ol></div>";
 }
-
