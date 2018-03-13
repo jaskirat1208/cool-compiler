@@ -9,4 +9,4 @@ bin/parse: src/parse.y src/lex.l
 .PHONY: clean
 
 clean: 
-	rm src/parse.tab.* src/lex.yy.c bin/parse parser.html
+	rm src/parse.tab.* src/lex.yy.c bin/parse

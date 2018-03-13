@@ -9,8 +9,6 @@ void yyerror(const char* s);
 
 using namespace std;
 
-
-
 vector<string> parse_tree;
 %}
 
@@ -19,8 +17,8 @@ vector<string> parse_tree;
 	char* str;
 }
 
-%token NEWLINE	
-%token <intValue> INTEGER	
+%token NEWLINE
+%token <intValue> INTEGER
 %token KEY_PACKAGE
 %token KEY_IMPORT
 %token KEY_CLASS
@@ -32,7 +30,7 @@ vector<string> parse_tree;
 %token KEY_BREAK
 %token KEY_CONTINUE
 %token KEY_ISVOID
-%token KEY_NOT
+%right KEY_NOT
 %token KEY_CASE
 %token KEY_OF
 %token KEY_ESAC
@@ -50,27 +48,27 @@ vector<string> parse_tree;
 %token KEY_TRUE
 %token KEY_FALSE
 %token <str> IDENTIFIER
-%token <str> TYPE	
-%token OP_ASGN 
+%token <str> TYPE
+%right OP_ASGN
 %token OP_IMPLIES
-%token <str> STRING	
-%token COLON			
-%token STMT_TERMINATOR 
-%token AT				
-%token DOT				
+%token <str> STRING
+%token COLON
+%token STMT_TERMINATOR
+%token AT
+%left DOT
 %token DOTSTAR
-%token COMMA			
-%token BLOCK_BEGIN 	
+%left COMMA
+%token BLOCK_BEGIN
 %token BLOCK_END
-%token PARAN_OPEN		
-%token PARAN_CLOSE		
-%token ARRAY_OPEN		
-%token ARRAY_CLOSE 	
-%token OP_ARITHMETIC_U	
-%token OP_ARITHMETIC_B
-%token OP_RELATIONAL
-%token OP_LOGICAL	
-%token OP_BITWISE
+%token PARAN_OPEN
+%token PARAN_CLOSE
+%token ARRAY_OPEN
+%token ARRAY_CLOSE
+%right OP_ARITHMETIC_U
+%left OP_ARITHMETIC_B
+%left OP_RELATIONAL
+%left OP_LOGICAL
+%left OP_BITWISE
 
 %start Compilation_unit
 %type <str> Compilation_unit
@@ -303,8 +301,8 @@ Expression:
 		{ parse_tree.push_back("Expression -> IDENTIFIER"); }
 		| IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE
 		{ parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE"); }
-		| ARRAY_OPEN Expression Expression ARRAY_CLOSE
-		{ parse_tree.push_back("Expression -> ARRAY_OPEN Expression Expression ARRAY_CLOSE"); }
+		| ARRAY_OPEN Expressions ARRAY_CLOSE
+		{ parse_tree.push_back("Expression -> ARRAY_OPEN Expressions ARRAY_CLOSE"); }
 		| KEY_TRUE
 		{ parse_tree.push_back("Expression -> KEY_TRUE"); }
 		| KEY_FALSE
