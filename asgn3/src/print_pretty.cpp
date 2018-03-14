@@ -13,7 +13,11 @@ vector<string> split(const string& s, char delimiter) {
 	}
 	return tokens;
 }
-
+string get_filename(string str){
+    string tmp = split(str,'.')[0]+".html";
+    cout<<tmp<<endl;
+    return tmp;
+}
 int isTerminal(string str) {
 	//In this part, we have chosen a convention that all terminals are in caps
 	if (str[1] <= 'Z'  &&  str[1] >= 'A')
@@ -32,13 +36,13 @@ int getRightMostNonTerminalIndex(vector<string> v) {
 	return -1;
 }
 
-void print_pretty(vector<string> v) {
+void print_pretty(vector<string> v, string of) {
 	ofstream htmlFile;
     string tmp = R"(<div class="box">
 	<h2 align="center"> Printing the parse tree </h2>
 	<ol>)";
 	
-	htmlFile.open(PATH_TO_FILE);
+	htmlFile.open(of);
     string currString = v[0];
     htmlFile << R"(<!DOCTYPE html>
 <html>

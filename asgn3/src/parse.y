@@ -410,10 +410,15 @@ Formals:
 
 int main(int argc, char **argv) {
 	++argv, --argc;
-	if (argc > 0)
+    string of = "";
+	if (argc > 0){
 		yyin = fopen(argv[0], "r");
-	else
+        of = get_filename(argv[0]);
+    }
+	else{
 		yyin = stdin;
+        of = "parser.html";
+    }
 	do {
 		yyparse();
 	} while (!feof(yyin));
@@ -426,7 +431,7 @@ int main(int argc, char **argv) {
 		cout << parse_tree[i] << endl;
 	}*/
 
-	print_pretty(parse_tree);
+	print_pretty(parse_tree,of);
 
 	return 0;
 }
