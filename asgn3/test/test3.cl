@@ -1,16 +1,13 @@
-package group19TestCases;
-
-import something.*;
+import group19TestCases;
 
 class Main {
-	func (a : Int) : Int {
+	n : Int;
+	arr : Int[10];
+	init (nGiven : Int, arrElements : Int[]) : Cons {
 		{
-			if (a = 0) then
-				return 1
-			else
-				a <- a + 1
-			fi;
-			a;
+			n <- nGiven;
+			arr <- arrElements;
+			self;
 		}
 	};
 };

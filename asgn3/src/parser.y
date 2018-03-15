@@ -49,6 +49,7 @@ vector<string> parse_tree;
 %token KEY_FALSE
 %token <str> IDENTIFIER
 %token <str> TYPE
+%left COMMA
 %right OP_ASGN
 %token OP_IMPLIES
 %token <str> STRING
@@ -57,18 +58,17 @@ vector<string> parse_tree;
 %token AT
 %left DOT
 %token DOTSTAR
-%left COMMA
 %token BLOCK_BEGIN
 %token BLOCK_END
 %token PARAN_OPEN
 %token PARAN_CLOSE
 %token ARRAY_OPEN
 %token ARRAY_CLOSE
-%right OP_ARITHMETIC_U
-%left OP_ARITHMETIC_B
-%left OP_RELATIONAL
 %left OP_LOGICAL
 %left OP_BITWISE
+%left OP_RELATIONAL
+%left OP_ARITHMETIC_B
+%right OP_ARITHMETIC_U
 
 %start Compilation_unit
 %type <str> Compilation_unit

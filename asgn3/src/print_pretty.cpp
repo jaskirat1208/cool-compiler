@@ -14,8 +14,9 @@ vector<string> split(const string& s, char delimiter) {
 	return tokens;
 }
 string get_filename(string str){
-    string tmp = split(str,'.')[0]+".html";
-    cout<<tmp<<endl;
+    string tmp = split(str, '.')[0]+".html";
+    tmp = split(tmp, '/')[1];
+    cout << tmp << endl;
     return tmp;
 }
 int isTerminal(string str) {
@@ -122,7 +123,6 @@ void print_pretty(vector<string> v, string of) {
         } else {
         	htmlFile << "<li class = \"no-bg\">" << stringBeforeLastNonTerminal << " " << lastNonTerminal << " " << residual << "</li>\n";
         }
-        // cout << "RULE USED: " << v[currIndex] << "-------------------------------------------------------------" << endl;
         id++;
 		currIndex++;
 	}

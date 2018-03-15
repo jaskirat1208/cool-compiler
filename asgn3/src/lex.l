@@ -5,7 +5,7 @@
 #include <math.h>
 #include <set>
 #include <string>
-#include "parse.tab.h"
+#include "parser.tab.h"
 
 #define YY_DECL int yylex()
 

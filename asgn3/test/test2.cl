@@ -1,19 +1,16 @@
 package group19TestCases;
-interface Vehicle {
-	noOfWheels() : Int;
-};
-interface Roadways {
-	func(): String;
-};
 
-class Scooter implements Vehicle,Roadways {
-	noOfWheels() : Int { 2 };
-};
-class Car implements Vehicle {
-	noOfWheels() : Int { 4 };
-};
+import something.*;
 
 class Main {
-	activa : Scooter;
-	printWheels() : Int { activa.noOfWheels() };
+	func (a : Int) : Int {
+		{
+			if (a = 0) then
+				return 1
+			else
+				a <- a + 1
+			fi;
+			a;
+		}
+	};
 };
