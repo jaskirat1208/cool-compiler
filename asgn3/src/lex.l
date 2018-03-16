@@ -47,7 +47,6 @@ KEY_NEW			(?i:new)
 KEY_BREAK		(?i:break)
 KEY_CONTINUE	(?i:continue)
 KEY_ISVOID		(?i:isvoid)
-KEY_NOT			(?i:not)
 KEY_CASE		(?i:case)
 KEY_OF			(?i:of)
 KEY_ESAC		(?i:esac)
@@ -66,7 +65,6 @@ KEY_TRUE		"t"(?i:rue)
 KEY_FALSE		"f"(?i:alse)
 IDENTIFIER		[a-z][a-zA-Z0-9_]*
 TYPE			[A-Z][a-zA-Z0-9_]*
-OP_ASGN 		"<-"
 OP_IMPLIES 		"=>"
 STRING			\"(\\.|[^\\"])*\"
 SL_COMMENT		"--"(.)*
@@ -74,20 +72,27 @@ ML_COMMENT		"(*"([^*]|[\n]|(\*+([^*\)]|[\n])))*\*+")"
 COLON			":"
 STMT_TERMINATOR ";"
 AT				"@"
-DOT				"."
 DOTSTAR			".*"
-COMMA			","
 BLOCK_BEGIN 	"{"
 BLOCK_END 		"}"
 PARAN_OPEN		"("
 PARAN_CLOSE		")"
 ARRAY_OPEN		"["
 ARRAY_CLOSE 	"]"
+COMMA			","
+OP_ASGN 		"<-"
+OP_LOGICAL_OR	(\|\|)
+OP_LOGICAL_AND	(&&)
+OP_BITWISE_OR	(\|)
+OP_BITWISE_XOR	(^)
+OP_BITWISE_AND	(&)
+OP_RELATIONAL_EQ	(=)
+OP_RELATIONAL_IEQ	(<|<=|>=|>)
+OP_ARITHMETIC_B_AD	[+-]
+OP_ARITHMETIC_B_MU	[/*]
+DOT				"."
+KEY_NOT			(?i:not)
 OP_ARITHMETIC_U	"~"
-OP_ARITHMETIC_B	[+-/*]
-OP_RELATIONAL	(<|<=|=|>=|>)
-OP_LOGICAL		(&&|\|\|)
-OP_BITWISE		(&|\||^)
 
 %%
 {NEWLINE}		{
@@ -342,29 +347,59 @@ OP_BITWISE		(&|\||^)
 					s_op_arithmetic.insert(yytext);
 					return OP_ARITHMETIC_U;
 				}
-{OP_ARITHMETIC_B}	{
+{OP_ARITHMETIC_B_AD}	{
 					// printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
-					return OP_ARITHMETIC_B;
+					return OP_ARITHMETIC_B_AD;
 				}
-{OP_RELATIONAL}	{
+{OP_ARITHMETIC_B_MU}	{
+					// printf("[OP_ARITHMETIC_B: %s]\n", yytext);
+					++numOpArithmetic;
+					s_op_arithmetic.insert(yytext);
+					return OP_ARITHMETIC_B_MU;
+				}
+{OP_RELATIONAL_EQ}	{
 					// printf("[OP_RELATIONAL: %s]\n", yytext);
 					++numOpRelational;
 					s_op_relational.insert(yytext);
-					return OP_RELATIONAL;
+					return OP_RELATIONAL_EQ;
 				}
-{OP_LOGICAL}	{
-					// printf("[OP_LOGICAL: %s]\n", yytext);
+{OP_RELATIONAL_IEQ}	{
+					// printf("[OP_RELATIONAL: %s]\n", yytext);
+					++numOpRelational;
+					s_op_relational.insert(yytext);
+					return OP_RELATIONAL_IEQ;
+				}
+{OP_LOGICAL_OR}	{
+					// printf("[OP_LOGICAL_OR: %s]\n", yytext);
 					++numOpLogical;
 					s_op_logical.insert(yytext);
-					return OP_LOGICAL;
+					return OP_LOGICAL_OR;
 				}
-{OP_BITWISE}	{
-					// printf("[OP_BITWISE: %s]\n", yytext);
+{OP_LOGICAL_AND}	{
+					// printf("[OP_LOGICAL_AND: %s]\n", yytext);
+					++numOpLogical;
+					s_op_logical.insert(yytext);
+					return OP_LOGICAL_AND;
+				}
+{OP_BITWISE_OR}	{
+					// printf("[OP_BITWISE_OR: %s]\n", yytext);
 					++numOpBitwise;
 					s_op_bitwise.insert(yytext);
-					return OP_BITWISE;
+					return OP_BITWISE_OR;
+				}
+{OP_BITWISE_XOR}	{
+					// printf("[OP_BITWISE_OR: %s]\n", yytext);
+					++numOpBitwise;
+					s_op_bitwise.insert(yytext);
+					return OP_BITWISE_XOR;
+				}
+{OP_BITWISE_AND}	{
+					// printf("[OP_BITWISE_OR: %s]\n", yytext);
+					++numOpBitwise;
+					s_op_bitwise.insert(yytext);
+					return OP_BITWISE_AND;
 				}
 [ \t]+			/* eat up white spaces */
 .				{

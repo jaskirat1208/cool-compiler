@@ -17,7 +17,8 @@ vector<string> parse_tree;
 	char* str;
 }
 
-%token NEWLINE
+%expect 1
+
 %token <intValue> INTEGER
 %token KEY_PACKAGE
 %token KEY_IMPORT
@@ -26,11 +27,9 @@ vector<string> parse_tree;
 %token KEY_INHERITS
 %token KEY_IMPLEMENTS
 %token KEY_RETURN
-%token KEY_NEW
 %token KEY_BREAK
 %token KEY_CONTINUE
 %token KEY_ISVOID
-%right KEY_NOT
 %token KEY_CASE
 %token KEY_OF
 %token KEY_ESAC
@@ -49,14 +48,11 @@ vector<string> parse_tree;
 %token KEY_FALSE
 %token <str> IDENTIFIER
 %token <str> TYPE
-%left COMMA
-%right OP_ASGN
 %token OP_IMPLIES
 %token <str> STRING
 %token COLON
 %token STMT_TERMINATOR
 %token AT
-%left DOT
 %token DOTSTAR
 %token BLOCK_BEGIN
 %token BLOCK_END
@@ -64,11 +60,19 @@ vector<string> parse_tree;
 %token PARAN_CLOSE
 %token ARRAY_OPEN
 %token ARRAY_CLOSE
-%left OP_LOGICAL
-%left OP_BITWISE
-%left OP_RELATIONAL
-%left OP_ARITHMETIC_B
-%right OP_ARITHMETIC_U
+%left COMMA
+%right OP_ASGN
+%left OP_LOGICAL_OR
+%left OP_LOGICAL_AND
+%left OP_BITWISE_OR
+%left OP_BITWISE_XOR
+%left OP_BITWISE_AND
+%left OP_RELATIONAL_EQ
+%left OP_RELATIONAL_IEQ
+%left OP_ARITHMETIC_B_AD
+%left OP_ARITHMETIC_B_MU
+%right KEY_NOT KEY_NEW OP_ARITHMETIC_U
+%left DOT
 
 %start Compilation_unit
 %type <str> Compilation_unit
@@ -94,6 +98,7 @@ vector<string> parse_tree;
 %type <str> Formal
 %type <str> Formal_params_list
 %type <str> Formal_param
+%type <str> Expression
 %type <str> Conditionals
 %type <str> Loops
 %type <str> Arguments_list_opt
@@ -261,8 +266,8 @@ Expression:
 		{ parse_tree.push_back("Expression -> IDENTIFIER OP_ASGN Expression"); }
 		| IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{ parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
-		| Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
-		{ parse_tree.push_back("Expression -> Expression AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
+		| BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
+		{ parse_tree.push_back("Expression -> BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
 		| Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{ parse_tree.push_back("Expression -> Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
 		| Conditionals
@@ -275,24 +280,34 @@ Expression:
 		{ parse_tree.push_back("Expression -> Let_Expression"); }
 		| KEY_NEW TYPE
 		{ parse_tree.push_back("Expression -> KEY_NEW TYPE"); }
-		| KEY_ISVOID Expression
-		{ parse_tree.push_back("Expression -> KEY_ISVOID Expression"); }
+		| KEY_ISVOID BLOCK_BEGIN Expression BLOCK_END
+		{ parse_tree.push_back("Expression -> KEY_ISVOID BLOCK_BEGIN Expression BLOCK_END"); }
 		| Return_statement
 		{ parse_tree.push_back("Expression -> Return_statement"); }
 		| Break_statement
 		{ parse_tree.push_back("Expression -> Break_statement"); }
 		| Continue_statement
 		{ parse_tree.push_back("Expression -> Continue_statement"); }
-		| Expression OP_ARITHMETIC_B Expression
-		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B Expression"); }
+		| Expression OP_LOGICAL_OR Expression
+		{ parse_tree.push_back("Expression -> Expression OP_LOGICAL_OR Expression"); }
+		| Expression OP_LOGICAL_AND Expression
+		{ parse_tree.push_back("Expression -> Expression OP_LOGICAL_AND Expression"); }
+		| Expression OP_BITWISE_OR Expression
+		{ parse_tree.push_back("Expression -> Expression OP_BITWISE_OR Expression"); }
+		| Expression OP_BITWISE_XOR Expression
+		{ parse_tree.push_back("Expression -> Expression OP_BITWISE_XOR Expression"); }
+		| Expression OP_BITWISE_AND Expression
+		{ parse_tree.push_back("Expression -> Expression OP_BITWISE_AND Expression"); }
+		| Expression OP_RELATIONAL_EQ Expression
+		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL_EQ Expression"); }
+		| Expression OP_RELATIONAL_IEQ Expression
+		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL_IEQ Expression"); }
+		| Expression OP_ARITHMETIC_B_AD Expression
+		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); }
+		| Expression OP_ARITHMETIC_B_MU Expression
+		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_MU Expression"); }
 		| OP_ARITHMETIC_U Expression
 		{ parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression"); }
-		| Expression OP_RELATIONAL Expression
-		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL Expression"); }
-		| Expression OP_LOGICAL Expression
-		{ parse_tree.push_back("Expression -> Expression OP_LOGICAL Expression"); }
-		| Expression OP_BITWISE Expression
-		{ parse_tree.push_back("Expression -> Expression OP_BITWISE Expression"); }
 		| KEY_NOT Expression
 		{ parse_tree.push_back("Expression -> KEY_NOT Expression"); }
 		| PARAN_OPEN Expression PARAN_CLOSE
@@ -365,8 +380,8 @@ For:
 		{ parse_tree.push_back("For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL"); }
 		;
 Do_while:
-		KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression
-		{ parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE Expression"); }
+		KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE BLOCK_BEGIN Expression BLOCK_END
+		{ parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE BLOCK_BEGIN Expression BLOCK_END"); }
 		;
 Break_statement:
 		KEY_BREAK
@@ -377,8 +392,8 @@ Continue_statement:
 		{ parse_tree.push_back("Continue_statement -> KEY_CONTINUE"); }
 		;
 Return_statement:
-		KEY_RETURN Expression
-		{ parse_tree.push_back("Return_statement -> KEY_RETURN Expression"); }
+		KEY_RETURN BLOCK_BEGIN Expression BLOCK_END
+		{ parse_tree.push_back("Return_statement -> KEY_RETURN BLOCK_BEGIN Expression BLOCK_END"); }
 		;
 Block_Expression:
 		BLOCK_BEGIN Block_list BLOCK_END
@@ -391,8 +406,8 @@ Block_list:
 		{ parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR"); }
 		;
 Let_Expression:
-		KEY_LET Formal Formals KEY_IN Expression
-		{ parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN Expression"); }
+		KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END
+		{ parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END"); }
 		;
 Expressions:
 		Expressions COMMA Expression
