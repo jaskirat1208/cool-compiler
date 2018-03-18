@@ -60,8 +60,8 @@ class CellularAutomaton inherits IO {
    
     evolve() : SELF_TYPE {
         (let position : Int in
-        (let num : Int <- num_cells[1] in
-        (let temp : String in
+        {let num : Int <- num_cells[1] in
+        {let temp : String in {
             {
                 while position < num loop
                     {
@@ -72,6 +72,7 @@ class CellularAutomaton inherits IO {
                 population_map <- temp;
                 self;
             }
-        ) ) )
+        }
+        } } )
     };
 };
