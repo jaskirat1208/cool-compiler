@@ -1,97 +1,64 @@
 .data
-	c:	.quad 0
-	a:	.quad 0
-	b:	.quad 0
+	fvar:	.quad 0
+	j:	.quad 0
+	sum:	.quad 0
+	i:	.quad 0
 	str:	.string "%d\n"
 	scan_str:	.string "%d"
 .text
 .globl main
 main:
 label0:
-	pushq %RBP
-	pushq %RDI
-	pushq %RSI
-	movq $scan_str, %RDI
-	movq $a, %RSI
-	call scanf
-	popq %RSI
-	popq %RDI
-	popq %RBP
-	movq a, %RBX
+	movq $1, %RBX
+	movq %RBX, j
 
-	pushq %RBP
-	pushq %RDI
-	pushq %RSI
-	movq $scan_str, %RDI
-	movq $b, %RSI
-	call scanf
-	popq %RSI
-	popq %RDI
-	popq %RBP
-	movq b, %RCX
+	movq $0, %RCX
+	movq %RCX, sum
 
 	movq $0, %RSI
-	movq %RSI, c
+	movq %RSI, i
 
-	pushq %RAX
-	pushq %RDX
-	movq a, %RAX
-	movq b, %RSI
-	imulq %RSI
-	movq %RAX, %RSI
-	movq %RSI, c
-	popq %RDX
-	popq %RAX
+	movq $1, %RBX
+	movq %RBX, j
 
-	movq %RBX, a
-	movq %RCX, b
-	movq %RSI, c
+	movq %RBX, j
+	movq %RCX, sum
+	movq %RSI, i
 
-	call label5
+	jmp label5
 
 label1:
-	movq a, %RBX
-	addq b, %RBX
-	movq %RBX, c
-
-	movq %RBX, c
-
-	call label5
-
-label2:
 	pushq %RAX
 	pushq %RDX
-	movq a, %RAX
-	movq b, %RBX
+	movq j, %RAX
+	movq $10, %RBX
 	movq $0, %RDX
 	idivq %RBX
-	movq %RAX, %RBX
-	movq %RBX, c
+	movq %RDX, %RBX
+	movq %RBX, fvar
 	popq %RDX
 	popq %RAX
 
-	movq %RBX, c
+	cmp $0, %RBX
+	movq %RBX, fvar
 
-	call label5
+	je label3
+
+label2:
+	movq sum, %RBX
+	addq i, %RBX
+	movq %RBX, sum
+
+	movq %RBX, sum
+
+	jmp label4
 
 label3:
-	movq a, %RBX
-	subq b, %RBX
-	movq %RBX, c
-
-	movq %RBX, c
-
-	call label5
-
-label4:
-
-	ret
-label5:
 	pushq %RDI
 	pushq %RSI
 	pushq %RAX
 	movq $str, %RDI
-	movq c, %RSI
+	movq j, %RSI
 	movq $0, %RAX
 	pushq %R10
 	pushq %R11
@@ -102,6 +69,37 @@ label5:
 	popq %RSI
 	popq %RDI
 
+
+	jmp label4
+
+label4:
+	movq i, %RBX
+	addq $1, %RBX
+	movq %RBX, i
+
+	movq %RBX, i
+	pushq %RAX
+	pushq %RDX
+	movq i, %RAX
+	movq $2, %RBX
+	imulq %RBX
+	movq %RAX, %RBX
+	movq %RBX, j
+	popq %RDX
+	popq %RAX
+
+	movq %RBX, j
+
+	jmp label5
+
+label5:
+	movq i, %RBX
+	cmp $99, %RBX
+	movq %RBX, i
+
+	jle label1
+
+label6:
 
 	ret
 	ret

@@ -3,12 +3,10 @@
 3,*,c,a,7
 4,-,d,a,11
 6,ifgoto,leq,a,5,label2
-7,goto,label1
 8,label,label1
 9,+,f,a,40
 10,-,g,a,40
 11,goto,label3
-12,goto,label2
 13,label,label2
 14,+,i,a,20
 15,-,j,a,20
@@ -16,7 +14,6 @@
 17,label,label3
 18,=,k,0
 19,goto,label5
-20,goto,label4
 21,label,label4
 22,+,a,a,1
 23,+,i,i,1
