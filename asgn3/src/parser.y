@@ -264,6 +264,8 @@ Formal:
 Expression:
 		IDENTIFIER OP_ASGN Expression
 		{ parse_tree.push_back("Expression -> IDENTIFIER OP_ASGN Expression"); }
+		| IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
+		{ parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression"); }
 		| IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{ parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE"); }
 		| BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
@@ -412,8 +414,8 @@ Let_Expression:
 Expressions:
 		Expressions COMMA Expression
 		{ parse_tree.push_back( "Expressions -> Expressions COMMA Expression"); }
-		|
-		{ parse_tree.push_back("Expressions -> EMPTY"); }
+		| Expression
+		{ parse_tree.push_back("Expressions -> Expression"); }
 		;
 Formals:
 		Formals COMMA Formal
@@ -452,6 +454,9 @@ int main(int argc, char **argv) {
 }
 
 void yyerror(const char* s) {
+	for (int i = 0; i < parse_tree.size(); i++) {
+		cout << parse_tree[i] << endl;
+	}
 	fprintf(stderr, "Parse error: %s", s);
 	exit(1);
 }
