@@ -72,8 +72,8 @@ vector<string> parse_tree;
 %left OP_RELATIONAL_EQ
 %left OP_RELATIONAL_IEQ
 %left <str> OP_ARITHMETIC_B_AD
-%left OP_ARITHMETIC_B_MU
-%right KEY_NOT KEY_NEW OP_ARITHMETIC_U
+%left <str> OP_ARITHMETIC_B_MU
+%right <str> KEY_NOT KEY_NEW OP_ARITHMETIC_U
 %left DOT
 
 %start Compilation_unit
@@ -323,14 +323,26 @@ Expression:
 		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); 
 		  $$ = new Expression();
 		  $$->place = newTemp();
-		  $$->code = $1->code + $3->code + "1,+," + $$->place + "," + ($1->place) + "," + ($3->place);
+		  $$->code = $1->code + $3->code + "1," + $2 + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
 		  cout << "here in expresseion temp = " << $$->place << "\n";
 		  cout << "$$.code = " << $$->code << "\n";
 		}
 		| Expression OP_ARITHMETIC_B_MU Expression
-		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_MU Expression"); }
+		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_MU Expression"); 
+		  $$ = new Expression();
+		  $$->place = newTemp();
+		  $$->code = $1->code + $3->code + "1," + $2 + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+		  cout << "here in expresseion temp = " << $$->place << "\n";
+		  cout << "$$.code = " << $$->code << "\n";
+		}
 		| OP_ARITHMETIC_U Expression
-		{ parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression"); }
+		{ parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression"); 
+		  $$ = new Expression();
+		  $$->place = newTemp();
+		  $$->code = $2->code + "1,-," + $$->place + ",0," + ($2->place) + "\n";
+		  cout << "here in expresseion temp = " << $$->place << "\n";
+		  cout << "$$.code = " << $$->code << "\n";
+		}
 		| KEY_NOT Expression
 		{ parse_tree.push_back("Expression -> KEY_NOT Expression"); }
 		| PARAN_OPEN Expression PARAN_CLOSE

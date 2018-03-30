@@ -4,6 +4,10 @@ class Main {
 	c : Int;
 	d : Int;
 	main () : Int {
-		c <- a + b
+		{
+			c <- a * b;
+			d <- c + a;
+			b <- ~c;
+		}
 	};
 };

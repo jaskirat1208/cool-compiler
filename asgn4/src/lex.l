@@ -358,7 +358,7 @@ OP_ARITHMETIC_U	"~"
 					// printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
-					yylval.str = yytext;
+					yylval.str = strdup(yytext);
 					return OP_ARITHMETIC_B_MU;
 				}
 {OP_RELATIONAL_EQ}	{
