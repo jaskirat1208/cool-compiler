@@ -249,14 +249,14 @@ OP_ARITHMETIC_U	"~"
 					// printf("[IDENTIFIER: %s]\n", yytext);
 					++numIdentifier;
 					s_identifiers.insert(yytext);
-					yylval.str = yytext;
+					yylval.str = strdup(yytext);
 					return IDENTIFIER;	
 				}
 {TYPE}			{
 					// printf("[TYPE: %s]\n", yytext);
 					++numType;
 					s_type.insert(yytext);
-					yylval.str = yytext;
+					yylval.str = strdup(yytext);
 					return TYPE;
 				}
 {OP_ASGN}		{
@@ -272,7 +272,7 @@ OP_ARITHMETIC_U	"~"
 {STRING}		{
 					// cout<<"[String:"<<yytext<<" ]"<<endl;
 					s_strings.insert(yytext);
-					yylval.str = yytext;
+					yylval.str = strdup(yytext);
 					return STRING;
 				}
 {SL_COMMENT}	{
@@ -351,12 +351,14 @@ OP_ARITHMETIC_U	"~"
 					// printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
+					yylval.str = strdup(yytext);
 					return OP_ARITHMETIC_B_AD;
 				}
 {OP_ARITHMETIC_B_MU}	{
 					// printf("[OP_ARITHMETIC_B: %s]\n", yytext);
 					++numOpArithmetic;
 					s_op_arithmetic.insert(yytext);
+					yylval.str = yytext;
 					return OP_ARITHMETIC_B_MU;
 				}
 {OP_RELATIONAL_EQ}	{

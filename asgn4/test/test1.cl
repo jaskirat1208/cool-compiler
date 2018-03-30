@@ -1,4 +1,9 @@
 class Main {
-	a : Int <- 959;
-	foo (b : Int) : Int { b * 2 };
+	a : Int;
+	b : Int;
+	c : Int;
+	d : Int;
+	main () : Int {
+		c <- a + b
+	};
 };

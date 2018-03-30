@@ -1,6 +1,7 @@
 %{
 #include <bits/stdc++.h>
 #include "print_pretty.cpp"
+#include "global.h"
 
 extern int yylex();
 extern int yyparse();
@@ -15,6 +16,7 @@ vector<string> parse_tree;
 %union {
 	int intValue;
 	char* str;
+	struct Expression* expr; 
 }
 
 %expect 1
@@ -69,7 +71,7 @@ vector<string> parse_tree;
 %left OP_BITWISE_AND
 %left OP_RELATIONAL_EQ
 %left OP_RELATIONAL_IEQ
-%left OP_ARITHMETIC_B_AD
+%left <str> OP_ARITHMETIC_B_AD
 %left OP_ARITHMETIC_B_MU
 %right KEY_NOT KEY_NEW OP_ARITHMETIC_U
 %left DOT
@@ -98,7 +100,7 @@ vector<string> parse_tree;
 %type <str> Formal
 %type <str> Formal_params_list
 %type <str> Formal_param
-%type <str> Expression
+%type <expr> Expression
 %type <str> Conditionals
 %type <str> Loops
 %type <str> Arguments_list_opt
@@ -165,7 +167,8 @@ Sub_Program:
 		;
 Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
-		{ parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END"); }
+		{ cout << "inside class\n";
+			parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END"); }
 		;
 Interface:
 		KEY_INTERFACE TYPE Interface_Inheritance_List BLOCK_BEGIN Interface_features_list_opt BLOCK_END
@@ -251,15 +254,27 @@ Formal_param:
 		;
 Formal:
 		IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression");
+		}
 		| IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression
 		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression"); }
 		| IDENTIFIER COLON TYPE OP_ASGN Expression
 		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression"); }
 		| IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE"); }
-		| IDENTIFIER COLON TYPE
-		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE"); }
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE");
+		  SymbolTableEntry* entry = (SymbolTableEntry*) malloc(1*sizeof(SymbolTableEntry));
+		  string ty = $3;
+		  entry->type = ty.append("[]");   
+		  symbolTable.insert($1, entry);
+		  // symbolTable.printTableInts();
+		  }
+		| IDENTIFIER COLON TYPE 
+		{ parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE");
+		  SymbolTableEntry* entry = (SymbolTableEntry*) malloc(1*sizeof(SymbolTableEntry));
+		  entry->type = $3;   
+		  symbolTable.insert($1, entry);
+		  // symbolTable.printTableInts();
+		  }
 		;
 Expression:
 		IDENTIFIER OP_ASGN Expression
@@ -305,7 +320,13 @@ Expression:
 		| Expression OP_RELATIONAL_IEQ Expression
 		{ parse_tree.push_back("Expression -> Expression OP_RELATIONAL_IEQ Expression"); }
 		| Expression OP_ARITHMETIC_B_AD Expression
-		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); }
+		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); 
+		  $$ = new Expression();
+		  $$->place = newTemp();
+		  $$->code = $1->code + $3->code + "1,+," + $$->place + "," + ($1->place) + "," + ($3->place);
+		  cout << "here in expresseion temp = " << $$->place << "\n";
+		  cout << "$$.code = " << $$->code << "\n";
+		}
 		| Expression OP_ARITHMETIC_B_MU Expression
 		{ parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_MU Expression"); }
 		| OP_ARITHMETIC_U Expression
@@ -313,9 +334,20 @@ Expression:
 		| KEY_NOT Expression
 		{ parse_tree.push_back("Expression -> KEY_NOT Expression"); }
 		| PARAN_OPEN Expression PARAN_CLOSE
-		{ parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE"); }
+		{ parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE");
+ 		  //$$->place = $2->place;
+ 		  //$$->code = $2->code;
+		}
 		| IDENTIFIER
-		{ parse_tree.push_back("Expression -> IDENTIFIER"); }
+		{ parse_tree.push_back("Expression -> IDENTIFIER"); 
+		  if (symbolTable.lookup($1)){
+			  $$ = new Expression();
+			  $$->place = $1;
+			  $$->code = "";
+		  } else {
+		  	cout << "ERROR:- VARIABLE NOT FOUND\n";
+		  }
+		}
 		| IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE
 		{ parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE"); }
 		| ARRAY_OPEN Expressions ARRAY_CLOSE
@@ -325,7 +357,8 @@ Expression:
 		| KEY_FALSE
 		{ parse_tree.push_back("Expression -> KEY_FALSE"); }
 		| INTEGER
-		{ parse_tree.push_back("Expression -> INTEGER"); }
+		{ parse_tree.push_back("Expression -> INTEGER");
+		   }
 		| STRING
 		{ parse_tree.push_back( "Expression -> STRING"); }
 		;
@@ -426,6 +459,10 @@ Formals:
 %%
 
 int main(int argc, char **argv) {
+	/***********************************************************************************/
+	
+
+	/***********************************************************************************/
 	++argv, --argc;
     string of = "";
 	if (argc > 0){
