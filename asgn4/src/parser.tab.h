@@ -113,7 +113,7 @@ union YYSTYPE
 
 	int intValue;
 	char* str;
-	struct Expression* expr; 
+	struct Node* node; 
 
 #line 119 "parser.tab.h" /* yacc.c:1909  */
 };

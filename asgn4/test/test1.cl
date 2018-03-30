@@ -5,7 +5,7 @@ class Main {
 	d : Int;
 	main () : Int {
 		{
-			c <- a * b;
+			c <- a * ~5;
 			d <- c + a;
 			b <- ~c;
 		}

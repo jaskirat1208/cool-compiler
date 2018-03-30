@@ -24,16 +24,12 @@ class SymbolTable {
 			return NULL;
 		}
 
-		/*vector<string>*/void printTableInts(){
+		void printTableInts() {
 			vector<string> variableNames;
 			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
 			for (; i != table.end(); ++i) {
-				// if (i->second->type == VarInt) {
-				// 	variableNames.push_back(i->first);
-				// }
 				cout << i->first << " -=- " << i->second->type << "\n";
 			}
-			// return variableNames;
 		}
 };
 
@@ -43,14 +39,16 @@ string newTemp(){
 	string num = ss.str();
 	string temp = "t" + num; 
 	cnt++;
-	// char * tmp = (char *)temp.c_str();
 	return temp;
 }
-struct Expression {
-		string code;
-		string place;
+
+struct Node {
+	string code;
+	string place;
+	string type;
 };
 
-// typedef struct Expression Expr;
+struct Node *emptyNode = new Node();
+// emptyNode->code = "";
 
 SymbolTable symbolTable;
