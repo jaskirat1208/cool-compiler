@@ -1,4 +1,4 @@
-int cnt = 1;
+int cntTemp = 1, cntLabel = 1;
 
 class SymbolTableEntry {
 	public:
@@ -35,11 +35,20 @@ class SymbolTable {
 
 string newTemp(){
 	stringstream ss;
-	ss << cnt;
+	ss << cntTemp;
 	string num = ss.str();
 	string temp = "t" + num; 
-	cnt++;
+	cntTemp++;
 	return temp;
+}
+
+string newLabel(){
+	stringstream ss;
+	ss << cntLabel;
+	string num = ss.str();
+	string label = "t" + num; 
+	cntLabel++;
+	return label;
 }
 
 struct Node {
