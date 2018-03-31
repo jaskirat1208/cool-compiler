@@ -371,6 +371,7 @@ OP_ARITHMETIC_U	"~"
 					// printf("[OP_RELATIONAL: %s]\n", yytext);
 					++numOpRelational;
 					s_op_relational.insert(yytext);
+					yylval.str = strdup(yytext);
 					return OP_RELATIONAL_IEQ;
 				}
 {OP_LOGICAL_OR}	{

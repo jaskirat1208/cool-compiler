@@ -1,4 +1,4 @@
-bin/parser: src/parser.y src/lex.l
+bin/parser: src/parser.y src/lex.l src/global.h src/print_pretty.cpp
 	bison src/parser.y -d
 	flex src/lex.l
 	mv parser.tab.c src/

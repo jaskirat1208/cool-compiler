@@ -11,6 +11,7 @@ void yyerror(const char* s);
 using namespace std;
 
 vector<string> parse_tree;
+vector<string> ircode;
 %}
 
 %union {
@@ -70,7 +71,7 @@ vector<string> parse_tree;
 %left OP_BITWISE_XOR
 %left OP_BITWISE_AND
 %left OP_RELATIONAL_EQ
-%left OP_RELATIONAL_IEQ
+%left <str> OP_RELATIONAL_IEQ
 %left <str> OP_ARITHMETIC_B_AD
 %left <str> OP_ARITHMETIC_B_MU
 %right <str> KEY_NOT KEY_NEW OP_ARITHMETIC_U
@@ -120,6 +121,8 @@ vector<string> parse_tree;
 %type <node> Let_Expression
 %type <node> Expressions
 %type <node> Formals
+%type <intValue> M
+%type <node> N
 %%
 
 
@@ -183,11 +186,11 @@ Sub_Program:
 		;
 Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
-		{	cout << "inside class\n";
-			parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END");
+		{	parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END");
+			// cout << "inside class\n";
 			$$ = $6;
-			cout << $$->code;
-			cout << "end of class\n";
+			// cout << $$->code;
+			// cout << "end of class\n";
 		}
 		;
 Interface:
@@ -327,6 +330,8 @@ Formal:
 			}
 			$$ = new Node();
 			$$->code = $5->code + "1,=," + string($1) + "," + $5->place + "\n";
+			ircode.push_back("1,=," + string($1) + "," + $5->place + "\n");
+			// $$->nextlist = NULL;
 			$$->type = entry->type;
 		}
 		|	IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE
@@ -360,6 +365,8 @@ Expression:
 			}
 			$$ = new Node();
 			$$->code = $3->code + "1,=," + string($1) + "," + $3->place + "\n";
+			ircode.push_back("1,=," + string($1) + "," + $3->place + "\n");
+			// $$->nextlist = NULL;
 			$$->type = entry->type;
 		}
 		|	IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
@@ -376,6 +383,7 @@ Expression:
 		}
 		|	Conditionals
 		{	parse_tree.push_back("Expression -> Conditionals");
+			$$ = $1;
 		}
 		|	Loops
 		{	parse_tree.push_back("Expression -> Loops");
@@ -402,11 +410,19 @@ Expression:
 		|	Continue_statement
 		{	parse_tree.push_back("Expression -> Continue_statement");
 		}
-		|	Expression OP_LOGICAL_OR Expression
+		|	Expression OP_LOGICAL_OR M Expression
 		{	parse_tree.push_back("Expression -> Expression OP_LOGICAL_OR Expression");
+			$$ = new Node();
+			ircode = backpatch($1->falselist, $3, ircode);
+			$$->truelist = merge($1->truelist, $4->truelist);
+			$$->falselist = $4->falselist;
 		}
-		|	Expression OP_LOGICAL_AND Expression
+		|	Expression OP_LOGICAL_AND M Expression
 		{	parse_tree.push_back("Expression -> Expression OP_LOGICAL_AND Expression");
+			$$ = new Node();
+			ircode = backpatch($1->truelist, $3, ircode);
+			$$->truelist = $4->truelist;
+			$$->falselist = merge($1->falselist, $4->falselist);
 		}
 		|	Expression OP_BITWISE_OR Expression
 		{	parse_tree.push_back("Expression -> Expression OP_BITWISE_OR Expression");
@@ -419,16 +435,29 @@ Expression:
 		}
 		|	Expression OP_RELATIONAL_EQ Expression
 		{	parse_tree.push_back("Expression -> Expression OP_RELATIONAL_EQ Expression");
+			$$ = new Node();
+			// $$->place = newTemp(); handling the place remains
+			$$->truelist = makelist(ircode.size());
+			$$->falselist = makelist(ircode.size() + 1);
+			ircode.push_back("1,ifgoto,eq," + $1->place + "," + $3->place + ",");
+			ircode.push_back("1,goto,");
 		}
 		|	Expression OP_RELATIONAL_IEQ Expression
 		{	parse_tree.push_back("Expression -> Expression OP_RELATIONAL_IEQ Expression");
+			$$ = new Node();
+			// $$->place = newTemp(); handling the place remains
+			$$->truelist = makelist(ircode.size());
+			$$->falselist = makelist(ircode.size() + 1);
+			ircode.push_back("1,ifgoto," + dictIeqToString(string($2)) + "," + $1->place + "," + $3->place + ",");
+			ircode.push_back("1,goto,");
 		}
 		|	Expression OP_ARITHMETIC_B_AD Expression
 		{	parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); 
 			$$ = new Node();
 			$$->place = newTemp();
 			if ($1->type == "Int" && $3->type == "Int") {
-				$$->code = $1->code + $3->code + "1," + $2 + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+				$$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+				ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
 				$$->type = $1->type;
 			} else {
 				cout << "Operands not of type Int in B_AD" << endl;
@@ -442,7 +471,8 @@ Expression:
 			$$ = new Node();
 			$$->place = newTemp();
 			if ($1->type == "Int" && $3->type == "Int") {
-				$$->code = $1->code + $3->code + "1," + $2 + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+				$$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+				ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
 				$$->type = $1->type;
 			} else {
 				cout << "Operands not of type Int in B_MU" << endl;
@@ -457,6 +487,7 @@ Expression:
 			$$->place = newTemp();
 			if ($2->type == "Int") {
 				$$->code = $2->code + "1,-," + $$->place + ",0," + ($2->place) + "\n";
+				ircode.push_back("1,-," + $$->place + ",0," + ($2->place) + "\n");
 				$$->type = $2->type;
 			} else {
 				cout << "Operands not of type Int in U" << endl;
@@ -467,6 +498,10 @@ Expression:
 		}
 		|	KEY_NOT Expression
 		{	parse_tree.push_back("Expression -> KEY_NOT Expression");
+			$$ = $2;
+			vector<int> temp = $$->falselist;
+			$$->falselist = $$->truelist;
+			$$->truelist = temp;
 		}
 		|	PARAN_OPEN Expression PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE");
@@ -493,9 +528,15 @@ Expression:
 		}
 		|	KEY_TRUE
 		{	parse_tree.push_back("Expression -> KEY_TRUE");
+			$$ = new Node();
+			$$->truelist = makelist(ircode.size());
+			ircode.push_back("1,goto,");
 		}
 		|	KEY_FALSE
 		{	parse_tree.push_back("Expression -> KEY_FALSE");
+			$$ = new Node();
+			$$->falselist = makelist(ircode.size());
+			ircode.push_back("1,goto,");
 		}
 		|	INTEGER
 		{	parse_tree.push_back("Expression -> INTEGER");
@@ -518,6 +559,7 @@ Conditionals:
 		} 
 		|	If_then_else
 		{	parse_tree.push_back("Conditionals -> If_then_else");
+			$$ = $1;
 		}
 		;
 Loops:
@@ -566,8 +608,13 @@ Action:
 		}
 		;
 If_then_else:
-		KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI
+		KEY_IF Expression KEY_THEN M Expression N KEY_ELSE M Expression KEY_FI
 		{	parse_tree.push_back("If_then_else -> KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI");
+			$$ = new Node();
+			ircode = backpatch($2->truelist, $4, ircode);
+			ircode = backpatch($2->falselist, $8, ircode);
+			vector<int> temp = merge($5->nextlist, $6->nextlist);
+			$$->nextlist = merge(temp, $9->nextlist);
 		}
 		;
 While:
@@ -606,20 +653,24 @@ Block_Expression:
 			$$ = new Node();
 			$$->code = $2->code;
 			$$->type = $2->type;
+			$$->nextlist = $2->nextlist;
 		}
 		;
 Block_list:
-		Block_list Expression STMT_TERMINATOR
+		Block_list M Expression STMT_TERMINATOR
 		{	parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR");
 			$$ = new Node();
-			$$->code = $1->code + $2->code;
-			$$->type = $2->type;
+			$$->code = $1->code + $3->code;
+			$$->type = $3->type;
+			ircode = backpatch($1->nextlist, $2, ircode);
+			$$->nextlist = $3->nextlist;
 		}
 		|	Expression STMT_TERMINATOR
 		{	parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR");
 			$$ = new Node();
 			$$->code = $1->code;
 			$$->type = $1->type;
+			$$->nextlist = $1->nextlist;
 		}
 		;
 Let_Expression:
@@ -643,6 +694,15 @@ Formals:
 		{	parse_tree.push_back("Formals -> EMPTY");
 		}
 		;
+M:
+		{	$$ = ircode.size();
+		}
+		;
+N:
+		{	$$ = new Node();
+			$$->nextlist = makelist(ircode.size());
+			ircode.push_back("1,goto,");
+		}
 %%
 
 int main(int argc, char **argv) {
@@ -673,6 +733,7 @@ int main(int argc, char **argv) {
 		cout << parse_tree[i] << endl;
 	}*/
 
+	printIrCode(ircode);
 
 	return 0;
 }

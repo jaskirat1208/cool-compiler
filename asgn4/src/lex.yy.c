@@ -1466,12 +1466,13 @@ YY_RULE_SETUP
 					// printf("[OP_RELATIONAL: %s]\n", yytext);
 					++numOpRelational;
 					s_op_relational.insert(yytext);
+					yylval.str = strdup(yytext);
 					return OP_RELATIONAL_IEQ;
 				}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 376 "src/lex.l"
+#line 377 "src/lex.l"
 {
 					// printf("[OP_LOGICAL_OR: %s]\n", yytext);
 					++numOpLogical;
@@ -1481,7 +1482,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 382 "src/lex.l"
+#line 383 "src/lex.l"
 {
 					// printf("[OP_LOGICAL_AND: %s]\n", yytext);
 					++numOpLogical;
@@ -1491,7 +1492,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 388 "src/lex.l"
+#line 389 "src/lex.l"
 {
 					// printf("[OP_BITWISE_OR: %s]\n", yytext);
 					++numOpBitwise;
@@ -1501,7 +1502,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 394 "src/lex.l"
+#line 395 "src/lex.l"
 {
 					// printf("[OP_BITWISE_OR: %s]\n", yytext);
 					++numOpBitwise;
@@ -1511,7 +1512,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 400 "src/lex.l"
+#line 401 "src/lex.l"
 {
 					// printf("[OP_BITWISE_OR: %s]\n", yytext);
 					++numOpBitwise;
@@ -1521,12 +1522,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 406 "src/lex.l"
+#line 407 "src/lex.l"
 /* eat up white spaces */
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 407 "src/lex.l"
+#line 408 "src/lex.l"
 {
 					// printf("This one is Unrecognized character: %s--------------------------------------------------------------------------Line %d\n", yytext,line_ctr);
 					s_unrecog.insert(yytext);
@@ -1534,10 +1535,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 411 "src/lex.l"
+#line 412 "src/lex.l"
 ECHO;
 	YY_BREAK
-#line 1541 "lex.yy.c"
+#line 1542 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2538,4 +2539,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 411 "src/lex.l"
+#line 412 "src/lex.l"
