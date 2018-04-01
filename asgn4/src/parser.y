@@ -387,6 +387,7 @@ Expression:
 		}
 		|	Loops
 		{	parse_tree.push_back("Expression -> Loops");
+			$$ = $1;
 		}
 		|	Block_Expression
 		{	parse_tree.push_back("Expression -> Block_Expression");
@@ -403,6 +404,7 @@ Expression:
 		}
 		|	Return_statement
 		{	parse_tree.push_back("Expression -> Return_statement");
+			$$ = $1;
 		}
 		|	Break_statement
 		{	parse_tree.push_back("Expression -> Break_statement");
@@ -565,12 +567,15 @@ Conditionals:
 Loops:
 		While
 		{	parse_tree.push_back("Loops -> While");
+			$$ = $1;
 		}
 		|	For
 		{	parse_tree.push_back("Loops -> For");
+			$$ = $1;
 		}
 		|	Do_while
 		{	parse_tree.push_back("Loops -> Do_while");
+			$$ = $1;
 		}
 		;
 Arguments_list_opt:
@@ -618,18 +623,41 @@ If_then_else:
 		}
 		;
 While:
-		KEY_WHILE Expression KEY_LOOP Expression KEY_POOL
+		KEY_WHILE M Expression KEY_LOOP M Expression KEY_POOL
 		{	parse_tree.push_back("While -> KEY_WHILE Expression KEY_LOOP Expression KEY_POOL");
+			$$ = new Node();
+			ircode = backpatch($6->nextlist, $2, ircode);
+			ircode = backpatch($3->truelist, $5, ircode);
+			$$->nextlist = $3->falselist;
+			ircode.push_back("1,goto,label" + to_string($2) + "\n");
 		}
 		;
 For:
-		KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL
+		KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR M Expression STMT_TERMINATOR 
+		M Expression PARAN_CLOSE KEY_LOOP M Expression KEY_POOL
 		{	parse_tree.push_back("For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL");
+			// $$ = new Node();
+			
+			// ircode.push_back("anu1,goto,label" + to_string($8) + "\n");
+			// ircode = backpatch($13->nextlist, $8, ircode);
+			// ircode = backpatch($6->truelist, $12, ircode);
+
+			// $9->nextlist = $6->truelist;
+			// cout << "bp for $9, nextlist = " << ($9->nextlist).size() << "\n";
+			// ircode = backpatch($9->nextlist, $5, ircode);
+			// $12->nextlist = $8->nextlist;
+			// $$->nextlist = $6->falselist;
+			// ircode.push_back("b1,goto,label" + to_string($5) + "\n");
 		}
 		;
 Do_while:
-		KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE BLOCK_BEGIN Expression BLOCK_END
+		KEY_DO KEY_LOOP M Expression KEY_POOL KEY_WHILE BLOCK_BEGIN M Expression BLOCK_END
 		{	parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE BLOCK_BEGIN Expression BLOCK_END");
+			$$ = new Node();
+			ircode = backpatch($4->nextlist, $8, ircode);
+			ircode = backpatch($9->truelist, $3, ircode);
+			// ircode.push_back("1,goto,label" + to_string($8) + "\n");
+			$$->nextlist = $9->falselist;
 		}
 		;
 Break_statement:
@@ -645,6 +673,8 @@ Continue_statement:
 Return_statement:
 		KEY_RETURN BLOCK_BEGIN Expression BLOCK_END
 		{	parse_tree.push_back("Return_statement -> KEY_RETURN BLOCK_BEGIN Expression BLOCK_END");
+			$$ = $3;
+			ircode.push_back("1,ret\n");
 		}
 		;
 Block_Expression:

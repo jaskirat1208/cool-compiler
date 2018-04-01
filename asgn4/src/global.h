@@ -67,8 +67,8 @@ SymbolTable symbolTable;
 
 void printIrCode(vector<string> ircode) {
 	for (int i = 0; i < ircode.size(); i++) {
-		if (ircode[i] == "1,goto,")
-			continue;
+		// if (ircode[i] == "1,goto,")
+		// 	continue;
 		cout << ircode[i];
 	}
 }
@@ -98,7 +98,7 @@ vector<string> backpatch(vector<int> list, int target, vector<string> ircode) {
 		// cout << "1b" << ircode[list[i]] << "\n";
 	}
 	// cout << "c" << ircode[target];
-	ircode[target] = "1,label," + label + "\n" + ircode[target];
+	ircode[target] = "\n1,label," + label + ircode[target];
 	// cout << "1c" << ircode[target] << "\n";
 	// cout << "a" << label << "\n";
 	return ircode;
