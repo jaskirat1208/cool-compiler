@@ -3,6 +3,8 @@ int cntTemp = 1, cntLabel = 1;
 class SymbolTableEntry {
 	public:
 		string type;
+		bool isFeat;
+		int paramCount;
 		// SymbolTableEntry(string type1) {
 		// 	type = type1;
 		// }
@@ -11,30 +13,39 @@ class SymbolTableEntry {
 class SymbolTable {
 	private :
 		unordered_map<string, SymbolTableEntry*> table;
-	// protected :
-	// 	SymbolTable* prev;
 	public :
-		// SymbolTable(SymbolTable* p) {
-		// 	prev = p;
-		// }
+		SymbolTable* prev;
+
+		SymbolTable(SymbolTable* p) {
+			prev = p;
+		}
 
 		void insert(string s, SymbolTableEntry* t) {
 			table[s] = t;
 		}
 
 		SymbolTableEntry* lookup(string s) {
-			unordered_map<string, SymbolTableEntry*>::iterator i = table.find(s);
-			if (i != table.end()) {
-				return i->second;
+			for (SymbolTable* curr = this; curr != NULL; curr = curr->prev) {
+				// cout << curr->table["a"];
+				// cout << "anu " << j << " " << curr << " " << curr->prev << endl;
+
+				unordered_map<string, SymbolTableEntry*>::iterator i = curr->table.find(s);
+				if (i != curr->table.end()) {
+					return i->second;
+				}
 			}
 			return NULL;
 		}
 
-		void printTableInts() {
-			vector<string> variableNames;
-			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
-			for (; i != table.end(); ++i) {
-				cout << i->first << " -=- " << i->second->type << "\n";
+		void printSymbolTable() {
+			for (SymbolTable* curr = this; curr != NULL; curr = curr->prev) {
+				cout << curr << endl;
+				vector<string> variableNames;
+				unordered_map<string, SymbolTableEntry*>::iterator i = curr->table.begin();
+				for (; i != curr->table.end(); ++i) {
+					cout << i->first << " -=- " << i->second->type << "\n";
+				}
+				cout << "------------------------------------" << endl;
 			}
 		}
 };
@@ -64,15 +75,18 @@ struct Node {
 	vector<int> falselist;
 	vector<int> truelist;
 	vector<int> nextlist;
+	int paramCount;
 };
 
 struct Node *emptyNode = new Node();
 // emptyNode->code = "";
 
-SymbolTable symbolTable;
-// SymbolTable* symbolTable;
-// SymbolTable* prevSymTab;
-// stack<SymbolTable*> envStack;
+// vector<int> envStack;
+// envStack.push_back(1);
+// SymbolTable currTable = SymbolTable(NULL);
+// SymbolTable* symbolTable = &currTable;
+// symbolTable = &headTable;
+// envStack.push((SymbolTable*)symbolTable);
 
 void printIrCode(vector<string> ircode) {
 	for (int i = 0; i < ircode.size(); i++) {
@@ -110,6 +124,11 @@ vector<string> backpatch(vector<int> list, int target, vector<string> ircode) {
 	ircode[target] = "\n1,label," + label + ircode[target];
 	// cout << "1c" << ircode[target] << "\n";
 	// cout << "a" << label << "\n";
+	return ircode;
+}
+
+vector<string> backpatchFeat(int target, string label, vector<string> ircode) {
+	ircode[target] = "\n1,label," + label + "\n" + ircode[target];
 	return ircode;
 }
 

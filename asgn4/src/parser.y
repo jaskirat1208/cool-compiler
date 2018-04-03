@@ -13,6 +13,10 @@ using namespace std;
 vector<string> parse_tree;
 vector<string> ircode;
 queue<string> queueFunc;
+stack<SymbolTable*> envStack;
+SymbolTable* currTable;
+SymbolTable* symbolTable = NULL;
+int i = 0;
 %}
 
 %union {
@@ -186,7 +190,7 @@ Sub_Program:
 		}
 		;
 Class:
-		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
+		KEY_CLASS TYPE Inheritance Implement_Interface SCOPE_START BLOCK_BEGIN Features_list_opt BLOCK_END SCOPE_END
 		{	parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END");
 			$$ = emptyNode;
 			// cout << $$->code;
@@ -254,16 +258,20 @@ Features_list:
 		}
 		;
 Feature:
-		IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END
+		IDENTIFIER SCOPE_START PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN M Expression BLOCK_END SCOPE_END
 		{	parse_tree.push_back("Feature -> IDENTIFIER PARAN_OPEN Formal_params_list_opt PARAN_CLOSE COLON TYPE BLOCK_BEGIN Expression BLOCK_END");
-			// currently there is only one feature main()
-			$$ = $8;
-			// cout << $$->code;
+			$$ = $10;
+			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			entry->type = string($7);
+			entry->isFeat = true;
+			entry->paramCount = $4->paramCount;
+			symbolTable->insert(string($1), entry);
+			ircode = backpatchFeat($9, string($1), ircode);
+			ircode.push_back("1,ret\n");
 		}
 		|	Formal
 		{	parse_tree.push_back("Feature -> Formal");
 			$$ = $1;
-			// cout << $$->code;
 		}
 		;
 Interface_features_list_opt:
@@ -290,7 +298,7 @@ Interface_feature:
 Formal_params_list_opt:
 		Formal_params_list
 		{	parse_tree.push_back("Formal_params_list_opt -> Formal_params_list");
-			$$ = emptyNode;
+			$$ = $1;
 		}
 		|
 		{	parse_tree.push_back("Formal_params_list_opt -> EMPTY");
@@ -299,12 +307,14 @@ Formal_params_list_opt:
 		;
 Formal_params_list:
 		Formal_params_list COMMA Formal_param
-		{	parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA");
-			$$ = emptyNode;
+		{	parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA Formal_param");
+			$$ = new Node();
+			$$->paramCount = $1->paramCount + 1;
 		}
 		|	Formal_param
 		{	parse_tree.push_back("Formal_params_list -> Formal_param");
-			$$ = emptyNode;
+			$$ = new Node();
+			$$->paramCount = 1;
 		}
 		;
 Formal_param:
@@ -312,14 +322,14 @@ Formal_param:
 		{	parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE");
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3);
-			symbolTable.insert($1, entry);
+			symbolTable->insert($1, entry);
 			$$ = emptyNode;
 		}
 		|	IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE
 		{	parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE");
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3) + "[]";
-			symbolTable.insert($1, entry);
+			symbolTable->insert($1, entry);
 			$$ = emptyNode;
 		}
 		;
@@ -334,8 +344,8 @@ Formal:
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression");
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3);
-			symbolTable.insert($1, entry);
-			// symbolTable.printTableInts();
+			symbolTable->insert($1, entry);
+			// symbolTable->printSymbolTable();
 			if (entry->type != $5->type) {
 				cout << entry->type << ", " << $5->type << ": Types don't match...\n";
 				exit(0);
@@ -349,23 +359,23 @@ Formal:
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE");
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3) + "[]";
-			symbolTable.insert($1, entry);
-			// symbolTable.printTableInts();
+			symbolTable->insert($1, entry);
+			// symbolTable->printSymbolTable();
 			$$ = emptyNode;
 		}
 		|	IDENTIFIER COLON TYPE 
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE");
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3);
-			symbolTable.insert($1, entry);
-			// symbolTable.printTableInts();
+			symbolTable->insert($1, entry);
+			// symbolTable->printSymbolTable();
 			$$ = emptyNode;
 		}
 		;
 Expression:
 		IDENTIFIER OP_ASGN Expression
 		{	parse_tree.push_back("Expression -> IDENTIFIER OP_ASGN Expression");
-			SymbolTableEntry *entry = symbolTable.lookup($1);
+			SymbolTableEntry *entry = symbolTable->lookup($1);
 			if (entry == NULL) {
 				cout << $1 << ": Variable not found...\n";
 				exit(0);
@@ -385,13 +395,25 @@ Expression:
 		}
 		|	IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
+			SymbolTableEntry *entry = symbolTable->lookup($1);
+			if (entry == NULL) {
+				cout << $1 << ": Feature not found...\n";
+				exit(0);
+			} else if (!entry->isFeat) {
+				cout << $1 << ": Feature not found...\n";
+				exit(0);
+			} else if (entry->paramCount != $3->paramCount) {
+				cout << $1 << ": Feature call has " << $3->paramCount << " arguments, but required is " << entry->paramCount << "...\n";
+				exit(0);
+			}
 			$$ = new Node();
 			$$->place = newTemp();
+			$$->type = entry->type;
 			while (!queueFunc.empty()) {
 				ircode.push_back("1,param," + queueFunc.front() + "\n");
 				queueFunc.pop();
 			}
-			ircode.push_back("1,call," + string($1) + "\n");
+			ircode.push_back("1,call," + string($1) + "," + $$->place + "\n");
 		}
 		|	BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
@@ -548,9 +570,9 @@ Expression:
 		}
 		|	IDENTIFIER
 		{	parse_tree.push_back("Expression -> IDENTIFIER"); 
-			SymbolTableEntry *entry = symbolTable.lookup($1);
+			SymbolTableEntry *entry = symbolTable->lookup($1);
 			if (entry == NULL){
-				cout << $1 << ": Variable not found...\n";
+				cout << string($1) << ": Variable not found...\n";
 				exit(0);
 			}
 			$$ = new Node();
@@ -620,20 +642,26 @@ Loops:
 Arguments_list_opt:
 		Arguments_list
 		{	parse_tree.push_back("Arguments_list_opt -> Arguments_list");
+			$$ = $1;
 		}
 		|
 		{	parse_tree.push_back ("Arguments_list_opt -> EMPTY");
+			$$ = emptyNode;
 		}
 		;
 Arguments_list:
 		Arguments_list COMMA Expression
 		{	parse_tree.push_back("Arguments_list -> Arguments_list COMMA Expression");
 			queueFunc.push($3->place);
+			$$ = new Node();
+			$$->paramCount = $1->paramCount + 1;
 		}
 		|	Expression
 		{	parse_tree.push_back("Arguments_list -> Expression");
 			queueFunc = queue<string>();
 			queueFunc.push($1->place);
+			$$ = new Node();
+			$$->paramCount = 1;
 		}
 		;
 Case:
@@ -746,9 +774,9 @@ Block_list:
 		}
 		;
 Let_Expression:
-		KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END
+		KEY_LET SCOPE_START Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END SCOPE_END
 		{	parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END");
-			$$ = $6;
+			$$ = $7;
 		}
 		;
 Expressions:
@@ -777,6 +805,23 @@ N:
 		{	$$ = new Node();
 			$$->nextlist = makelist(ircode.size());
 			ircode.push_back("1,goto,");
+		}
+		;
+SCOPE_START:
+		{	envStack.push(symbolTable);
+			// if (symbolTable != NULL)
+				// symbolTable->printSymbolTable();
+			currTable = new SymbolTable(symbolTable);
+			symbolTable = currTable;
+			// cout << "new i = " << i << " " << symbolTable << endl;
+			i++;
+		}
+		;
+SCOPE_END:
+		{	symbolTable->printSymbolTable();
+			symbolTable = envStack.top();
+			// cout << "j = " << i << " " << symbolTable << endl;
+			envStack.pop();
 		}
 %%
 
