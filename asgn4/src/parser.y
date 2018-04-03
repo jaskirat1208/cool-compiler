@@ -341,9 +341,8 @@ Formal:
 				exit(0);
 			}
 			$$ = new Node();
-			$$->code = $5->code + "1,=," + string($1) + "," + $5->place + "\n";
+			// $$->code = $5->code + "1,=," + string($1) + "," + $5->place + "\n";
 			ircode.push_back("1,=," + string($1) + "," + $5->place + "\n");
-			// $$->nextlist = NULL;
 			$$->type = entry->type;
 		}
 		|	IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE
@@ -376,7 +375,7 @@ Expression:
 				exit(0);
 			}
 			$$ = new Node();
-			$$->code = $3->code + "1,=," + string($1) + "," + $3->place + "\n";
+			// $$->code = $3->code + "1,=," + string($1) + "," + $3->place + "\n";
 			ircode.push_back("1,=," + string($1) + "," + $3->place + "\n");
 			// $$->nextlist = NULL;
 			$$->type = entry->type;
@@ -434,14 +433,26 @@ Expression:
 		}
 		|	Expression OP_LOGICAL_OR M Expression
 		{	parse_tree.push_back("Expression -> Expression OP_LOGICAL_OR Expression");
+			if ($1->type != "Bool" || $4->type != "Bool") {
+				cout << "Operands not of type Bool in OR" << endl;
+				exit(0);
+			}
 			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = "Bool";
 			ircode = backpatch($1->falselist, $3, ircode);
 			$$->truelist = merge($1->truelist, $4->truelist);
 			$$->falselist = $4->falselist;
 		}
 		|	Expression OP_LOGICAL_AND M Expression
 		{	parse_tree.push_back("Expression -> Expression OP_LOGICAL_AND Expression");
+			if ($1->type != "Bool" || $4->type != "Bool") {
+				cout << "Operands not of type Bool in AND" << endl;
+				exit(0);
+			}
 			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = "Bool";
 			ircode = backpatch($1->truelist, $3, ircode);
 			$$->truelist = $4->truelist;
 			$$->falselist = merge($1->falselist, $4->falselist);
@@ -457,8 +468,13 @@ Expression:
 		}
 		|	Expression OP_RELATIONAL_EQ Expression
 		{	parse_tree.push_back("Expression -> Expression OP_RELATIONAL_EQ Expression");
+			if ($1->type != "Int" || $3->type != "Int") {
+				cout << "Operands not of type Int in EQ" << endl;
+				exit(0);
+			}
 			$$ = new Node();
-			// $$->place = newTemp(); handling the place remains
+			$$->place = newTemp();
+			$$->type = "Bool";
 			$$->truelist = makelist(ircode.size());
 			$$->falselist = makelist(ircode.size() + 1);
 			ircode.push_back("1,ifgoto,eq," + $1->place + "," + $3->place + ",");
@@ -466,8 +482,13 @@ Expression:
 		}
 		|	Expression OP_RELATIONAL_IEQ Expression
 		{	parse_tree.push_back("Expression -> Expression OP_RELATIONAL_IEQ Expression");
+			if ($1->type != "Int" || $3->type != "Int") {
+				cout << "Operands not of type Int in IEQ" << endl;
+				exit(0);
+			}
 			$$ = new Node();
-			// $$->place = newTemp(); handling the place remains
+			$$->place = newTemp();
+			$$->type = "Bool";
 			$$->truelist = makelist(ircode.size());
 			$$->falselist = makelist(ircode.size() + 1);
 			ircode.push_back("1,ifgoto," + dictIeqToString(string($2)) + "," + $1->place + "," + $3->place + ",");
@@ -475,52 +496,48 @@ Expression:
 		}
 		|	Expression OP_ARITHMETIC_B_AD Expression
 		{	parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); 
-			$$ = new Node();
-			$$->place = newTemp();
-			if ($1->type == "Int" && $3->type == "Int") {
-				$$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
-				ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
-				$$->type = $1->type;
-			} else {
+			if ($1->type != "Int" || $3->type != "Int") {
 				cout << "Operands not of type Int in B_AD" << endl;
 				exit(0);
 			}
-			// cout << "here in expresseion temp = " << $$->place << "\n";
-			// cout << "$$->code = " << $$->code << "\n";
+			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = "Int";
+			// $$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+			ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
 		}
 		|	Expression OP_ARITHMETIC_B_MU Expression
 		{	parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_MU Expression"); 
-			$$ = new Node();
-			$$->place = newTemp();
-			if ($1->type == "Int" && $3->type == "Int") {
-				$$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
-				ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
-				$$->type = $1->type;
-			} else {
+			if ($1->type != "Int" || $3->type != "Int") {
 				cout << "Operands not of type Int in B_MU" << endl;
 				exit(0);
 			}
-			// cout << "here in expresseion temp = " << $$->place << "\n";
-			// cout << "$$->code = " << $$->code << "\n";
+			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = "Int";
+			// $$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
+			ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
 		}
 		|	OP_ARITHMETIC_U Expression
 		{	parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression"); 
-			$$ = new Node();
-			$$->place = newTemp();
-			if ($2->type == "Int") {
-				$$->code = $2->code + "1,-," + $$->place + ",0," + ($2->place) + "\n";
-				ircode.push_back("1,-," + $$->place + ",0," + ($2->place) + "\n");
-				$$->type = $2->type;
-			} else {
+			if ($2->type != "Int") {
 				cout << "Operands not of type Int in U" << endl;
 				exit(0);
 			}
-			// cout << "here in expresseion temp = " << $$->place << "\n";
-			// cout << "$$->code = " << $$->code << "\n";
+			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = "Int";
+			// $$->code = $2->code + "1,-," + $$->place + ",0," + ($2->place) + "\n";
+			ircode.push_back("1,-," + $$->place + ",0," + ($2->place) + "\n");
 		}
 		|	KEY_NOT Expression
 		{	parse_tree.push_back("Expression -> KEY_NOT Expression");
+			if ($2->type != "Bool") {
+				cout << "Operand not of type Bool in NOT" << endl;
+				exit(0);
+			}
 			$$ = $2;
+			$$->place = newTemp();
 			vector<int> temp = $$->falselist;
 			$$->falselist = $$->truelist;
 			$$->truelist = temp;
@@ -532,15 +549,14 @@ Expression:
 		|	IDENTIFIER
 		{	parse_tree.push_back("Expression -> IDENTIFIER"); 
 			SymbolTableEntry *entry = symbolTable.lookup($1);
-			if (entry){
-				$$ = new Node();
-				$$->place = $1;
-				$$->type = entry->type;
-				$$->code = "";
-			} else {
-				cout << "ERROR :- VARIABLE (" << $1 << ") NOT FOUND\n";
+			if (entry == NULL){
+				cout << $1 << ": Variable not found...\n";
 				exit(0);
 			}
+			$$ = new Node();
+			$$->place = $1;
+			$$->type = entry->type;
+			// $$->code = "";
 		}
 		|	IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE
 		{	parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE");
@@ -551,12 +567,15 @@ Expression:
 		|	KEY_TRUE
 		{	parse_tree.push_back("Expression -> KEY_TRUE");
 			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = "Bool";
 			$$->truelist = makelist(ircode.size());
 			ircode.push_back("1,goto,");
 		}
 		|	KEY_FALSE
 		{	parse_tree.push_back("Expression -> KEY_FALSE");
 			$$ = new Node();
+			$$->type = "Bool";
 			$$->falselist = makelist(ircode.size());
 			ircode.push_back("1,goto,");
 		}
@@ -564,14 +583,14 @@ Expression:
 		{	parse_tree.push_back("Expression -> INTEGER");
 			$$ = new Node();
 			$$->place = to_string($1);
-			$$->code = "";
+			// $$->code = "";
 			$$->type = "Int";
 		}
 		|	STRING
 		{	parse_tree.push_back( "Expression -> STRING");
 			$$ = new Node();
 			$$->place = string($1);
-			$$->code = "";
+			// $$->code = "";
 			$$->type = "String";
 		}
 		;
@@ -704,7 +723,7 @@ Block_Expression:
 		BLOCK_BEGIN Block_list BLOCK_END
 		{	parse_tree.push_back("Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END");
 			$$ = new Node();
-			$$->code = $2->code;
+			// $$->code = $2->code;
 			$$->type = $2->type;
 			$$->nextlist = $2->nextlist;
 		}
@@ -713,7 +732,7 @@ Block_list:
 		Block_list M Expression STMT_TERMINATOR
 		{	parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR");
 			$$ = new Node();
-			$$->code = $1->code + $3->code;
+			// $$->code = $1->code + $3->code;
 			$$->type = $3->type;
 			ircode = backpatch($1->nextlist, $2, ircode);
 			$$->nextlist = $3->nextlist;
@@ -721,7 +740,7 @@ Block_list:
 		|	Expression STMT_TERMINATOR
 		{	parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR");
 			$$ = new Node();
-			$$->code = $1->code;
+			// $$->code = $1->code;
 			$$->type = $1->type;
 			$$->nextlist = $1->nextlist;
 		}
