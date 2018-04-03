@@ -11,7 +11,13 @@ class SymbolTableEntry {
 class SymbolTable {
 	private :
 		unordered_map<string, SymbolTableEntry*> table;
+	// protected :
+	// 	SymbolTable* prev;
 	public :
+		// SymbolTable(SymbolTable* p) {
+		// 	prev = p;
+		// }
+
 		void insert(string s, SymbolTableEntry* t) {
 			table[s] = t;
 		}
@@ -64,6 +70,9 @@ struct Node *emptyNode = new Node();
 // emptyNode->code = "";
 
 SymbolTable symbolTable;
+// SymbolTable* symbolTable;
+// SymbolTable* prevSymTab;
+// stack<SymbolTable*> envStack;
 
 void printIrCode(vector<string> ircode) {
 	for (int i = 0; i < ircode.size(); i++) {

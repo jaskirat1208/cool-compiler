@@ -12,6 +12,7 @@ using namespace std;
 
 vector<string> parse_tree;
 vector<string> ircode;
+queue<string> queueFunc;
 %}
 
 %union {
@@ -187,10 +188,8 @@ Sub_Program:
 Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END
 		{	parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END");
-			// cout << "inside class\n";
-			$$ = $6;
+			$$ = emptyNode;
 			// cout << $$->code;
-			// cout << "end of class\n";
 		}
 		;
 Interface:
@@ -236,21 +235,22 @@ Interfaces_list:
 Features_list_opt:
 		Features_list
 		{	parse_tree.push_back("Features_list_opt -> Features_list");
-			$$ = $1;
+			$$ = emptyNode;
 		}
 		|
 		{	parse_tree.push_back("Features_list_opt -> EMPTY");
+			$$ = emptyNode;
 		}
 		;
 Features_list:
 		Features_list Feature STMT_TERMINATOR
 		{	parse_tree.push_back("Features_list -> Features_list Feature STMT_TERMINATOR");
-			$$ = new Node();
-			$$->code = $1->code + $2->code;
+			$$ = emptyNode;
+			// $$->code = $1->code + $2->code;
 		}
 		|	Feature STMT_TERMINATOR
 		{	parse_tree.push_back("Features_list -> Feature STMT_TERMINATOR");
-			$$ = $1;
+			$$ = emptyNode;
 		}
 		;
 Feature:
@@ -290,25 +290,37 @@ Interface_feature:
 Formal_params_list_opt:
 		Formal_params_list
 		{	parse_tree.push_back("Formal_params_list_opt -> Formal_params_list");
+			$$ = emptyNode;
 		}
 		|
 		{	parse_tree.push_back("Formal_params_list_opt -> EMPTY");
+			$$ = emptyNode;
 		}
 		;
 Formal_params_list:
 		Formal_params_list COMMA Formal_param
 		{	parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA");
+			$$ = emptyNode;
 		}
 		|	Formal_param
 		{	parse_tree.push_back("Formal_params_list -> Formal_param");
+			$$ = emptyNode;
 		}
 		;
 Formal_param:
 		IDENTIFIER COLON TYPE
 		{	parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE");
+			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			entry->type = string($3);
+			symbolTable.insert($1, entry);
+			$$ = emptyNode;
 		}
 		|	IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE
 		{	parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE");
+			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			entry->type = string($3) + "[]";
+			symbolTable.insert($1, entry);
+			$$ = emptyNode;
 		}
 		;
 Formal:
@@ -374,6 +386,13 @@ Expression:
 		}
 		|	IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
+			$$ = new Node();
+			$$->place = newTemp();
+			while (!queueFunc.empty()) {
+				ircode.push_back("1,param," + queueFunc.front() + "\n");
+				queueFunc.pop();
+			}
+			ircode.push_back("1,call," + string($1) + "\n");
 		}
 		|	BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
@@ -395,6 +414,7 @@ Expression:
 		}
 		|	Let_Expression
 		{	parse_tree.push_back("Expression -> Let_Expression");
+			$$ = $1;
 		}
 		|	KEY_NEW TYPE
 		{	parse_tree.push_back("Expression -> KEY_NEW TYPE");
@@ -589,9 +609,12 @@ Arguments_list_opt:
 Arguments_list:
 		Arguments_list COMMA Expression
 		{	parse_tree.push_back("Arguments_list -> Arguments_list COMMA Expression");
+			queueFunc.push($3->place);
 		}
 		|	Expression
 		{	parse_tree.push_back("Arguments_list -> Expression");
+			queueFunc = queue<string>();
+			queueFunc.push($1->place);
 		}
 		;
 Case:
@@ -706,6 +729,7 @@ Block_list:
 Let_Expression:
 		KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END
 		{	parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END");
+			$$ = $6;
 		}
 		;
 Expressions:
@@ -719,9 +743,11 @@ Expressions:
 Formals:
 		Formals COMMA Formal
 		{	parse_tree.push_back("Formals -> Formals COMMA Formal");
+			$$ = emptyNode;
 		}
 		|
 		{	parse_tree.push_back("Formals -> EMPTY");
+			$$ = emptyNode;
 		}
 		;
 M:
