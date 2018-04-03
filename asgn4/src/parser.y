@@ -193,7 +193,6 @@ Class:
 		KEY_CLASS TYPE Inheritance Implement_Interface SCOPE_START BLOCK_BEGIN Features_list_opt BLOCK_END SCOPE_END
 		{	parse_tree.push_back("Class -> KEY_CLASS TYPE Inheritance Implement_Interface BLOCK_BEGIN Features_list_opt BLOCK_END");
 			$$ = emptyNode;
-			// cout << $$->code;
 		}
 		;
 Interface:
@@ -250,7 +249,6 @@ Features_list:
 		Features_list Feature STMT_TERMINATOR
 		{	parse_tree.push_back("Features_list -> Features_list Feature STMT_TERMINATOR");
 			$$ = emptyNode;
-			// $$->code = $1->code + $2->code;
 		}
 		|	Feature STMT_TERMINATOR
 		{	parse_tree.push_back("Features_list -> Feature STMT_TERMINATOR");
@@ -336,9 +334,35 @@ Formal_param:
 Formal:
 		IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression");
+			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			entry->type = string($3) + "[]";
+			entry->isArray = true;
+			entry->arrayLength = $8->arrayLength;
+			if(entry->arrayLength != stoi($5->place)) {
+				cout << $1 << ": Length mismatch in array initialization...\n";
+				exit(0);
+			}
+			entry->arrayList = $8->arrayList;
+			string elements = to_string(($8->arrayList)[0]);
+			for (int i = 1; i < entry->arrayLength; i++) {
+				elements = elements + ":" + to_string(($8->arrayList)[i]);
+			}
+			ircode.push_back("1,=,array," + string($1) + "," + to_string(entry->arrayLength) + "," + elements + "\n");
+			symbolTable->insert($1, entry);
 		}
 		|	IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE OP_ASGN Expression");
+			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			entry->type = string($3) + "[]";
+			entry->isArray = true;
+			entry->arrayLength = $7->arrayLength;
+			entry->arrayList = $7->arrayList;
+			string elements = to_string(($7->arrayList)[0]);
+			for (int i = 1; i < entry->arrayLength; i++) {
+				elements = elements + ":" + to_string(($7->arrayList)[i]);
+			}
+			ircode.push_back("1,=,array," + string($1) + "," + to_string(entry->arrayLength) + "," + elements + "\n");
+			symbolTable->insert($1, entry);
 		}
 		|	IDENTIFIER COLON TYPE OP_ASGN Expression
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE OP_ASGN Expression");
@@ -351,7 +375,6 @@ Formal:
 				exit(0);
 			}
 			$$ = new Node();
-			// $$->code = $5->code + "1,=," + string($1) + "," + $5->place + "\n";
 			ircode.push_back("1,=," + string($1) + "," + $5->place + "\n");
 			$$->type = entry->type;
 		}
@@ -359,6 +382,8 @@ Formal:
 		{	parse_tree.push_back("Formal -> IDENTIFIER COLON TYPE ARRAY_OPEN Expression ARRAY_CLOSE");
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3) + "[]";
+			entry->isArray = true;
+			entry->arrayLength = stoi($5->place);
 			symbolTable->insert($1, entry);
 			// symbolTable->printSymbolTable();
 			$$ = emptyNode;
@@ -385,13 +410,29 @@ Expression:
 				exit(0);
 			}
 			$$ = new Node();
-			// $$->code = $3->code + "1,=," + string($1) + "," + $3->place + "\n";
 			ircode.push_back("1,=," + string($1) + "," + $3->place + "\n");
 			// $$->nextlist = NULL;
 			$$->type = entry->type;
 		}
 		|	IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression
 		{	parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE OP_ASGN Expression");
+			SymbolTableEntry *entry = symbolTable->lookup($1);
+			if (entry == NULL) {
+				cout << $1 << ": Variable not found...\n";
+				exit(0);
+			}
+			string tempType = $6->type + "[]";
+			if (entry->type != tempType) {
+				cout << entry->type << ", " << $6->type << ": Types don't match...\n";
+				exit(0);
+			}
+			if (stoi($3->place) >= entry->arrayLength) {
+				cout << $1 << ": Index out of bound...\n";
+				exit(0);
+			}
+			$$ = new Node();
+			$$->type = "Int";
+			ircode.push_back("1,=,arrWrite," + string($1) + "," + $3->place + "," + $6->place + "\n");
 		}
 		|	IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
@@ -525,7 +566,6 @@ Expression:
 			$$ = new Node();
 			$$->place = newTemp();
 			$$->type = "Int";
-			// $$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
 			ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
 		}
 		|	Expression OP_ARITHMETIC_B_MU Expression
@@ -537,7 +577,6 @@ Expression:
 			$$ = new Node();
 			$$->place = newTemp();
 			$$->type = "Int";
-			// $$->code = $1->code + $3->code + "1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n";
 			ircode.push_back("1," + string($2) + "," + $$->place + "," + ($1->place) + "," + ($3->place) + "\n");
 		}
 		|	OP_ARITHMETIC_U Expression
@@ -549,7 +588,6 @@ Expression:
 			$$ = new Node();
 			$$->place = newTemp();
 			$$->type = "Int";
-			// $$->code = $2->code + "1,-," + $$->place + ",0," + ($2->place) + "\n";
 			ircode.push_back("1,-," + $$->place + ",0," + ($2->place) + "\n");
 		}
 		|	KEY_NOT Expression
@@ -578,13 +616,27 @@ Expression:
 			$$ = new Node();
 			$$->place = $1;
 			$$->type = entry->type;
-			// $$->code = "";
 		}
 		|	IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE
 		{	parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE");
+			SymbolTableEntry *entry = symbolTable->lookup($1);
+			if (entry == NULL) {
+				cout << $1 << ": Variable not found...\n";
+				exit(0);
+			}
+			if (stoi($3->place) >= entry->arrayLength) {
+				cout << $1 << ": Index out of bound...\n";
+				exit(0);
+			}
+			$$ = new Node();
+			$$->place = newTemp();
+			$$->type = $3->type;
+			// lineNo, =, arrRead, destination, source, index
+			ircode.push_back("1,=,arrRead," + $$->place + "," + string($1) + "," + $3->place + "\n");
 		}
 		|	ARRAY_OPEN Expressions ARRAY_CLOSE
 		{	parse_tree.push_back("Expression -> ARRAY_OPEN Expressions ARRAY_CLOSE");
+			$$ = $2;
 		}
 		|	KEY_TRUE
 		{	parse_tree.push_back("Expression -> KEY_TRUE");
@@ -605,14 +657,12 @@ Expression:
 		{	parse_tree.push_back("Expression -> INTEGER");
 			$$ = new Node();
 			$$->place = to_string($1);
-			// $$->code = "";
 			$$->type = "Int";
 		}
 		|	STRING
 		{	parse_tree.push_back( "Expression -> STRING");
 			$$ = new Node();
 			$$->place = string($1);
-			// $$->code = "";
 			$$->type = "String";
 		}
 		;
@@ -751,7 +801,6 @@ Block_Expression:
 		BLOCK_BEGIN Block_list BLOCK_END
 		{	parse_tree.push_back("Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END");
 			$$ = new Node();
-			// $$->code = $2->code;
 			$$->type = $2->type;
 			$$->nextlist = $2->nextlist;
 		}
@@ -760,7 +809,6 @@ Block_list:
 		Block_list M Expression STMT_TERMINATOR
 		{	parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR");
 			$$ = new Node();
-			// $$->code = $1->code + $3->code;
 			$$->type = $3->type;
 			ircode = backpatch($1->nextlist, $2, ircode);
 			$$->nextlist = $3->nextlist;
@@ -768,7 +816,6 @@ Block_list:
 		|	Expression STMT_TERMINATOR
 		{	parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR");
 			$$ = new Node();
-			// $$->code = $1->code;
 			$$->type = $1->type;
 			$$->nextlist = $1->nextlist;
 		}
@@ -782,9 +829,16 @@ Let_Expression:
 Expressions:
 		Expressions COMMA Expression
 		{	parse_tree.push_back( "Expressions -> Expressions COMMA Expression");
+			$$ = new Node();
+			$$->arrayLength = $1->arrayLength + 1;
+			$$->arrayList = $1->arrayList;
+			($$->arrayList).push_back(stoi($3->place));
 		}
 		|	Expression
 		{	parse_tree.push_back("Expressions -> Expression");
+			$$ = new Node();
+			$$->arrayLength = 1;
+			($$->arrayList).push_back(stoi($1->place));
 		}
 		;
 Formals:
@@ -809,27 +863,18 @@ N:
 		;
 SCOPE_START:
 		{	envStack.push(symbolTable);
-			// if (symbolTable != NULL)
-				// symbolTable->printSymbolTable();
 			currTable = new SymbolTable(symbolTable);
 			symbolTable = currTable;
-			// cout << "new i = " << i << " " << symbolTable << endl;
 			i++;
 		}
 		;
 SCOPE_END:
-		{	symbolTable->printSymbolTable();
-			symbolTable = envStack.top();
-			// cout << "j = " << i << " " << symbolTable << endl;
+		{	symbolTable = envStack.top();
 			envStack.pop();
 		}
 %%
 
 int main(int argc, char **argv) {
-	/***********************************************************************************/
-	
-
-	/***********************************************************************************/
 	++argv, --argc;
     string of = "";
 	if (argc > 0){

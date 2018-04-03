@@ -5,6 +5,10 @@ class SymbolTableEntry {
 		string type;
 		bool isFeat;
 		int paramCount;
+
+		bool isArray;
+		int arrayLength;
+		vector<int>  arrayList;
 		// SymbolTableEntry(string type1) {
 		// 	type = type1;
 		// }
@@ -50,7 +54,7 @@ class SymbolTable {
 		}
 };
 
-string newTemp(){
+string newTemp() {
 	stringstream ss;
 	ss << cntTemp;
 	string num = ss.str();
@@ -59,7 +63,7 @@ string newTemp(){
 	return temp;
 }
 
-string newLabel(){
+string newLabel() {
 	stringstream ss;
 	ss << cntLabel;
 	string num = ss.str();
@@ -69,12 +73,13 @@ string newLabel(){
 }
 
 struct Node {
-	string code;
 	string place;
 	string type;
 	vector<int> falselist;
 	vector<int> truelist;
 	vector<int> nextlist;
+	vector<int> arrayList;
+	int arrayLength;
 	int paramCount;
 };
 
@@ -89,6 +94,8 @@ struct Node *emptyNode = new Node();
 // envStack.push((SymbolTable*)symbolTable);
 
 void printIrCode(vector<string> ircode) {
+	cout << "1,call,main," << newTemp() << "\n"; 
+	cout << "1,ret" << "\n";
 	for (int i = 0; i < ircode.size(); i++) {
 		// if (ircode[i] == "1,goto,")
 		// 	continue;
