@@ -94,8 +94,9 @@ struct Node *emptyNode = new Node();
 // envStack.push((SymbolTable*)symbolTable);
 
 void printIrCode(vector<string> ircode) {
-	cout << "1,call,main," << newTemp() << "\n"; 
-	cout << "1,ret" << "\n";
+
+	// cout << "1,call,main," << newTemp() << "\n"; 
+	// cout << "1,ret,0" << "\n";
 	for (int i = 0; i < ircode.size(); i++) {
 		// if (ircode[i] == "1,goto,")
 		// 	continue;
@@ -135,7 +136,7 @@ vector<string> backpatch(vector<int> list, int target, vector<string> ircode) {
 }
 
 vector<string> backpatchFeat(int target, string label, vector<string> ircode) {
-	ircode[target] = "\n1,label," + label + "\n" + ircode[target];
+	ircode[target] = "\n1,call,main," + newTemp() + "\n1,ret,0\n\n1,label," + label + "\n" + ircode[target];
 	return ircode;
 }
 

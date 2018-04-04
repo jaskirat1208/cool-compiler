@@ -1,16 +1,17 @@
-package group19TestCases;
-
-import something.*;
-
+-- if else
 class Main {
-	func (a : Int) : Int {
+	a : Int;
+	b : Int <- 0;
+	main () : Int {
 		{
-			if (a = 0) then
+			a <- 5;
+			-- if ((a = 0 && b >= 0) || (not(a = 0)) && b < 0) then
+			if (a > 0) then
 				return {1}
 			else
 				a <- a + 1
 			fi;
-			a;
+			return {0};
 		}
 	};
 };

@@ -1,78 +1,61 @@
-(* models one-dimensional cellular automaton on a circle of finite radius
-   arrays are faked as Strings,
-   X's respresent live cells, dots represent dead cells,
-   no error checking is done *)
-
-class CellularAutomaton inherits IO {
-    population_map : String;
-   
-    init (map : String) : SELF_TYPE {
+class Main {
+    a : Int;
+    b : Int;
+    c : Int;
+    d : Int;
+    -- arr : Int[5] <- [7,2,4,5,8];
+    -- barr : Int[3] <- [4,2,8];
+    -- e : String;
+    -- func (anu : Int) : Int {
+    --  {
+    --      anu <- 6;
+    --  }
+    -- };
+    -- func1 (anu1 : Int) : Int {
+    --  {
+    --      anu1 <- 6;
+    --  }
+    -- };
+    -- hi (temp : Int) : Int {
+    --  temp <- 2
+    -- };
+    -- gi (temp1 : Int) : Int {
+    --  {
+    --      temp1 <- 2;
+    --      a <- hi(temp1);
+    --  }
+    -- };
+    main (anu1 : Int) : Int {
         {
-            population_map <- map;
-            self;
+            -- c <- a * ~5;
+            a <- 5;
+            c <- 10;
+            d <- c + a;
+            -- b <- ~c;
+            -- e <- "anu";
+            -- d <- 639;
+            -- a <- barr[2];
+            -- a <- 1 + 2*6+9/8-985+596;
+            -- b <- 10;
+            -- hi(a);
+            -- a <- gi(5);
+            -- let anu : Int <- 90, banu : Int <- 0 in {
+            --  anu <- a + banu
+            -- };
+            -- banu <- 5;
+            -- anu <- 8;
+            -- c <- a + b;
+            -- if (a < b) && (a = b) then (c <- a + b) else (c <- a - b) fi;
+            -- while (a < b) loop (a <- a + 4) pool;
+            -- do loop (a <- a + 4) pool while{ (a < b) && (a = b) };
+            return {0};
         }
-    };
-   
-    print() : SELF_TYPE {
-        {
-            out_string(population_map.concat("\n"));
-            self;
-        }
-    };
-   
-    num_cells() : Int {
-        population_map.length()
-    };
-   
-    cell(position : Int) : String {
-        population_map.substr(position, 1)
-    };
-   
-    cell_left_neighbor(position : Int) : String {
-        if position = 0 then
-            cell(num_cells() - 1)
-        else
-            cell(position - 1)
-        fi
-    };
-   
-    cell_right_neighbor(position : Int) : String {
-        if position = num_cells() - 1 then
-            cell(0)
-        else
-            cell(position + 1)
-        fi
-    }; -- this is a comment
-   
-    (* a cell will live if exactly 1 of itself and it's immediate
-       neighbors are alive *)
-    cell_at_next_evolution(position : Int) : String {
-        if (if cell(position) = "X" then 1 else 0 fi
-            + if cell_left_neighbor(position) = "X" then 1 else 0 fi
-            + if cell_right_neighbor(position) = "X" then 1 else 0 fi
-            = 1)
-        then
-            "X"
-        else
-            "."
-        fi
-    };
-   
-    evolve() : SELF_TYPE {
-        (let position : Int in
-        {let num : Int <- num_cells[1] in
-        {let temp : String in {
-            {
-                while position < num loop
-                    {
-                        temp <- temp.concat(cell_at_next_evolution(position));
-                        position <- position + 1;
-                    }
-                pool;
-                population_map <- temp;
-                self;
-            }
-        }
-        } } )
     };
 };
+
+-- class Anu {
+--  a : Int;
+--  anu () : Int {
+--      a <- 5
+--  };
+-- };

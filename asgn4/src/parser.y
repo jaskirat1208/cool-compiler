@@ -265,7 +265,7 @@ Feature:
 			entry->paramCount = $4->paramCount;
 			symbolTable->insert(string($1), entry);
 			ircode = backpatchFeat($9, string($1), ircode);
-			ircode.push_back("1,ret\n");
+			// ircode.push_back("1,ret\n");
 		}
 		|	Formal
 		{	parse_tree.push_back("Feature -> Formal");
@@ -794,7 +794,7 @@ Return_statement:
 		KEY_RETURN BLOCK_BEGIN Expression BLOCK_END
 		{	parse_tree.push_back("Return_statement -> KEY_RETURN BLOCK_BEGIN Expression BLOCK_END");
 			$$ = $3;
-			ircode.push_back("1,ret\n");
+			ircode.push_back("1,ret," + $3->place + "\n");
 		}
 		;
 Block_Expression:

@@ -1753,7 +1753,7 @@ yyreduce:
 			entry->paramCount = (yyvsp[-8].node)->paramCount;
 			symbolTable->insert(string((yyvsp[-11].str)), entry);
 			ircode = backpatchFeat((yyvsp[-3].intValue), string((yyvsp[-11].str)), ircode);
-			ircode.push_back("1,ret\n");
+			// ircode.push_back("1,ret\n");
 		}
 #line 1759 "parser.tab.c" /* yacc.c:1646  */
     break;
@@ -2517,7 +2517,7 @@ yyreduce:
 #line 795 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Return_statement -> KEY_RETURN BLOCK_BEGIN Expression BLOCK_END");
 			(yyval.node) = (yyvsp[-1].node);
-			ircode.push_back("1,ret\n");
+			ircode.push_back("1,ret," + (yyvsp[-1].node)->place + "\n");
 		}
 #line 2523 "parser.tab.c" /* yacc.c:1646  */
     break;

@@ -1,13 +1,14 @@
-import group19TestCases;
-
+-- loops
 class Main {
-	n : Int;
-	arr : Int[10];
-	init (nGiven : Int, arrElements : Int[]) : Cons {
+	a : Int;
+	b : Int;
+	main (anu1 : Int) : Int {
 		{
-			n <- nGiven;
-			arr <- arrElements;
-			self;
+			a <- 4;
+			b <- 50;
+			while (a < b) loop (a <- a + 4) pool;
+			-- do loop (a <- a + 4) pool while{ (a < b) && (a = b) };
+			return {0};
 		}
 	};
 };
