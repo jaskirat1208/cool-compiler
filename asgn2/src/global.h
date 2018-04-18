@@ -9,12 +9,15 @@ typedef string Memory;
 enum VarType {
 	VarInt,
 	VarLabel,
-	ConstInt
+	ConstInt,
+	Array
 };
 
 // enumeration of instruction type
 enum InstrType {
 	Copy, // x = y
+	ArrRead,	//x = y[0]
+	ArrWrite,	//y[0] = x
 	AssignBinaryOp, // a = b `op` c .... 3,op,a,b,c
 	AssignUnaryOp,
 	ConditionalJump,
@@ -48,8 +51,19 @@ class SymbolTableEntry {
 		int value; // stores the value if the in1 or in2 are constants
 		bool isLive;
 		int nextUse;
+		string auxValues;	//In case of arrays: auxValue stores up the values.
 };
 
+string generateString(string str){
+	stringstream strstream(str);
+	string newString = "";
+	string tmp = "";
+	while(getline(strstream, tmp, ',')){
+		newString+="\n\t\t.quad\t" + tmp;
+	}
+	return newString;
+	
+}
 // The following class defines structure of Symbol Table
 class SymbolTable {
 	private :
@@ -81,8 +95,12 @@ class SymbolTable {
 			vector<string> variableNames;
 			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
 			for (; i != table.end(); ++i) {
-				if (i->second->type == VarInt) {
-					variableNames.push_back(i->first);
+				if (i->second->type == Array)
+				{
+					variableNames.push_back(i->first + ": " + generateString(i->second->auxValues) + "\n");
+				}
+				if (i->second->type == VarInt ) {
+					variableNames.push_back(i->first + ":\t.quad 0\n");
 				}
 			}
 			return variableNames;

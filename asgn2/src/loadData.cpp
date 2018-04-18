@@ -15,14 +15,87 @@ void loadData(char* argv) {
 		dest = (SymbolTableEntry*)calloc(1, sizeof(SymbolTableEntry));
 
 		getline(linestream, lineNo, ',');
+		if (lineNo=="")
+		{
+			continue;
+		}
 		getline(linestream, typeStr, ',');
 
 		if (typeStr == "=") {
 			type = Copy;
 			op = typeStr;
-
 			getline(linestream, destStr, ',');
-			if (symbolTable.lookup(destStr) == NULL) {
+			cout<<destStr;
+			if (destStr == "array")
+			{
+				string arrname;			// Array name is stored here
+				getline(linestream, arrname, ',');
+				cout<<arrname<<" to be inserted"<<endl;
+				dest->type = Array;
+                symbolTable.insert(arrname,dest);
+                cout<<dest->address.mem<<" is the ";
+				string aux;
+				getline(linestream,aux,',');	//DISCARD THE SIZE BYTE
+				getline(linestream,aux);
+				dest->auxValues = aux;
+				cout<<dest->auxValues<<endl;
+				symbolTable.printTableInts();
+				// cout<<"OVER";
+				continue;
+			}
+			
+
+			if (destStr == "arrRead" || destStr == "arrWrite")
+			{
+				if (destStr =="arrRead")
+				{
+					type = ArrRead;
+					getline(linestream, destStr, ',');		//address of the temporary where to read
+					// cout<<destStr;	
+					if (symbolTable.lookup(destStr) == NULL)
+					{
+						symbolTable.insert(destStr,dest);
+						dest->type = VarInt;
+					}						
+					getline(linestream, destStr, ',');		//address of base of array
+					if (symbolTable.lookup(destStr) == NULL)
+					{
+						cout<<"ERROR: COULD NOT FIND ENTRY"<<endl;
+						break;
+					}
+					in1 = symbolTable.lookup(destStr);
+					cout<<"\n"<<dest -> address.mem<<"\t"<<in1->address.mem<<endl;
+					getline(linestream,destStr);		//offset
+					cout<<destStr<<endl;
+					if (symbolTable.lookup(destStr) == NULL) {
+						symbolTable.insert(destStr, in2);
+						if (isNum(destStr[0])) {
+							in2->type = ConstInt;
+							in2->value = stoi(destStr);
+						} else {
+							in2->type = VarInt;
+						}
+					} else {
+						in2 = symbolTable.lookup(destStr);
+					}
+				
+				}
+				else if (destStr == "arrWrite")
+				{
+					type = ArrWrite;
+				}
+					// symbolTable.insert(destStr,in2);
+				instructions[noOfInstructions].lineNo = noOfInstructions+1;
+				instructions[noOfInstructions].type = type;
+				instructions[noOfInstructions].op = op;
+				instructions[noOfInstructions].in1 = in1;
+				instructions[noOfInstructions].in2 = in2;
+				instructions[noOfInstructions].dest = dest;
+				noOfInstructions++;
+				continue;
+				// cout<<destStr<<endl;
+			}
+            else if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarInt;
 			} else {
@@ -30,6 +103,7 @@ void loadData(char* argv) {
 			}
 
 			getline(linestream, in1Str, ',');
+			// cout<<in1Str<<endl;
 			if (symbolTable.lookup(in1Str) == NULL) {
 				symbolTable.insert(in1Str, in1);
 				if (isNum(in1Str[0])) {

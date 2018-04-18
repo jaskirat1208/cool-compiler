@@ -4,7 +4,9 @@ void generateCode() {
 
 	vector<string> variableNames = symbolTable.printTableInts();
 	for(int i = 0; i < variableNames.size(); i++){
-		myfile << "\t" << variableNames[i] << ":\t.quad 0\n";
+        //if(variableNames[i] == )
+		// myfile << "\t" << variableNames[i] << ":\t.quad 0\n";
+		myfile <<"\t"<<variableNames[i];
 	}
 
 	myfile << "\tstr:\t.string \"%d\\n\"\n";
@@ -22,7 +24,7 @@ void generateCode() {
 
 		for(int i = 0; i < lenCurrentBB; i++) {
 			Instruction3AC ins = currentBB[i];
-			
+		    	
 			// printRegisterDescriptorTable();
 
 			if (ins.type == Copy) {
@@ -34,7 +36,16 @@ void generateCode() {
 				}
 				myfile << "\tmovq " << reg2str(ins.dest->address.reg) << ", " << ins.dest->address.mem << "\n";
 				myfile << "\n";
-			} else if (ins.type == AssignBinaryOp) {
+			} else if (ins.type == ArrRead) {
+				allocateRegister(&ins);
+				// cout<<"AAAA"<<ins.in2->type<<endl;
+				if (ins.in2->type == ConstInt)
+				{
+					myfile << "\tmovq $" << ins.in1->address.mem << ", " << reg2str(ins.dest->address.reg) << "\n";
+					myfile << "\tadd $"<< 8*ins.in2->value<<", " << reg2str(ins.dest->address.reg) << "\n"; 
+				}
+			} 
+			else if (ins.type == AssignBinaryOp) {
 				allocateRegister(&ins);
 				if (ins.op == "+") {
 					if (ins.in1->type == VarInt) {
