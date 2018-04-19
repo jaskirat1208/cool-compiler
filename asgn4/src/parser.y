@@ -345,7 +345,7 @@ Formal:
 			entry->arrayList = $8->arrayList;
 			string elements = to_string(($8->arrayList)[0]);
 			for (int i = 1; i < entry->arrayLength; i++) {
-				elements = elements + ":" + to_string(($8->arrayList)[i]);
+				elements = elements + "," + to_string(($8->arrayList)[i]);
 			}
 			ircode.push_back("1,=,array," + string($1) + "," + to_string(entry->arrayLength) + "," + elements + "\n");
 			symbolTable->insert($1, entry);
@@ -359,7 +359,7 @@ Formal:
 			entry->arrayList = $7->arrayList;
 			string elements = to_string(($7->arrayList)[0]);
 			for (int i = 1; i < entry->arrayLength; i++) {
-				elements = elements + ":" + to_string(($7->arrayList)[i]);
+				elements = elements + "," + to_string(($7->arrayList)[i]);
 			}
 			ircode.push_back("1,=,array," + string($1) + "," + to_string(entry->arrayLength) + "," + elements + "\n");
 			symbolTable->insert($1, entry);
@@ -384,6 +384,15 @@ Formal:
 			entry->type = string($3) + "[]";
 			entry->isArray = true;
 			entry->arrayLength = stoi($5->place);
+			vector<int> zeroList;
+			zeroList.push_back(0);
+			string elements = "0";
+			for (int i = 1; i < entry->arrayLength; i++) {
+				elements = elements + ",0";
+				zeroList.push_back(0);
+			}
+			entry->arrayList = zeroList;
+			ircode.push_back("1,=,array," + string($1) + "," + to_string(entry->arrayLength) + "," + elements + "\n");
 			symbolTable->insert($1, entry);
 			// symbolTable->printSymbolTable();
 			$$ = emptyNode;

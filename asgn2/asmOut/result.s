@@ -1,44 +1,45 @@
 .data
-	t3:	.quad 0
-	t2:	.quad 0
-	arr: 
-		.quad	7
-		.quad	2
+	barr: 
+		.quad	3
 		.quad	4
 		.quad	5
-		.quad	8
 	b:	.quad 0
-	t4:	.quad 0
+	arr: 
+		.quad	0
+		.quad	0
+		.quad	0
+		.quad	0
+		.quad	0
+	a:	.quad 0
 	str:	.string "%d\n"
 	scan_str:	.string "%d"
 .text
 .globl main
 main:
 label0:
-	movq $arr, %RBX
-	add $16, %RBX
-	push (%RBX)
-	pop t2
-	movq $1, %RCX
+
+	call label2
+
+label1:
+
+	ret
+label2:
+	movq $1, %RBX
+	movq %RBX, a
+
+	movq $7, %RCX
 	movq %RCX, b
 
 	movq %RCX, b
 	movq $arr, %RCX
-	add $8, %RCX
+	add $0, %RCX
 	push b
 	pop (%RCX)
-	movq $arr, %RSI
-	add $8, %RSI
-	push (%RSI)
-	pop t4
-	movq $5, %RDI
-	movq %RDI, t3
-
 	pushq %RDI
 	pushq %RSI
 	pushq %RAX
 	movq $str, %RDI
-	movq t3, %RSI
+	movq a, %RSI
 	movq $0, %RAX
 	pushq %R10
 	pushq %R11
@@ -49,34 +50,8 @@ label0:
 	popq %RSI
 	popq %RDI
 
-	pushq %RDI
-	pushq %RSI
-	pushq %RAX
-	movq $str, %RDI
-	movq t2, %RSI
-	movq $0, %RAX
-	pushq %R10
-	pushq %R11
-	call printf
-	popq %R11
-	popq %R10
-	popq %RAX
-	popq %RSI
-	popq %RDI
+	movq %RBX, a
+	movq %RCX, arr
 
-	pushq %RDI
-	pushq %RSI
-	pushq %RAX
-	movq $str, %RDI
-	movq t4, %RSI
-	movq $0, %RAX
-	pushq %R10
-	pushq %R11
-	call printf
-	popq %R11
-	popq %R10
-	popq %RAX
-	popq %RSI
-	popq %RDI
-
+	ret
 	ret

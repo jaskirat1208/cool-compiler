@@ -28,18 +28,21 @@ void loadData(char* argv) {
 			cout<<destStr;
 			if (destStr == "array")
 			{
-				string arrname;			// Array name is stored here
-				getline(linestream, arrname, ',');
-				cout<<arrname<<" to be inserted"<<endl;
-				dest->type = Array;
-                symbolTable.insert(arrname,dest);
-                cout<<dest->address.mem<<" is the ";
+				getline(linestream, destStr, ',');
+				// cout<<destStr<<" to be inserted"<<endl;
+				if (symbolTable.lookup(destStr) == NULL) {
+					symbolTable.insert(destStr, dest);
+					dest->type = Array;
+				} else {
+					dest = symbolTable.lookup(destStr);
+				}
+                // cout<<dest->address.mem<<" is the ";
 				string aux;
-				getline(linestream,aux,',');	//DISCARD THE SIZE BYTE
-				getline(linestream,aux);
+				getline(linestream, aux, ',');	//DISCARD THE SIZE BYTE
+				getline(linestream, aux);
 				dest->auxValues = aux;
-				cout<<"aux_val: "<<dest->auxValues<<endl;
-				symbolTable.printTableInts();
+				// cout<<"aux_val: "<<dest->auxValues<<endl;
+				// symbolTable.printTableInts();
 				// cout<<"OVER";
 				continue;
 			}
@@ -65,7 +68,7 @@ void loadData(char* argv) {
 					}
 					in1 = symbolTable.lookup(destStr);
 					cout<<"\n"<<dest -> address.mem<<"\t"<<in1->address.mem<<endl;
-					getline(linestream,destStr);		//offset
+					getline(linestream, destStr, ',');		//offset
 					cout<<destStr<<endl;
 					if (symbolTable.lookup(destStr) == NULL) {
 						symbolTable.insert(destStr, in2);
@@ -83,21 +86,36 @@ void loadData(char* argv) {
 				else if (destStr == "arrWrite")
 				{
 					type = ArrWrite;
-					getline(linestream,destStr,',');
+					getline(linestream, destStr, ',');
+
+					dest = symbolTable.lookup(destStr);
+
 					string offset;
 					getline(linestream,offset,',');
 					
-					in2->value = stoi(offset);			//in2 contains the offset to destination
-					in2->type = ConstInt;
-					symbolTable.insert(offset,in2);
-					dest = symbolTable.lookup(destStr);
-					string input;
-					getline(linestream,input);
-					in1 = symbolTable.lookup(input);
-					if (in1 == NULL)
-					{
-						cout<<"ERROR: entry not found"<<endl;
-						exit(0);
+					if (symbolTable.lookup(offset) == NULL) {
+						symbolTable.insert(offset, in2);
+						if (isNum(offset[0])) {
+							in2->type = ConstInt;
+							in2->value = stoi(offset);
+						} else {
+							in2->type = VarInt;
+						}
+					} else {
+						in2 = symbolTable.lookup(offset);
+					}
+					getline(linestream, in1Str, ',');
+
+					if (symbolTable.lookup(in1Str) == NULL) {
+						symbolTable.insert(in1Str, in1);
+						if (isNum(in1Str[0])) {
+							in1->type = ConstInt;
+							in1->value = stoi(in1Str);
+						} else {
+							in1->type = VarInt;
+						}
+					} else {
+						in1 = symbolTable.lookup(in1Str);
 					}
 				}
 					// symbolTable.insert(destStr,in2);

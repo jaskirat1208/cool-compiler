@@ -52,6 +52,7 @@ void generateCode() {
 				// cout<<"DEST mem addr: "<<ins.dest->address.mem<<endl;
 				// cout<<"DEST offset: "<<8*stoi(ins.dest->auxValues)<<endl;
 				// cout<<"IN1 address: " <<ins.in1->address.mem<<endl;
+				cout << "-----" << ins.dest->address.mem << "--------" << ins.in1->address.mem << endl;
 				myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
 				myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
 				myfile << "\tpush " << ins.in1->address.mem <<endl;
