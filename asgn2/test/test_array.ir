@@ -1,6 +1,9 @@
 1,=,array,arr,5,7,2,4,5,8
 1,=,arrRead,t2,arr,2
+1,=,b,1
+1,=,arrWrite,arr,1,b
+1,=,arrRead,t4,arr,1
 1,=,t3,5
 1,print,t3
 1,print,t2
-
+1,print,t4

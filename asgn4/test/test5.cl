@@ -10,8 +10,9 @@ class Main {
 			let c : Int in {
 				{
 					c <- a + b;
-					c <- c + arr[a] * barr[0] - arr[2] / barr[2];
+					c <- c + arr[0] * barr[0] - arr[2] / barr[2];
 					b <- c;
+                    arr[1] <- b; 
 				}
 			};
 			return {0};

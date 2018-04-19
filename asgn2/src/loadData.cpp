@@ -38,7 +38,7 @@ void loadData(char* argv) {
 				getline(linestream,aux,',');	//DISCARD THE SIZE BYTE
 				getline(linestream,aux);
 				dest->auxValues = aux;
-				cout<<dest->auxValues<<endl;
+				cout<<"aux_val: "<<dest->auxValues<<endl;
 				symbolTable.printTableInts();
 				// cout<<"OVER";
 				continue;
@@ -83,6 +83,22 @@ void loadData(char* argv) {
 				else if (destStr == "arrWrite")
 				{
 					type = ArrWrite;
+					getline(linestream,destStr,',');
+					string offset;
+					getline(linestream,offset,',');
+					
+					in2->value = stoi(offset);			//in2 contains the offset to destination
+					in2->type = ConstInt;
+					symbolTable.insert(offset,in2);
+					dest = symbolTable.lookup(destStr);
+					string input;
+					getline(linestream,input);
+					in1 = symbolTable.lookup(input);
+					if (in1 == NULL)
+					{
+						cout<<"ERROR: entry not found"<<endl;
+						exit(0);
+					}
 				}
 					// symbolTable.insert(destStr,in2);
 				instructions[noOfInstructions].lineNo = noOfInstructions+1;

@@ -46,6 +46,16 @@ void generateCode() {
 					myfile << "\tpush ("<<reg2str(ins.dest->address.reg)<<")"<<endl;
 					myfile << "\tpop "<<(ins.dest->address.mem)<<""<<endl;
 				}
+			} else if (ins.type == ArrWrite)
+			{
+				allocateRegister(&ins);
+				// cout<<"DEST mem addr: "<<ins.dest->address.mem<<endl;
+				// cout<<"DEST offset: "<<8*stoi(ins.dest->auxValues)<<endl;
+				// cout<<"IN1 address: " <<ins.in1->address.mem<<endl;
+				myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+				myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
+				myfile << "\tpush " << ins.in1->address.mem <<endl;
+				myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
 			} 
 			else if (ins.type == AssignBinaryOp) {
 				allocateRegister(&ins);
