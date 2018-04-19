@@ -4,8 +4,10 @@
 1,ret,0
 1,label,main
 1,=,a,1
-1,=,b,7
-1,=,arrWrite,arr,a,b
+1,=,b,7787
+1,=,arrWrite,arr,2,98
+2,=,arrRead,t45,arr,2
+1,print,t45
 1,print,a
 1,label,label10
 1,ret,0

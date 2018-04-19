@@ -49,14 +49,36 @@ void generateCode() {
 			} else if (ins.type == ArrWrite)
 			{
 				allocateRegister(&ins);
+				// arr[5] = 4;n
+				// arr[i] = 4;
+				// arr[4] = a;y
+				// arr[i] = j;
+				// arr[in2] = in1
+				cout << "in1 val = " << ins.in1->type << " in2 index = " << ins.in2->type << "\n";
+				// VarInt, 0
+				// VarLabel, 1
+				// ConstInt, 2
+				// Array 3
+				if (ins.in2->type == VarInt) {
+					if (ins.in1->type == VarInt) {
+
+					} else {
+						
+					}
+				} else {
+					myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+					myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
+					myfile << "\tpush " << ins.in1->address.mem <<endl;
+					myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+				}
 				// cout<<"DEST mem addr: "<<ins.dest->address.mem<<endl;
 				// cout<<"DEST offset: "<<8*stoi(ins.dest->auxValues)<<endl;
 				// cout<<"IN1 address: " <<ins.in1->address.mem<<endl;
-				cout << "-----" << ins.dest->address.mem << "--------" << ins.in1->address.mem << endl;
-				myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
-				myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
-				myfile << "\tpush " << ins.in1->address.mem <<endl;
-				myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+				// cout << "-----" << ins.dest->address.mem << "--------" << ins.in1->address.mem << endl;
+				// myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+				// myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
+				// myfile << "\tpush " << ins.in1->address.mem <<endl;
+				// myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
 			} 
 			else if (ins.type == AssignBinaryOp) {
 				allocateRegister(&ins);

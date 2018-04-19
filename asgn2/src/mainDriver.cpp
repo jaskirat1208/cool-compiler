@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 
 	generateCode();
 
-	printAssemblyCode();
+	// printAssemblyCode();
 
 	return 0;
 }
