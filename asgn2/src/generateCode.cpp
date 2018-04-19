@@ -43,6 +43,8 @@ void generateCode() {
 				{
 					myfile << "\tmovq $" << ins.in1->address.mem << ", " << reg2str(ins.dest->address.reg) << "\n";
 					myfile << "\tadd $"<< 8*ins.in2->value<<", " << reg2str(ins.dest->address.reg) << "\n"; 
+					myfile << "\tpush ("<<reg2str(ins.dest->address.reg)<<")"<<endl;
+					myfile << "\tpop "<<(ins.dest->address.mem)<<""<<endl;
 				}
 			} 
 			else if (ins.type == AssignBinaryOp) {

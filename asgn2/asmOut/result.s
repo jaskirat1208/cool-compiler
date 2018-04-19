@@ -15,6 +15,8 @@ main:
 label0:
 	movq $arr, %RBX
 	add $16, %RBX
+	push (%RBX)
+	pop t2
 	movq $5, %RCX
 	movq %RCX, t3
 
