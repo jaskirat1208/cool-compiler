@@ -1,5 +1,5 @@
 .data
-	t45:	.quad 0
+	t5:	.quad 0
 	barr: 
 		.quad	3
 		.quad	4
@@ -41,14 +41,118 @@ label2:
 	pop (%RCX)
 	pop %RAX
 	movq $arr, %RSI
-	add $24, %RSI
+	push %RAX
+	movq a, %RAX
+	shl $3, %RAX
+	add %RAX, %RSI
 	push (%RSI)
-	pop t45
+	pop (t5)
+	pop %RAX
 	pushq %RDI
 	pushq %RSI
 	pushq %RAX
 	movq $str, %RDI
-	movq t45, %RSI
+	movq t5, %RSI
+	movq $0, %RAX
+	pushq %R10
+	pushq %R11
+	call printf
+	popq %R11
+	popq %R10
+	popq %RAX
+	popq %RSI
+	popq %RDI
+
+	movq $arr, %RCX
+	add $0, %RCX
+	push $5
+	pop (%RCX)
+	movq $arr, %RSI
+	add $0, %RSI
+	push (%RSI)
+	pop t5
+	pushq %RDI
+	pushq %RSI
+	pushq %RAX
+	movq $str, %RDI
+	movq t5, %RSI
+	movq $0, %RAX
+	pushq %R10
+	pushq %R11
+	call printf
+	popq %R11
+	popq %R10
+	popq %RAX
+	popq %RSI
+	popq %RDI
+
+	movq $arr, %RCX
+	push %RAX
+	movq a, %RAX
+	shl $3, %RAX
+	add %RAX, %RCX
+	push $7
+	pop (%RCX)
+	pop %RAX
+	movq $arr, %RSI
+	push %RAX
+	movq a, %RAX
+	shl $3, %RAX
+	add %RAX, %RSI
+	push (%RSI)
+	pop (t5)
+	pop %RAX
+	pushq %RDI
+	pushq %RSI
+	pushq %RAX
+	movq $str, %RDI
+	movq t5, %RSI
+	movq $0, %RAX
+	pushq %R10
+	pushq %R11
+	call printf
+	popq %R11
+	popq %R10
+	popq %RAX
+	popq %RSI
+	popq %RDI
+
+	movq $arr, %RCX
+	add $32, %RCX
+	push a
+	pop (%RCX)
+	movq $arr, %RSI
+	add $32, %RSI
+	push (%RSI)
+	pop t5
+	pushq %RDI
+	pushq %RSI
+	pushq %RAX
+	movq $str, %RDI
+	movq t5, %RSI
+	movq $0, %RAX
+	pushq %R10
+	pushq %R11
+	call printf
+	popq %R11
+	popq %R10
+	popq %RAX
+	popq %RSI
+	popq %RDI
+
+	movq $arr, %RSI
+	push %RAX
+	movq a, %RAX
+	shl $3, %RAX
+	add %RAX, %RSI
+	push (%RSI)
+	pop (t5)
+	pop %RAX
+	pushq %RDI
+	pushq %RSI
+	pushq %RAX
+	movq $str, %RDI
+	movq t5, %RSI
 	movq $0, %RAX
 	pushq %R10
 	pushq %R11
@@ -76,7 +180,7 @@ label2:
 
 	movq %RBX, a
 	movq %RCX, arr
-	movq %RSI, t45
+	movq %RSI, t5
 
 	ret
 	ret

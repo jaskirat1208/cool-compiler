@@ -97,8 +97,6 @@ class SymbolTable {
 			for (; i != table.end(); ++i) {
 				if (i->second->type == Array)
 				{
-					cout<<i->second->address.mem<<endl;
-					cout<<"aaa "<<i->second->auxValues<<" asda"<<endl;
 					variableNames.push_back(i->first + ": " + generateString(i->second->auxValues) + "\n");
 				}
 				if (i->second->type == VarInt ) {
