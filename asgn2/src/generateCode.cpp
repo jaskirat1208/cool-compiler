@@ -61,15 +61,36 @@ void generateCode() {
 				// Array 3
 				if (ins.in2->type == VarInt) {
 					if (ins.in1->type == VarInt) {
-
+						myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+						myfile << "\tpush %RAX" << endl;
+						myfile << "\tmovq " << ins.in2->address.mem << ", %RAX" << endl;
+						myfile << "\tshl $3, %RAX" << endl; 
+						myfile << "\tadd %RAX, " << reg2str(ins.dest->address.reg)<<""<<endl;
+						myfile << "\tpush " << ins.in1->address.mem <<endl;
+						myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+						myfile << "\tpop %RAX" <<endl;
 					} else {
-						
+						myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+						myfile << "\tpush %RAX" << endl;
+						myfile << "\tmovq " << ins.in2->address.mem << ", %RAX" << endl;
+						myfile << "\tshl $3, %RAX" << endl; 
+						myfile << "\tadd %RAX, " << reg2str(ins.dest->address.reg)<<""<<endl;
+						myfile << "\tpush $" << ins.in1->address.mem <<endl;
+						myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+						myfile << "\tpop %RAX" <<endl;
 					}
 				} else {
-					myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
-					myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
-					myfile << "\tpush " << ins.in1->address.mem <<endl;
-					myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+					if (ins.in1->type == VarInt) {
+						myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+						myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
+						myfile << "\tpush " << ins.in1->address.mem <<endl;
+						myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+					} else {
+						myfile << "\tmovq $" << ins.dest->address.mem << ", " << reg2str(ins.dest->address.reg)<<endl;
+						myfile << "\tadd $" << 8*ins.in2->value << ", " << reg2str(ins.dest->address.reg)<<""<<endl;
+						myfile << "\tpush $" << ins.in1->address.mem <<endl;
+						myfile << "\tpop (" << reg2str(ins.dest->address.reg)<<")"<<endl;
+					}
 				}
 				// cout<<"DEST mem addr: "<<ins.dest->address.mem<<endl;
 				// cout<<"DEST offset: "<<8*stoi(ins.dest->auxValues)<<endl;

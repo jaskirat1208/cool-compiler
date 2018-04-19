@@ -25,19 +25,24 @@ label1:
 
 	ret
 label2:
-	movq $1, %RBX
+	movq $3, %RBX
 	movq %RBX, a
 
 	movq $7787, %RCX
 	movq %RCX, b
 
+	movq %RCX, b
+	movq $arr, %RCX
+	push %RAX
+	movq a, %RAX
+	shl $3, %RAX
+	add %RAX, %RCX
+	push b
+	pop (%RCX)
+	pop %RAX
 	movq $arr, %RSI
-	add $16, %RSI
-	push 98
-	pop (%RSI)
-	movq $arr, %RDI
-	add $16, %RDI
-	push (%RDI)
+	add $24, %RSI
+	push (%RSI)
 	pop t45
 	pushq %RDI
 	pushq %RSI
@@ -70,9 +75,8 @@ label2:
 	popq %RDI
 
 	movq %RBX, a
-	movq %RCX, b
-	movq %RSI, arr
-	movq %RDI, t45
+	movq %RCX, arr
+	movq %RSI, t45
 
 	ret
 	ret

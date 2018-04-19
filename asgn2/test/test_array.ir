@@ -3,10 +3,10 @@
 1,call,main,t4
 1,ret,0
 1,label,main
-1,=,a,1
+1,=,a,3
 1,=,b,7787
-1,=,arrWrite,arr,2,98
-2,=,arrRead,t45,arr,2
+1,=,arrWrite,arr,a,b
+2,=,arrRead,t45,arr,3
 1,print,t45
 1,print,a
 1,label,label10
