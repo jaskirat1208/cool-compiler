@@ -513,13 +513,13 @@ static const yytype_uint16 yyrline[] =
      211,   215,   219,   223,   227,   231,   234,   239,   244,   249,
      253,   259,   270,   276,   280,   284,   287,   292,   297,   302,
      307,   312,   319,   326,   335,   353,   367,   381,   400,   410,
-     426,   446,   468,   471,   474,   478,   482,   486,   490,   493,
-     496,   500,   503,   506,   519,   532,   535,   538,   541,   555,
-     569,   580,   591,   602,   614,   618,   629,   646,   650,   658,
-     665,   671,   679,   682,   688,   692,   696,   702,   707,   712,
-     718,   727,   732,   735,   740,   745,   755,   765,   783,   793,
-     798,   803,   810,   818,   825,   833,   839,   846,   854,   859,
-     864,   868,   874,   881
+     426,   452,   474,   477,   480,   484,   488,   492,   496,   499,
+     502,   506,   509,   512,   525,   538,   541,   544,   547,   561,
+     575,   586,   597,   608,   620,   624,   635,   655,   659,   667,
+     674,   680,   688,   691,   697,   701,   705,   711,   716,   721,
+     727,   736,   741,   744,   749,   754,   764,   774,   792,   802,
+     807,   812,   819,   827,   834,   842,   848,   855,   863,   868,
+     873,   877,   883,   890
 };
 #endif
 
@@ -1983,19 +1983,25 @@ yyreduce:
 				cout << entry->type << ", " << (yyvsp[0].node)->type << ": Types don't match...\n";
 				exit(0);
 			}
-			if (stoi((yyvsp[-3].node)->place) >= entry->arrayLength) {
-				cout << (yyvsp[-5].str) << ": Index out of bound...\n";
-				exit(0);
-			}
+			if (((yyvsp[-3].node)->place)[0] >= '0' && ((yyvsp[-3].node)->place)[0] <= '9' ) {
+				if (stoi((yyvsp[-3].node)->place) >= entry->arrayLength) {
+					cout << (yyvsp[-5].str) << ": Index out of bound...\n";
+					exit(0);
+				}
+			} 
+			// if (stoi($3->place) >= entry->arrayLength) {
+			// 	cout << $1 << ": Index out of bound...\n";
+			// 	exit(0);
+			// }
 			(yyval.node) = new Node();
 			(yyval.node)->type = "Int";
 			ircode.push_back("1,=,arrWrite," + string((yyvsp[-5].str)) + "," + (yyvsp[-3].node)->place + "," + (yyvsp[0].node)->place + "\n");
 		}
-#line 1995 "parser.tab.c" /* yacc.c:1646  */
+#line 2001 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 447 "src/parser.y" /* yacc.c:1646  */
+#line 453 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
 			SymbolTableEntry *entry = symbolTable->lookup((yyvsp[-3].str));
 			if (entry == NULL) {
@@ -2017,93 +2023,93 @@ yyreduce:
 			}
 			ircode.push_back("1,call," + string((yyvsp[-3].str)) + "," + (yyval.node)->place + "\n");
 		}
-#line 2021 "parser.tab.c" /* yacc.c:1646  */
+#line 2027 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 469 "src/parser.y" /* yacc.c:1646  */
+#line 475 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
 		}
-#line 2028 "parser.tab.c" /* yacc.c:1646  */
+#line 2034 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 472 "src/parser.y" /* yacc.c:1646  */
+#line 478 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
 		}
-#line 2035 "parser.tab.c" /* yacc.c:1646  */
+#line 2041 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 475 "src/parser.y" /* yacc.c:1646  */
+#line 481 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Conditionals");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2043 "parser.tab.c" /* yacc.c:1646  */
+#line 2049 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 479 "src/parser.y" /* yacc.c:1646  */
+#line 485 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Loops");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2051 "parser.tab.c" /* yacc.c:1646  */
+#line 2057 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 483 "src/parser.y" /* yacc.c:1646  */
+#line 489 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Block_Expression");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2059 "parser.tab.c" /* yacc.c:1646  */
+#line 2065 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 487 "src/parser.y" /* yacc.c:1646  */
+#line 493 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Let_Expression");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2067 "parser.tab.c" /* yacc.c:1646  */
+#line 2073 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 491 "src/parser.y" /* yacc.c:1646  */
+#line 497 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> KEY_NEW TYPE");
 		}
-#line 2074 "parser.tab.c" /* yacc.c:1646  */
+#line 2080 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 494 "src/parser.y" /* yacc.c:1646  */
+#line 500 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> KEY_ISVOID BLOCK_BEGIN Expression BLOCK_END");
 		}
-#line 2081 "parser.tab.c" /* yacc.c:1646  */
+#line 2087 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 497 "src/parser.y" /* yacc.c:1646  */
+#line 503 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Return_statement");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2089 "parser.tab.c" /* yacc.c:1646  */
+#line 2095 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 501 "src/parser.y" /* yacc.c:1646  */
+#line 507 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Break_statement");
 		}
-#line 2096 "parser.tab.c" /* yacc.c:1646  */
+#line 2102 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 504 "src/parser.y" /* yacc.c:1646  */
+#line 510 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Continue_statement");
 		}
-#line 2103 "parser.tab.c" /* yacc.c:1646  */
+#line 2109 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 507 "src/parser.y" /* yacc.c:1646  */
+#line 513 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_LOGICAL_OR Expression");
 			if ((yyvsp[-3].node)->type != "Bool" || (yyvsp[0].node)->type != "Bool") {
 				cout << "Operands not of type Bool in OR" << endl;
@@ -2116,11 +2122,11 @@ yyreduce:
 			(yyval.node)->truelist = merge((yyvsp[-3].node)->truelist, (yyvsp[0].node)->truelist);
 			(yyval.node)->falselist = (yyvsp[0].node)->falselist;
 		}
-#line 2120 "parser.tab.c" /* yacc.c:1646  */
+#line 2126 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 520 "src/parser.y" /* yacc.c:1646  */
+#line 526 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_LOGICAL_AND Expression");
 			if ((yyvsp[-3].node)->type != "Bool" || (yyvsp[0].node)->type != "Bool") {
 				cout << "Operands not of type Bool in AND" << endl;
@@ -2133,32 +2139,32 @@ yyreduce:
 			(yyval.node)->truelist = (yyvsp[0].node)->truelist;
 			(yyval.node)->falselist = merge((yyvsp[-3].node)->falselist, (yyvsp[0].node)->falselist);
 		}
-#line 2137 "parser.tab.c" /* yacc.c:1646  */
+#line 2143 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 533 "src/parser.y" /* yacc.c:1646  */
+#line 539 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_BITWISE_OR Expression");
 		}
-#line 2144 "parser.tab.c" /* yacc.c:1646  */
+#line 2150 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 536 "src/parser.y" /* yacc.c:1646  */
+#line 542 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_BITWISE_XOR Expression");
 		}
-#line 2151 "parser.tab.c" /* yacc.c:1646  */
+#line 2157 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 539 "src/parser.y" /* yacc.c:1646  */
+#line 545 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_BITWISE_AND Expression");
 		}
-#line 2158 "parser.tab.c" /* yacc.c:1646  */
+#line 2164 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 542 "src/parser.y" /* yacc.c:1646  */
+#line 548 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_RELATIONAL_EQ Expression");
 			if ((yyvsp[-2].node)->type != "Int" || (yyvsp[0].node)->type != "Int") {
 				cout << "Operands not of type Int in EQ" << endl;
@@ -2172,11 +2178,11 @@ yyreduce:
 			ircode.push_back("1,ifgoto,eq," + (yyvsp[-2].node)->place + "," + (yyvsp[0].node)->place + ",");
 			ircode.push_back("1,goto,");
 		}
-#line 2176 "parser.tab.c" /* yacc.c:1646  */
+#line 2182 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 556 "src/parser.y" /* yacc.c:1646  */
+#line 562 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_RELATIONAL_IEQ Expression");
 			if ((yyvsp[-2].node)->type != "Int" || (yyvsp[0].node)->type != "Int") {
 				cout << "Operands not of type Int in IEQ" << endl;
@@ -2190,11 +2196,11 @@ yyreduce:
 			ircode.push_back("1,ifgoto," + dictIeqToString(string((yyvsp[-1].str))) + "," + (yyvsp[-2].node)->place + "," + (yyvsp[0].node)->place + ",");
 			ircode.push_back("1,goto,");
 		}
-#line 2194 "parser.tab.c" /* yacc.c:1646  */
+#line 2200 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 570 "src/parser.y" /* yacc.c:1646  */
+#line 576 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_AD Expression"); 
 			if ((yyvsp[-2].node)->type != "Int" || (yyvsp[0].node)->type != "Int") {
 				cout << "Operands not of type Int in B_AD" << endl;
@@ -2205,11 +2211,11 @@ yyreduce:
 			(yyval.node)->type = "Int";
 			ircode.push_back("1," + string((yyvsp[-1].str)) + "," + (yyval.node)->place + "," + ((yyvsp[-2].node)->place) + "," + ((yyvsp[0].node)->place) + "\n");
 		}
-#line 2209 "parser.tab.c" /* yacc.c:1646  */
+#line 2215 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 581 "src/parser.y" /* yacc.c:1646  */
+#line 587 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> Expression OP_ARITHMETIC_B_MU Expression"); 
 			if ((yyvsp[-2].node)->type != "Int" || (yyvsp[0].node)->type != "Int") {
 				cout << "Operands not of type Int in B_MU" << endl;
@@ -2220,11 +2226,11 @@ yyreduce:
 			(yyval.node)->type = "Int";
 			ircode.push_back("1," + string((yyvsp[-1].str)) + "," + (yyval.node)->place + "," + ((yyvsp[-2].node)->place) + "," + ((yyvsp[0].node)->place) + "\n");
 		}
-#line 2224 "parser.tab.c" /* yacc.c:1646  */
+#line 2230 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 592 "src/parser.y" /* yacc.c:1646  */
+#line 598 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> OP_ARITHMETIC_U Expression"); 
 			if ((yyvsp[0].node)->type != "Int") {
 				cout << "Operands not of type Int in U" << endl;
@@ -2235,11 +2241,11 @@ yyreduce:
 			(yyval.node)->type = "Int";
 			ircode.push_back("1,-," + (yyval.node)->place + ",0," + ((yyvsp[0].node)->place) + "\n");
 		}
-#line 2239 "parser.tab.c" /* yacc.c:1646  */
+#line 2245 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 603 "src/parser.y" /* yacc.c:1646  */
+#line 609 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> KEY_NOT Expression");
 			if ((yyvsp[0].node)->type != "Bool") {
 				cout << "Operand not of type Bool in NOT" << endl;
@@ -2251,19 +2257,19 @@ yyreduce:
 			(yyval.node)->falselist = (yyval.node)->truelist;
 			(yyval.node)->truelist = temp;
 		}
-#line 2255 "parser.tab.c" /* yacc.c:1646  */
+#line 2261 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 615 "src/parser.y" /* yacc.c:1646  */
+#line 621 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> PARAN_OPEN Expression PARAN_CLOSE");
 			(yyval.node) = (yyvsp[-1].node);
 		}
-#line 2263 "parser.tab.c" /* yacc.c:1646  */
+#line 2269 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 619 "src/parser.y" /* yacc.c:1646  */
+#line 625 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> IDENTIFIER"); 
 			SymbolTableEntry *entry = symbolTable->lookup((yyvsp[0].str));
 			if (entry == NULL){
@@ -2274,40 +2280,43 @@ yyreduce:
 			(yyval.node)->place = (yyvsp[0].str);
 			(yyval.node)->type = entry->type;
 		}
-#line 2278 "parser.tab.c" /* yacc.c:1646  */
+#line 2284 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 630 "src/parser.y" /* yacc.c:1646  */
+#line 636 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> IDENTIFIER ARRAY_OPEN Expression ARRAY_CLOSE");
 			SymbolTableEntry *entry = symbolTable->lookup((yyvsp[-3].str));
 			if (entry == NULL) {
 				cout << (yyvsp[-3].str) << ": Variable not found...\n";
 				exit(0);
 			}
-			if (stoi((yyvsp[-1].node)->place) >= entry->arrayLength) {
-				cout << (yyvsp[-3].str) << ": Index out of bound...\n";
-				exit(0);
-			}
+			if (((yyvsp[-1].node)->place)[0] >= '0' && ((yyvsp[-1].node)->place)[0] <= '9' ) {
+				if (stoi((yyvsp[-1].node)->place) >= entry->arrayLength) {
+					cout << (yyvsp[-3].str) << ": Index out of bound...\n";
+					exit(0);
+				}
+			} 
 			(yyval.node) = new Node();
 			(yyval.node)->place = newTemp();
 			(yyval.node)->type = (yyvsp[-1].node)->type;
+			
 			// lineNo, =, arrRead, destination, source, index
 			ircode.push_back("1,=,arrRead," + (yyval.node)->place + "," + string((yyvsp[-3].str)) + "," + (yyvsp[-1].node)->place + "\n");
 		}
-#line 2299 "parser.tab.c" /* yacc.c:1646  */
+#line 2308 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 647 "src/parser.y" /* yacc.c:1646  */
+#line 656 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> ARRAY_OPEN Expressions ARRAY_CLOSE");
 			(yyval.node) = (yyvsp[-1].node);
 		}
-#line 2307 "parser.tab.c" /* yacc.c:1646  */
+#line 2316 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 651 "src/parser.y" /* yacc.c:1646  */
+#line 660 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> KEY_TRUE");
 			(yyval.node) = new Node();
 			(yyval.node)->place = newTemp();
@@ -2315,146 +2324,146 @@ yyreduce:
 			(yyval.node)->truelist = makelist(ircode.size());
 			ircode.push_back("1,goto,");
 		}
-#line 2319 "parser.tab.c" /* yacc.c:1646  */
+#line 2328 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 659 "src/parser.y" /* yacc.c:1646  */
+#line 668 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> KEY_FALSE");
 			(yyval.node) = new Node();
 			(yyval.node)->type = "Bool";
 			(yyval.node)->falselist = makelist(ircode.size());
 			ircode.push_back("1,goto,");
 		}
-#line 2330 "parser.tab.c" /* yacc.c:1646  */
+#line 2339 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 666 "src/parser.y" /* yacc.c:1646  */
+#line 675 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expression -> INTEGER");
 			(yyval.node) = new Node();
 			(yyval.node)->place = to_string((yyvsp[0].intValue));
 			(yyval.node)->type = "Int";
 		}
-#line 2340 "parser.tab.c" /* yacc.c:1646  */
+#line 2349 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 672 "src/parser.y" /* yacc.c:1646  */
+#line 681 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back( "Expression -> STRING");
 			(yyval.node) = new Node();
 			(yyval.node)->place = string((yyvsp[0].str));
 			(yyval.node)->type = "String";
 		}
-#line 2350 "parser.tab.c" /* yacc.c:1646  */
+#line 2359 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 680 "src/parser.y" /* yacc.c:1646  */
+#line 689 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Conditionals -> Case");
 		}
-#line 2357 "parser.tab.c" /* yacc.c:1646  */
+#line 2366 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 683 "src/parser.y" /* yacc.c:1646  */
+#line 692 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Conditionals -> If_then_else");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2365 "parser.tab.c" /* yacc.c:1646  */
+#line 2374 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 689 "src/parser.y" /* yacc.c:1646  */
+#line 698 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Loops -> While");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2373 "parser.tab.c" /* yacc.c:1646  */
+#line 2382 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 693 "src/parser.y" /* yacc.c:1646  */
+#line 702 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Loops -> For");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2381 "parser.tab.c" /* yacc.c:1646  */
+#line 2390 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 697 "src/parser.y" /* yacc.c:1646  */
+#line 706 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Loops -> Do_while");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2389 "parser.tab.c" /* yacc.c:1646  */
+#line 2398 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 703 "src/parser.y" /* yacc.c:1646  */
+#line 712 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Arguments_list_opt -> Arguments_list");
 			(yyval.node) = (yyvsp[0].node);
 		}
-#line 2397 "parser.tab.c" /* yacc.c:1646  */
+#line 2406 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 707 "src/parser.y" /* yacc.c:1646  */
+#line 716 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back ("Arguments_list_opt -> EMPTY");
 			(yyval.node) = emptyNode;
 		}
-#line 2405 "parser.tab.c" /* yacc.c:1646  */
+#line 2414 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 713 "src/parser.y" /* yacc.c:1646  */
+#line 722 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Arguments_list -> Arguments_list COMMA Expression");
 			queueFunc.push((yyvsp[0].node)->place);
 			(yyval.node) = new Node();
 			(yyval.node)->paramCount = (yyvsp[-2].node)->paramCount + 1;
 		}
-#line 2415 "parser.tab.c" /* yacc.c:1646  */
+#line 2424 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 719 "src/parser.y" /* yacc.c:1646  */
+#line 728 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Arguments_list -> Expression");
 			queueFunc = queue<string>();
 			queueFunc.push((yyvsp[0].node)->place);
 			(yyval.node) = new Node();
 			(yyval.node)->paramCount = 1;
 		}
-#line 2426 "parser.tab.c" /* yacc.c:1646  */
+#line 2435 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 728 "src/parser.y" /* yacc.c:1646  */
+#line 737 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Case -> KEY_CASE Expression KEY_OF Actions KEY_ESAC");
 		}
-#line 2433 "parser.tab.c" /* yacc.c:1646  */
+#line 2442 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 733 "src/parser.y" /* yacc.c:1646  */
+#line 742 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Actions -> Action");
 		}
-#line 2440 "parser.tab.c" /* yacc.c:1646  */
+#line 2449 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 736 "src/parser.y" /* yacc.c:1646  */
+#line 745 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Actions -> Action Actions");
 		}
-#line 2447 "parser.tab.c" /* yacc.c:1646  */
+#line 2456 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 741 "src/parser.y" /* yacc.c:1646  */
+#line 750 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Action -> IDENTIFIER COLON TYPE OP_IMPLIES Expression STMT_TERMINATOR");
 		}
-#line 2454 "parser.tab.c" /* yacc.c:1646  */
+#line 2463 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 746 "src/parser.y" /* yacc.c:1646  */
+#line 755 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("If_then_else -> KEY_IF Expression KEY_THEN Expression KEY_ELSE Expression KEY_FI");
 			(yyval.node) = new Node();
 			ircode = backpatch((yyvsp[-8].node)->truelist, (yyvsp[-6].intValue), ircode);
@@ -2462,11 +2471,11 @@ yyreduce:
 			vector<int> temp = merge((yyvsp[-5].node)->nextlist, (yyvsp[-4].node)->nextlist);
 			(yyval.node)->nextlist = merge(temp, (yyvsp[-1].node)->nextlist);
 		}
-#line 2466 "parser.tab.c" /* yacc.c:1646  */
+#line 2475 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 756 "src/parser.y" /* yacc.c:1646  */
+#line 765 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("While -> KEY_WHILE Expression KEY_LOOP Expression KEY_POOL");
 			(yyval.node) = new Node();
 			ircode = backpatch((yyvsp[-1].node)->nextlist, (yyvsp[-5].intValue), ircode);
@@ -2474,11 +2483,11 @@ yyreduce:
 			(yyval.node)->nextlist = (yyvsp[-4].node)->falselist;
 			ircode.push_back("1,goto,label" + to_string((yyvsp[-5].intValue)) + "\n");
 		}
-#line 2478 "parser.tab.c" /* yacc.c:1646  */
+#line 2487 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 767 "src/parser.y" /* yacc.c:1646  */
+#line 776 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("For -> KEY_FOR PARAN_OPEN Expression STMT_TERMINATOR Expression STMT_TERMINATOR Expression PARAN_CLOSE KEY_LOOP Expression KEY_POOL");
 			// $$ = new Node();
 			
@@ -2493,11 +2502,11 @@ yyreduce:
 			// $$->nextlist = $6->falselist;
 			// ircode.push_back("b1,goto,label" + to_string($5) + "\n");
 		}
-#line 2497 "parser.tab.c" /* yacc.c:1646  */
+#line 2506 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 784 "src/parser.y" /* yacc.c:1646  */
+#line 793 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Do_while -> KEY_DO KEY_LOOP Expression KEY_POOL KEY_WHILE BLOCK_BEGIN Expression BLOCK_END");
 			(yyval.node) = new Node();
 			ircode = backpatch((yyvsp[-6].node)->nextlist, (yyvsp[-2].intValue), ircode);
@@ -2505,144 +2514,144 @@ yyreduce:
 			// ircode.push_back("1,goto,label" + to_string($8) + "\n");
 			(yyval.node)->nextlist = (yyvsp[-1].node)->falselist;
 		}
-#line 2509 "parser.tab.c" /* yacc.c:1646  */
+#line 2518 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 794 "src/parser.y" /* yacc.c:1646  */
+#line 803 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Break_statement -> KEY_BREAK");
 		}
-#line 2516 "parser.tab.c" /* yacc.c:1646  */
+#line 2525 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 799 "src/parser.y" /* yacc.c:1646  */
+#line 808 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Continue_statement -> KEY_CONTINUE");
-		}
-#line 2523 "parser.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 101:
-#line 804 "src/parser.y" /* yacc.c:1646  */
-    {	parse_tree.push_back("Return_statement -> KEY_RETURN BLOCK_BEGIN Expression BLOCK_END");
-			(yyval.node) = (yyvsp[-1].node);
-			ircode.push_back("1,ret," + (yyvsp[-1].node)->place + "\n");
 		}
 #line 2532 "parser.tab.c" /* yacc.c:1646  */
     break;
 
+  case 101:
+#line 813 "src/parser.y" /* yacc.c:1646  */
+    {	parse_tree.push_back("Return_statement -> KEY_RETURN BLOCK_BEGIN Expression BLOCK_END");
+			(yyval.node) = (yyvsp[-1].node);
+			ircode.push_back("1,ret," + (yyvsp[-1].node)->place + "\n");
+		}
+#line 2541 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
   case 102:
-#line 811 "src/parser.y" /* yacc.c:1646  */
+#line 820 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Block_Expression -> BLOCK_BEGIN Block_list BLOCK_END");
 			(yyval.node) = new Node();
 			(yyval.node)->type = (yyvsp[-1].node)->type;
 			(yyval.node)->nextlist = (yyvsp[-1].node)->nextlist;
 		}
-#line 2542 "parser.tab.c" /* yacc.c:1646  */
+#line 2551 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 819 "src/parser.y" /* yacc.c:1646  */
+#line 828 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Block_list -> Block_list Expression STMT_TERMINATOR");
 			(yyval.node) = new Node();
 			(yyval.node)->type = (yyvsp[-1].node)->type;
 			ircode = backpatch((yyvsp[-3].node)->nextlist, (yyvsp[-2].intValue), ircode);
 			(yyval.node)->nextlist = (yyvsp[-1].node)->nextlist;
 		}
-#line 2553 "parser.tab.c" /* yacc.c:1646  */
+#line 2562 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 826 "src/parser.y" /* yacc.c:1646  */
+#line 835 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Block_list -> Expression STMT_TERMINATOR");
 			(yyval.node) = new Node();
 			(yyval.node)->type = (yyvsp[-1].node)->type;
 			(yyval.node)->nextlist = (yyvsp[-1].node)->nextlist;
 		}
-#line 2563 "parser.tab.c" /* yacc.c:1646  */
+#line 2572 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 834 "src/parser.y" /* yacc.c:1646  */
+#line 843 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Let_Expression -> KEY_LET Formal Formals KEY_IN BLOCK_BEGIN Expression BLOCK_END");
 			(yyval.node) = (yyvsp[-2].node);
 		}
-#line 2571 "parser.tab.c" /* yacc.c:1646  */
+#line 2580 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 840 "src/parser.y" /* yacc.c:1646  */
+#line 849 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back( "Expressions -> Expressions COMMA Expression");
 			(yyval.node) = new Node();
 			(yyval.node)->arrayLength = (yyvsp[-2].node)->arrayLength + 1;
 			(yyval.node)->arrayList = (yyvsp[-2].node)->arrayList;
 			((yyval.node)->arrayList).push_back(stoi((yyvsp[0].node)->place));
 		}
-#line 2582 "parser.tab.c" /* yacc.c:1646  */
+#line 2591 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 847 "src/parser.y" /* yacc.c:1646  */
+#line 856 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Expressions -> Expression");
 			(yyval.node) = new Node();
 			(yyval.node)->arrayLength = 1;
 			((yyval.node)->arrayList).push_back(stoi((yyvsp[0].node)->place));
 		}
-#line 2592 "parser.tab.c" /* yacc.c:1646  */
+#line 2601 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 855 "src/parser.y" /* yacc.c:1646  */
+#line 864 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Formals -> Formals COMMA Formal");
 			(yyval.node) = emptyNode;
 		}
-#line 2600 "parser.tab.c" /* yacc.c:1646  */
+#line 2609 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 859 "src/parser.y" /* yacc.c:1646  */
+#line 868 "src/parser.y" /* yacc.c:1646  */
     {	parse_tree.push_back("Formals -> EMPTY");
 			(yyval.node) = emptyNode;
 		}
-#line 2608 "parser.tab.c" /* yacc.c:1646  */
+#line 2617 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 864 "src/parser.y" /* yacc.c:1646  */
+#line 873 "src/parser.y" /* yacc.c:1646  */
     {	(yyval.intValue) = ircode.size();
-		}
-#line 2615 "parser.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 111:
-#line 868 "src/parser.y" /* yacc.c:1646  */
-    {	(yyval.node) = new Node();
-			(yyval.node)->nextlist = makelist(ircode.size());
-			ircode.push_back("1,goto,");
 		}
 #line 2624 "parser.tab.c" /* yacc.c:1646  */
     break;
 
+  case 111:
+#line 877 "src/parser.y" /* yacc.c:1646  */
+    {	(yyval.node) = new Node();
+			(yyval.node)->nextlist = makelist(ircode.size());
+			ircode.push_back("1,goto,");
+		}
+#line 2633 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
   case 112:
-#line 874 "src/parser.y" /* yacc.c:1646  */
+#line 883 "src/parser.y" /* yacc.c:1646  */
     {	envStack.push(symbolTable);
 			currTable = new SymbolTable(symbolTable);
 			symbolTable = currTable;
 			i++;
 		}
-#line 2634 "parser.tab.c" /* yacc.c:1646  */
+#line 2643 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 881 "src/parser.y" /* yacc.c:1646  */
+#line 890 "src/parser.y" /* yacc.c:1646  */
     {	symbolTable = envStack.top();
 			envStack.pop();
 		}
-#line 2642 "parser.tab.c" /* yacc.c:1646  */
+#line 2651 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2646 "parser.tab.c" /* yacc.c:1646  */
+#line 2655 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2870,7 +2879,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 884 "src/parser.y" /* yacc.c:1906  */
+#line 893 "src/parser.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv) {

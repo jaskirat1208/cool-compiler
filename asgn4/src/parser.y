@@ -435,10 +435,12 @@ Expression:
 				cout << entry->type << ", " << $6->type << ": Types don't match...\n";
 				exit(0);
 			}
-			if (stoi($3->place) >= entry->arrayLength) {
-				cout << $1 << ": Index out of bound...\n";
-				exit(0);
-			}
+			if (($3->place)[0] >= '0' && ($3->place)[0] <= '9' ) {
+				if (stoi($3->place) >= entry->arrayLength) {
+					cout << $1 << ": Index out of bound...\n";
+					exit(0);
+				}
+			} 
 			$$ = new Node();
 			$$->type = "Int";
 			ircode.push_back("1,=,arrWrite," + string($1) + "," + $3->place + "," + $6->place + "\n");
@@ -633,13 +635,16 @@ Expression:
 				cout << $1 << ": Variable not found...\n";
 				exit(0);
 			}
-			if (stoi($3->place) >= entry->arrayLength) {
-				cout << $1 << ": Index out of bound...\n";
-				exit(0);
-			}
+			if (($3->place)[0] >= '0' && ($3->place)[0] <= '9' ) {
+				if (stoi($3->place) >= entry->arrayLength) {
+					cout << $1 << ": Index out of bound...\n";
+					exit(0);
+				}
+			} 
 			$$ = new Node();
 			$$->place = newTemp();
 			$$->type = $3->type;
+			
 			// lineNo, =, arrRead, destination, source, index
 			ircode.push_back("1,=,arrRead," + $$->place + "," + string($1) + "," + $3->place + "\n");
 		}
