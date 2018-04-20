@@ -293,17 +293,17 @@ void generateCode() {
 				myfile << "\n";
 			} else if (ins.type == Procedure) {
 				flushRegisters();
-				myfile <<"\tpushq %rax" << endl;
+				myfile <<"\tpushq %R11" << endl;
 				myfile << "\tcall " << "label" << basicBlocks[k].targetLabelBB << "\n";
 				myfile << "\tmovq %RAX, " << ins.in2->address.mem <<endl; 
-				myfile <<"\tpopq %rax"<< endl;
-				myfile << "\tpushq %RAX" <<endl;
+				myfile <<"\tpopq %R11"<< endl;
+				myfile << "\tpushq %R11" <<endl;
 				for (int i = functionParams.size()-1; i >= 0 ; --i)
 				{
-					myfile <<"\tmovq PREV"<<functionParams[i] << ", %RAX"<<endl;
-					myfile <<"\tmovq %RAX, "<<functionParams[i]<<endl;
+					myfile <<"\tmovq PREV"<<functionParams[i] << ", %R11"<<endl;
+					myfile <<"\tmovq %R11, "<<functionParams[i]<<endl;
 				}
-				myfile <<"\tpopq %RAX"<<endl; 
+				myfile <<"\tpopq %R11"<<endl; 
 				myfile << "\n";
 			} else if (ins.type == InstrLabel) {
 				// we are putting labels at the start of each basic blocks
@@ -354,16 +354,19 @@ void generateCode() {
 			{
 				myfile << "\tpushq %R11" << endl;
 				myfile << "\tmovq "<< ins.dest->address.mem <<", %R11" << endl;
-				myfile << "\tmovq %R11, PREV" << ins.dest->address.mem << endl;  
+				myfile << "\tmovq %R11, PREV" << ins.dest->address.mem << endl;
 				myfile << "\tpopq %R11" <<endl;
 
 				myfile << "\tpushq %R11" << endl;
-				if (isNum(ins.in1->address.mem[0]))
-				{
-					myfile << "\tmovq $" << ins.in1->address.mem <<", %RAX" << endl;					
+				if (isNum(ins.in1->address.mem[0])) {
+					myfile << "\tmovq $" << ins.in1->address.mem <<", %R11" << endl;					
+				} else {
+					myfile << "\tmovq " << ins.in1->address.mem <<", %R11" << endl;					
 				}
-				myfile << "\tmovq %RAX, "<< ins.dest->address.mem << endl;
-				myfile << "popq %R11" << endl;
+				myfile << "\tmovq %R11, "<< ins.dest->address.mem << endl;
+				myfile << "\tpopq %R11" << endl;
+				registerDescriptor.modify(ins.dest->address.reg,NULL); 
+				ins.dest->address.reg = NoReg;
 				functionParams.push_back(ins.dest->address.mem);
 			} 
 			else if (ins.type == Return) {
@@ -372,8 +375,10 @@ void generateCode() {
 				{
 					myfile << "\tmovq $" << ins.in1->address.mem << ", %RAX" <<endl;
 				}
+				else {
+					myfile << "\tmovq " << ins.in1->address.mem << ", %RAX" <<endl;					
+				}
 				myfile << "\tret\n";
-
 			} 
 		}
 		// flushRegisters();

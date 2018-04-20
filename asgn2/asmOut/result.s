@@ -1,10 +1,10 @@
 .data
 	d:	.quad 0
-	PREVm:	.quad 0
 	n:	.quad 0
 	m:	.quad 0
-	PREVn:	.quad 0
 	t1:	.quad 0
+	PREVm:	.quad 0
+	PREVn:	.quad 0
 	b:	.quad 0
 	a:	.quad 0
 	c:	.quad 0
@@ -20,35 +20,43 @@ label0:
 	movq $4, %RCX
 	movq %RCX, n
 
+	movq m, %RBX
+	addq n, %RBX
+	movq %RBX, m
+
+	movq %RBX, m
+	movq m, %RBX
+	subq $1, %RBX
+	movq %RBX, t1
+
 	pushq %R11
 	movq m, %R11
 	movq %R11, PREVm
 	popq %R11
 	pushq %R11
-	movq $4, %RAX
-	movq %RAX, m
-popq %R11
+	movq t1, %R11
+	movq %R11, m
+	popq %R11
 	pushq %R11
 	movq n, %R11
 	movq %R11, PREVn
 	popq %R11
 	pushq %R11
-	movq $3, %RAX
-	movq %RAX, n
-popq %R11
-	movq %RBX, m
-	movq %RCX, n
+	movq $3, %R11
+	movq %R11, n
+	popq %R11
+	movq %RBX, t1
 
-	pushq %rax
+	pushq %R11
 	call label2
 	movq %RAX, t1
-	popq %rax
-	pushq %RAX
-	movq PREVn, %RAX
-	movq %RAX, n
-	movq PREVm, %RAX
-	movq %RAX, m
-	popq %RAX
+	popq %R11
+	pushq %R11
+	movq PREVn, %R11
+	movq %R11, n
+	movq PREVm, %R11
+	movq %R11, m
+	popq %R11
 
 label1:
 	pushq %RDI
@@ -85,9 +93,6 @@ label1:
 	movq $0, %RAX
 	ret
 label2:
-	movq $4, %RBX
-	movq %RBX, m
-
 	pushq %RDI
 	pushq %RSI
 	pushq %RAX
@@ -103,20 +108,20 @@ label2:
 	popq %RSI
 	popq %RDI
 
-	movq $5, %RCX
-	movq %RCX, a
+	movq $5, %RBX
+	movq %RBX, a
 
-	movq $10, %RSI
-	movq %RSI, c
+	movq $10, %RCX
+	movq %RCX, c
 
-	movq %RSI, c
-	movq c, %RSI
-	addq a, %RSI
-	movq %RSI, t1
+	movq %RCX, c
+	movq c, %RCX
+	addq a, %RCX
+	movq %RCX, t1
 
-	movq %RSI, t1
-	movq t1, %RSI
-	movq %RSI, d
+	movq %RCX, t1
+	movq t1, %RCX
+	movq %RCX, d
 
 	pushq %RBP
 	pushq %RDI
@@ -127,7 +132,7 @@ label2:
 	popq %RSI
 	popq %RDI
 	popq %RBP
-	movq b, %RDI
+	movq b, %RSI
 
 	pushq %RDI
 	pushq %RSI
@@ -159,11 +164,10 @@ label2:
 	popq %RSI
 	popq %RDI
 
-	movq %RBX, m
-	movq %RCX, a
-	movq %RSI, d
-	movq %RDI, b
+	movq %RBX, a
+	movq %RCX, d
+	movq %RSI, b
 
-	movq $1, %RAX
+	movq m, %RAX
 	ret
 	ret

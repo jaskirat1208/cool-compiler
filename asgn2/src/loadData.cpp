@@ -257,7 +257,7 @@ void loadData(char* argv) {
 			getline(linestream, sourceVar, ',');
 			if (symbolTable.lookup((destVar))==NULL)
 			{
-				symbolTable.insert(destVar,dest);
+				symbolTable.insert(destVar, dest);
 			} else {
 				dest = symbolTable.lookup(destVar);
 			}
