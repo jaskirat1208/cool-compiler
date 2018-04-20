@@ -2,8 +2,9 @@
 1,=,n,4
 1,param,m,4
 1,param,n,3
-1,call,main,t12
-1,print,n
+1,call,main,t1
+1,print,t1
+1,print,m
 1,ret,0
 1,label,main,function
 1,=,m,4
@@ -16,5 +17,6 @@
 1,=,d,t1
 1,scan,b
 1,print,b
+1,print,m
 1,label,label4
-1,ret,0
+1,ret,1

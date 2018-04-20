@@ -295,6 +295,7 @@ void generateCode() {
 				flushRegisters();
 				myfile <<"\tpushq %rax" << endl;
 				myfile << "\tcall " << "label" << basicBlocks[k].targetLabelBB << "\n";
+				myfile << "\tmovq %RAX, " << ins.in2->address.mem <<endl; 
 				myfile <<"\tpopq %rax"<< endl;
 				myfile << "\tpushq %RAX" <<endl;
 				for (int i = functionParams.size()-1; i >= 0 ; --i)
@@ -302,7 +303,7 @@ void generateCode() {
 					myfile <<"\tmovq PREV"<<functionParams[i] << ", %RAX"<<endl;
 					myfile <<"\tmovq %RAX, "<<functionParams[i]<<endl;
 				}
-				myfile <<"\tpopq %RAX"<<endl;  
+				myfile <<"\tpopq %RAX"<<endl; 
 				myfile << "\n";
 			} else if (ins.type == InstrLabel) {
 				// we are putting labels at the start of each basic blocks
@@ -367,7 +368,12 @@ void generateCode() {
 			} 
 			else if (ins.type == Return) {
 				flushRegisters();
+				if (isNum(ins.in1->address.mem[0]))
+				{
+					myfile << "\tmovq $" << ins.in1->address.mem << ", %RAX" <<endl;
+				}
 				myfile << "\tret\n";
+
 			} 
 		}
 		// flushRegisters();

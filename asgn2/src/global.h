@@ -4,7 +4,7 @@ using namespace std;
 
 typedef string Operator;
 typedef string Memory;
-string retLoc;
+stack<string> retLoc;
 std::vector<string> functionParams;
 // enumeration of variable type
 enum VarType {

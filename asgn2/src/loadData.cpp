@@ -317,6 +317,19 @@ void loadData(char* argv) {
 		} else if (typeStr == "ret") {
 			type = Return;
 			op = typeStr;
+			string retVar;
+			getline(linestream,retVar);
+			if (symbolTable.lookup(retVar) == NULL) {
+				symbolTable.insert(retVar, in1);
+				if (isNum(retVar[0])) {
+					in1->type = ConstInt;
+					in1->value = stoi(retVar);
+				} else {
+					in1->type = VarInt;
+				}
+			} else {
+				in1 = symbolTable.lookup(retVar);
+			}
 		}
 
 		instructions[noOfInstructions].lineNo = noOfInstructions+1;
