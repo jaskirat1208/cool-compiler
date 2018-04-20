@@ -1,0 +1,15 @@
+1,scan,a
+2,scan,b
+3,=,c,0
+4,*,c,a,b
+5,call,foo
+6,+,c,a,b
+7,call,foo
+8,/,c,a,b
+9,call,foo
+10,-,c,a,b
+11,call,foo
+12,ret
+13,label,foo
+14,print,c
+15,ret

@@ -1,0 +1,13 @@
+1,=,a,2
+1,=,b,9
+1,=,array,arr,5,7,2,4,5,8
+1,call,main,t4
+1,ret,0
+1,label,main
+1,=,arrRead,t1,arr,0
+1,*,t2,t1,4
+1,=,c,t2
+1,label,label6
+1,print,c
+1,label,label7
+1,ret,0
