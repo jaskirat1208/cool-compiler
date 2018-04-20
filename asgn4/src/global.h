@@ -4,10 +4,10 @@ class SymbolTableEntry {
 		string type;
 		bool isFeat;
 		int paramCount;
-
+		queue<string> paramFunc;
 		bool isArray;
 		int arrayLength;
-		vector<int>  arrayList;
+		vector<int> arrayList;
 		// SymbolTableEntry(string type1) {
 		// 	type = type1;
 		// }
@@ -89,6 +89,7 @@ struct Node {
 	vector<int> truelist;
 	vector<int> nextlist;
 	vector<int> arrayList;
+	queue<string> paramFunc;
 	int arrayLength;
 	int paramCount;
 };

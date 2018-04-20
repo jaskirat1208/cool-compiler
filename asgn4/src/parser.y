@@ -262,24 +262,16 @@ Feature:
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($7);
 			entry->isFeat = true;
+			queue<string> tmpQueue = $4->paramFunc;
+			entry->paramFunc = queue<string>();
+			while (!tmpQueue.empty()) {
+				(entry->paramFunc).push(tmpQueue.front());
+				tmpQueue.pop();
+			}
 			entry->paramCount = $4->paramCount;
 			symbolTable->insert(string($1), entry);
 			ircode = backpatchFeat($9, string($1), ircode);
 			// ircode.push_back("1,ret\n");
-			// if (string($1) == "main") {
-			// 	cout << "anu" << endl;
-			// 	SymbolTableEntry* entry1 = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
-			// 	entry1->type = "void";
-			// 	entry1->isFeat = true;
-			// 	entry1->paramCount = 1;
-			// 	symbolTable->insert("print", entry1);
-
-			// 	SymbolTableEntry* entry2 = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
-			// 	entry2->type = "void";
-			// 	entry2->isFeat = true;
-			// 	entry2->paramCount = 1;
-			// 	symbolTable->insert("scan", entry2);
-			// }
 		}
 		|	Formal
 		{	parse_tree.push_back("Feature -> Formal");
@@ -322,11 +314,15 @@ Formal_params_list:
 		{	parse_tree.push_back("Formal_params_list -> Formal_params_list COMMA Formal_param");
 			$$ = new Node();
 			$$->paramCount = $1->paramCount + 1;
+			$1->paramFunc.push($3->place);
+			$$->paramFunc = $1->paramFunc; 
 		}
 		|	Formal_param
 		{	parse_tree.push_back("Formal_params_list -> Formal_param");
 			$$ = new Node();
 			$$->paramCount = 1;
+			$$->paramFunc.push($1->place);
+			$$->type = $1->type;
 		}
 		;
 Formal_param:
@@ -335,7 +331,9 @@ Formal_param:
 			SymbolTableEntry* entry = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
 			entry->type = string($3);
 			symbolTable->insert($1, entry);
-			$$ = emptyNode;
+			$$ = new Node();
+			$$->place = string($1);
+			$$->type = string($3);
 		}
 		|	IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE
 		{	parse_tree.push_back("Formal_param -> IDENTIFIER COLON TYPE ARRAY_OPEN ARRAY_CLOSE");
@@ -482,9 +480,11 @@ Expression:
 				$$->type = "void";
 			} else {
 				$$->type = entry->type;
+				queue<string> temp = entry->paramFunc;
 				while (!queueFunc.empty()) {
-					ircode.push_back("1,param," + queueFunc.front() + "\n");
+					ircode.push_back("1,param," + temp.front() + "," + queueFunc.front() + "\n");
 					queueFunc.pop();
+					temp.pop();
 				}
 				ircode.push_back("1,call," + string($1) + "," + $$->place + "\n");
 			}
@@ -587,7 +587,11 @@ Expression:
 			$$->type = "Bool";
 			$$->truelist = makelist(ircode.size());
 			$$->falselist = makelist(ircode.size() + 1);
+			// string temp1 = newTemp();
+			// string temp2 = newTemp();
 			ircode.push_back("1,ifgoto," + dictIeqToString(string($2)) + "," + $1->place + "," + $3->place + ",");
+			// ircode.push_back("1,=," + temp1 + "," + $1->place + "\n");
+			// ircode.push_back("1,=," + temp2 + "," + $3->place + "\n");
 			ircode.push_back("1,goto,");
 		}
 		|	Expression OP_ARITHMETIC_B_AD Expression
@@ -657,7 +661,7 @@ Expression:
 				cout << $1 << ": Variable not found...\n";
 				exit(0);
 			}
-			if (($3->place)[0] >= '0' && ($3->place)[0] <= '9' ) {
+			if (($3->place)[0] >= '0' && ($3->place)[0] <= '9') {
 				if (stoi($3->place) >= entry->arrayLength) {
 					cout << $1 << ": Index out of bound...\n";
 					exit(0);
