@@ -8,7 +8,7 @@ class Main {
 	e : Int;
 	main () : Int {
 		{
-			a <- b + c - d / e * b;
+			-- a <- b + c - d / e * b;
 			return {0};
 		}
 	};

@@ -1,13 +1,21 @@
--- loops
+-- for(i =0; i++ < 100;){
+--       a++;
+-- }
+
 class Main {
 	a : Int;
 	b : Int;
-	main (anu1 : Int) : Int {
+	c : Int;
+	d : Int;
+	e : Int;
+	i : Int;
+	main () : Int {
 		{
-			a <- 4;
-			b <- 50;
-			while (a < b) loop (a <- a + 4) pool;
-			-- do loop (a <- a + 4) pool while{ (a < b) && (a = b) };
+			i <- 0;
+			while (i < 100) loop {
+				a <- a + 1;
+				i <- i + 1;
+			} pool;
 			return {0};
 		}
 	};

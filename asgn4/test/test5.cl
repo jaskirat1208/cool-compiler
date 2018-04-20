@@ -1,19 +1,28 @@
--- arrays and let scopes
+-- if (c && d)
+--     d++
+-- else if (d & e) // bitwise and
+--     e++
+-- else
+--     d--
+
 class Main {
-	a : Int <- 12;
+	a : Int;
 	b : Int;
-	arr : Int[5] <- [7,2,4,5,8];
-	barr : Int[3] <- [4,2,8];
+	c : Int;
+	d : Int;
+	e : Int;
+
 	main () : Int {
 		{
-			b <- 7;
-			let c : Int in {
-				{
-					c <- a + b;
-					c <- c + arr[0] * barr[0] - arr[2] / barr[2];
-					b <- c;
-				}
-			};
+			if ((not (c = 0)) && (not (d = 0))) then
+				d <- d + 1
+			else
+				if ((not (d = 0)) && (not (e = 0))) then
+					e <- e + 1
+				else
+					d <- d - 1
+				fi
+			fi;
 			return {0};
 		}
 	};

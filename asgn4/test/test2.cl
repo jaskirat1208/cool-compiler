@@ -1,15 +1,25 @@
--- if else
+-- if (c) {
+-- 	if (d)
+--     	d++
+--     else
+--         d--
+-- }
+
 class Main {
-	a : Int;
-	b : Int <- 0;
+	a : Int <- 1;
+	b : Int <- 2;
+	c : Int <- 3;
+	d : Int <- 4;
 	main () : Int {
 		{
-			a <- 5;
-			-- if ((a = 0 && b >= 0) || (not(a = 0)) && b < 0) then
-			if (a > 0) then
-				return {1}
+			if (not (c = 0)) then
+				if (not (d = 0)) then
+					d <- d + 1
+				else
+					d <- d - 1
+				fi
 			else
-				a <- a + 1
+				return {0}
 			fi;
 			return {0};
 		}
