@@ -228,15 +228,56 @@ void loadData(char* argv) {
 			}
 		} else if (typeStr == "call") {
 			type = Procedure;
-
+			string destVar;
 			getline(linestream, destStr, ',');
+			getline(linestream,destVar);
+			cout << destVar << endl;
+			if (symbolTable.lookup(destVar) == NULL)
+			{
+				// SymbolTableEntry* tmp_dest = (SymbolTableEntry*)calloc(1,sizeof(SymbolTableEntry));
+				symbolTable.insert(destVar,in2);
+				in2->type = VarInt;
+			} else {
+				in2 = symbolTable.lookup(destVar); 
+			}
+
+			// cout<<destStr<<endl;
 			if (symbolTable.lookup(destStr) == NULL) {
 				symbolTable.insert(destStr, dest);
 				dest->type = VarLabel;
 			} else {
 				dest = symbolTable.lookup(destStr);
 			}
-		} else if (typeStr == "label") {
+		} else if (typeStr == "param")
+		{
+			type = ParamPass;
+			string sourceVar;
+			string destVar;
+			getline(linestream, destVar, ',');
+			getline(linestream, sourceVar, ',');
+			if (symbolTable.lookup((destVar))==NULL)
+			{
+				symbolTable.insert(destVar,dest);
+			} else {
+				dest = symbolTable.lookup(destVar);
+			}
+			if (symbolTable.lookup(sourceVar) == NULL) {
+				symbolTable.insert(sourceVar, in1);
+				if (isNum(sourceVar[0])) {
+					in1->type = ConstInt;
+					in1->value = stoi(sourceVar);
+				} else {
+					in1->type = VarInt;
+				}
+			} else {
+				in1 = symbolTable.lookup(sourceVar);
+			}
+			SymbolTableEntry* tmp_dest = (SymbolTableEntry*)calloc(1, sizeof(SymbolTableEntry)); 
+			
+			symbolTable.insert("PREV"+destVar,tmp_dest);
+			tmp_dest->type = VarInt;
+		} 
+		else if (typeStr == "label") {
 			type = InstrLabel;
 
 			getline(linestream, destStr, ',');

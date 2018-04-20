@@ -293,7 +293,16 @@ void generateCode() {
 				myfile << "\n";
 			} else if (ins.type == Procedure) {
 				flushRegisters();
+				myfile <<"\tpushq %rax" << endl;
 				myfile << "\tcall " << "label" << basicBlocks[k].targetLabelBB << "\n";
+				myfile <<"\tpopq %rax"<< endl;
+				myfile << "\tpushq %RAX" <<endl;
+				for (int i = functionParams.size()-1; i >= 0 ; --i)
+				{
+					myfile <<"\tmovq PREV"<<functionParams[i] << ", %RAX"<<endl;
+					myfile <<"\tmovq %RAX, "<<functionParams[i]<<endl;
+				}
+				myfile <<"\tpopq %RAX"<<endl;  
 				myfile << "\n";
 			} else if (ins.type == InstrLabel) {
 				// we are putting labels at the start of each basic blocks
@@ -340,10 +349,26 @@ void generateCode() {
 				myfile << "\tpopq %RSI\n";
 				myfile << "\tpopq %RDI\n";
 				myfile << "\n";
-			} else if (ins.type == Return) {
+			} else if (ins.type == ParamPass)
+			{
+				myfile << "\tpushq %R11" << endl;
+				myfile << "\tmovq "<< ins.dest->address.mem <<", %R11" << endl;
+				myfile << "\tmovq %R11, PREV" << ins.dest->address.mem << endl;  
+				myfile << "\tpopq %R11" <<endl;
+
+				myfile << "\tpushq %R11" << endl;
+				if (isNum(ins.in1->address.mem[0]))
+				{
+					myfile << "\tmovq $" << ins.in1->address.mem <<", %RAX" << endl;					
+				}
+				myfile << "\tmovq %RAX, "<< ins.dest->address.mem << endl;
+				myfile << "popq %R11" << endl;
+				functionParams.push_back(ins.dest->address.mem);
+			} 
+			else if (ins.type == Return) {
 				flushRegisters();
 				myfile << "\tret\n";
-			}
+			} 
 		}
 		// flushRegisters();
 	}

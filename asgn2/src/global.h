@@ -4,7 +4,8 @@ using namespace std;
 
 typedef string Operator;
 typedef string Memory;
-
+string retLoc;
+std::vector<string> functionParams;
 // enumeration of variable type
 enum VarType {
 	VarInt,
@@ -15,6 +16,7 @@ enum VarType {
 
 // enumeration of instruction type
 enum InstrType {
+	ParamPass, //1,param,x,2 or 1,param,x,3
 	Copy, // x = y
 	ArrRead,	//x = y[0]
 	ArrWrite,	//y[0] = x
@@ -92,6 +94,7 @@ class SymbolTable {
 		}
 
 		vector<string> printTableInts(){
+
 			vector<string> variableNames;
 			unordered_map<string, SymbolTableEntry*>::iterator i = table.begin();
 			for (; i != table.end(); ++i) {

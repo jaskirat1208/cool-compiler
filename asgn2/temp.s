@@ -1,71 +1,27 @@
 .data
-	d:	.quad 0
-	PREVm:	.quad 0
-	n:	.quad 0
-	m:	.quad 0
-	PREVn:	.quad 0
-	t12:	.quad 0
-	b:	.quad 0
-	a:	.quad 0
-	c:	.quad 0
 	t1:	.quad 0
+	m:	.quad 3
+	n:	.quad 3
+	d:	.quad 0
+	c:	.quad 0
+	a:	.quad 0
+	b:	.quad 0
 	str:	.string "%d\n"
 	scan_str:	.string "%d"
 .text
 .globl main
 main:
 label0:
-	movq $2, %RBX
-	movq %RBX, m
-
-	movq $4, %RCX
-	movq %RCX, n
-
+	pushq m
 	pushq %R11
-	movq m, %R11
-	movq %R11, PREVm
+	movq $4, %R11
+	movq %R11, m
 	popq %R11
-	pushq %R11
-	movq $4, %RAX
-	movq %RAX, m
-popq %R11
-	pushq %R11
-	movq n, %R11
-	movq %R11, PREVn
-	popq %R11
-	pushq %R11
-	movq $3, %RAX
-	movq %RAX, n
-popq %R11
-	movq %RBX, m
-	movq %RCX, n
 
-	pushq %rax
 	call label2
-	popq %rax
-	pushq %RAX
-	movq PREVn, %RAX
-	movq %RAX, n
-	movq PREVm, %RAX
-	movq %RAX, m
-	popq %RAX
+	popq m
 
 label1:
-	pushq %RDI
-	pushq %RSI
-	pushq %RAX
-	movq $str, %RDI
-	movq n, %RSI
-	movq $0, %RAX
-	pushq %R10
-	pushq %R11
-	call printf
-	popq %R11
-	popq %R10
-	popq %RAX
-	popq %RSI
-	popq %RDI
-
 
 	ret
 label2:

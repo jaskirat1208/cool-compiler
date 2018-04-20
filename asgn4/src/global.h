@@ -1,5 +1,4 @@
 int cntTemp = 1, cntLabel = 1;
-
 class SymbolTableEntry {
 	public:
 		string type;
@@ -14,14 +13,25 @@ class SymbolTableEntry {
 		// }
 };
 
+SymbolTableEntry entry1, entry2;
+
 class SymbolTable {
 	private :
 		unordered_map<string, SymbolTableEntry*> table;
+		
 	public :
 		SymbolTable* prev;
 
 		SymbolTable(SymbolTable* p) {
 			prev = p;
+			entry1.type = "void";
+			entry1.isFeat = true;
+			entry1.paramCount = 1;
+			table["print"] = &entry1;
+			entry2.type = "void";
+			entry2.isFeat = true;
+			entry2.paramCount = 1;
+			table["scan"] = &entry2;
 		}
 
 		void insert(string s, SymbolTableEntry* t) {
@@ -129,14 +139,14 @@ vector<string> backpatch(vector<int> list, int target, vector<string> ircode) {
 		// cout << "1b" << ircode[list[i]] << "\n";
 	}
 	// cout << "c" << ircode[target];
-	ircode[target] = "\n1,label," + label + ircode[target];
+	ircode[target] = "1,label," + label + ircode[target];
 	// cout << "1c" << ircode[target] << "\n";
 	// cout << "a" << label << "\n";
 	return ircode;
 }
 
 vector<string> backpatchFeat(int target, string label, vector<string> ircode) {
-	ircode[target] = "\n1,call,main," + newTemp() + "\n1,ret,0\n\n1,label," + label + "\n" + ircode[target];
+	ircode[target] = "1,call,main," + newTemp() + "\n1,ret,0\n1,label," + label + "\n" + ircode[target];
 	return ircode;
 }
 

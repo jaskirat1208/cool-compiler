@@ -4,14 +4,15 @@ class Main {
 	b : Int;
 	c : Int;
 	d : Int;
-	main (anu1 : Int) : Int {
+	main () : Int {
 		{
-			c <- a * ~5;
+			-- c <- a * ~5;
 			a <- 5;
 			c <- 10;
-			b <- 0;
 			d <- c + a;
-			b <- a+b*c-d/a;
+			scan(b);
+			print(b + 1);
+			-- b <- a+b*c-d/a;
 			return {0};
 		}
 	};

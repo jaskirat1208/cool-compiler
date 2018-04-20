@@ -11,7 +11,7 @@ class Main {
 			return {y};
 		}
 	};
-	bar (x : Int) : Int {
+	bar (x : Int,y : Int) : Int {
 		{
 			x <- x + 6;
 			x <- x + foo(x);
@@ -24,7 +24,7 @@ class Main {
 			a <- 5;
 			foo(a);
 			-- foo(x); -- uncommenting this line will throw error as x is not declared in this scope or neither in its parents'
-			a <- bar(5);			
+			a <- bar(5,0);			
 			-- c <- a * ~5;
 			return {0};
 		}

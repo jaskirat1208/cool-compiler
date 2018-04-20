@@ -266,6 +266,20 @@ Feature:
 			symbolTable->insert(string($1), entry);
 			ircode = backpatchFeat($9, string($1), ircode);
 			// ircode.push_back("1,ret\n");
+			// if (string($1) == "main") {
+			// 	cout << "anu" << endl;
+			// 	SymbolTableEntry* entry1 = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			// 	entry1->type = "void";
+			// 	entry1->isFeat = true;
+			// 	entry1->paramCount = 1;
+			// 	symbolTable->insert("print", entry1);
+
+			// 	SymbolTableEntry* entry2 = (SymbolTableEntry*) calloc(1, sizeof(SymbolTableEntry));
+			// 	entry2->type = "void";
+			// 	entry2->isFeat = true;
+			// 	entry2->paramCount = 1;
+			// 	symbolTable->insert("scan", entry2);
+			// }
 		}
 		|	Formal
 		{	parse_tree.push_back("Feature -> Formal");
@@ -460,12 +474,20 @@ Expression:
 			}
 			$$ = new Node();
 			$$->place = newTemp();
-			$$->type = entry->type;
-			while (!queueFunc.empty()) {
-				ircode.push_back("1,param," + queueFunc.front() + "\n");
-				queueFunc.pop();
+			if (string($1) == "print") {
+				ircode.push_back("1,print," + queueFunc.front() + "\n");
+				$$->type = "void";
+			} else if (string($1) == "scan") {
+				ircode.push_back("1,scan," + queueFunc.front() + "\n");
+				$$->type = "void";
+			} else {
+				$$->type = entry->type;
+				while (!queueFunc.empty()) {
+					ircode.push_back("1,param," + queueFunc.front() + "\n");
+					queueFunc.pop();
+				}
+				ircode.push_back("1,call," + string($1) + "," + $$->place + "\n");
 			}
-			ircode.push_back("1,call," + string($1) + "," + $$->place + "\n");
 		}
 		|	BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE
 		{	parse_tree.push_back("Expression -> BLOCK_BEGIN Expression BLOCK_END AT TYPE DOT IDENTIFIER PARAN_OPEN Arguments_list_opt PARAN_CLOSE");
