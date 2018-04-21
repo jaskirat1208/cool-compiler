@@ -1,5 +1,0 @@
-1,call,main,t11,ret,0
-1,label,main
-1,=,a,5
-1,label,label1
-1,ret,0

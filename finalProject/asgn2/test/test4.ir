@@ -1,7 +1,0 @@
-1,scan,a
-2,=,b,a
-3,label,foo
-4,print,a
-5,+,a,a,b
-6,ifgoto,leq,a,50,foo
-7,ret
