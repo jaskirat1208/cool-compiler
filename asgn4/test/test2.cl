@@ -21,6 +21,7 @@ class Main {
 			else
 				return {0}
 			fi;
+			print(a);
 			return {0};
 		}
 	};
